@@ -172,9 +172,9 @@ void PlayerUpdate(void)
 		//Å@ºﬁ¨›Ãﬂ
 		if (!player.jumpFlag) {
 			if (newKey[P1_A]) {
-				if (jumpCnt < 10) {
-					player.velocity.y = 30;
-					jumpCnt++;
+				jumpCnt++;
+				if (jumpCnt < 15) {
+					player.velocity.y = 25;
 				}
 			}
 			else {
@@ -183,6 +183,43 @@ void PlayerUpdate(void)
 			}
 		}
 		
+
+		movedOffset2 = movedOffset;
+		movedOffset2.y = movedPos.y - player.hitPosS.y;
+		movedOffset3 = movedOffset;
+		movedOffset3.y = movedPos.y + player.hitPosE.y - 1;
+
+		if (HitIsPass(movedOffset) && HitIsPass(movedOffset2) && HitIsPass(movedOffset3)) {
+
+		}
+		else {
+			DrawString(0, 30, "Hit", 0xffffff);
+		}
+
+		movedOffset.y = movedPos.y - player.hitPosS.y;
+		movedOffset2 = movedOffset;							// ç∂è„
+		movedOffset2.x = movedPos.x - player.hitPosS.x;
+		movedOffset3 = movedOffset;							// âEè„
+		movedOffset3.x = movedPos.x + player.hitPosE.x - 1;
+
+		if (HitIsPass(movedOffset) && HitIsPass(movedOffset2) && HitIsPass(movedOffset3)) {
+
+		}
+		else {
+			DrawString(0, 30, "Hit", 0xffffff);
+		}
+
+		movedOffset.y = movedPos.y + player.hitPosE.y;
+		movedOffset2 = movedOffset;							// ç∂â∫
+		movedOffset2.x = movedPos.x - player.hitPosS.x;
+		movedOffset3 = movedOffset;							// âEâ∫
+		movedOffset3.x = movedPos.x + player.hitPosE.x - 1;
+		if (HitIsPass(movedOffset) && HitIsPass(movedOffset2) && HitIsPass(movedOffset3)) {
+			
+		}
+		else {
+			DrawString(0, 30, "Hit", 0xffffff);
+		}
 
 	}
 }

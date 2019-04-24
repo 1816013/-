@@ -18,4 +18,4 @@ XY MapIndexToPos(XY index);
 XY MapPosToMoveIndex(XY pos, bool flag, XY_F velocity);
 XY GetMapPos();
 void MapMove(XY pos, XY oldPos);
-bool jumpIsPass(XY pos);
+bool HitIsPass(XY pos);
