@@ -1,0 +1,8 @@
+﻿  player.cpp
+d:\２年_グループ制作\player.cpp(53): warning C4305: '+=': 'double' から 'float' へ切り詰めます。
+d:\２年_グループ制作\player.cpp(63): warning C4305: '-=': 'double' から 'float' へ切り詰めます。
+d:\２年_グループ制作\player.cpp(72): warning C4305: '-=': 'double' から 'float' へ切り詰めます。
+d:\２年_グループ制作\player.cpp(78): warning C4305: '+=': 'double' から 'float' へ切り詰めます。
+d:\２年_グループ制作\player.cpp(100): warning C4244: '+=': 'float' から 'int' への変換です。データが失われる可能性があります。
+d:\２年_グループ制作\player.cpp(132): warning C4244: '-=': 'double' から 'int' への変換です。データが失われる可能性があります。
+  ２年_グループ制作.vcxproj -> D:\２年_グループ制作\Debug\２年_グループ制作.exe
