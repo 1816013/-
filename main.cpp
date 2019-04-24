@@ -1,4 +1,5 @@
 #include<DxLib>
-int main{
 
+int main{
+	return -1;
 }
