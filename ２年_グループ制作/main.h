@@ -24,7 +24,7 @@ enum GAME_MODE {
 	GMODE_INIT,
 	GMODE_TITLE,
 	GMODE_GAME,
-	GMODE_CLEAR,
+	GMODE_RESULT,
 	GMODE_GAMEOVER,
 	GMODE_MAX
 };
@@ -71,5 +71,7 @@ typedef struct {
 
 void SysInit(void);
 void GameInit(void);
+void GameTitle(void);
 void GameMain(void);
 void GameDraw(void);
+void GameResult(void);

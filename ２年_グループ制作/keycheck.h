@@ -20,6 +20,7 @@ enum KEY_MODE {
 
 	ENTER,
 	PAUSE,
+	START,
 
 	KEY_MAX
 };

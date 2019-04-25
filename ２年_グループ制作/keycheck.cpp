@@ -31,7 +31,6 @@ void KeyCheck()
 	if (CheckHitKey(KEY_INPUT_RIGHT)) newKey[P1_RIGHT] = true;
 	if (CheckHitKey(KEY_INPUT_DOWN)) newKey[P1_DOWN] = true;
 	if (CheckHitKey(KEY_INPUT_LEFT)) newKey[P1_LEFT] = true;
-	if (CheckHitKey(KEY_INPUT_SPACE)) newKey[P1_SHOT] = true;
 	if (CheckHitKey(KEY_INPUT_RSHIFT)) newKey[P1_A] = true;
 	if (CheckHitKey(KEY_INPUT_RCONTROL)) newKey[P1_B] = true;
 
@@ -47,6 +46,7 @@ void KeyCheck()
 	if (CheckHitKey(KEY_INPUT_RETURN)) newKey[ENTER] = true;
 	if (CheckHitKey(KEY_INPUT_P)) newKey[PAUSE] = true;
 
+	if (CheckHitKey(KEY_INPUT_SPACE)) newKey[START] = true;
 	// ----- trgKey upKey oldKey
 	for (int i = 0; i < KEY_MAX; i++) {
 		trgKey[i] = newKey[i] & ~oldKey[i];	// trgKey
