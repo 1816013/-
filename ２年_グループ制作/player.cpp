@@ -172,22 +172,36 @@ void PlayerUpdate(void)
 		movedPos = player.pos;
 	
 		//Å@ºﬁ¨›Ãﬂ
-		if (!player.jumpFlag) {
-			if (newKey[P1_A]) {
-				jumpCnt++;
-				if (jumpCnt < 15) {
-					player.velocity.y = 25;
+		movedOffset.y = movedPos.y - player.hitPosS.y;
+		movedOffset2 = movedOffset;							// ç∂è„
+		movedOffset2.x = movedPos.x - player.hitPosS.x;
+		movedOffset3 = movedOffset;							// âEè„
+		movedOffset3.x = movedPos.x + player.hitPosE.x - 1;
+
+		if (IsPass(movedOffset) && IsPass(movedOffset2) && IsPass(movedOffset3)) {
+			if (!player.jumpFlag) {
+				if (newKey[P1_A]) {
+					jumpCnt++;
+					if (jumpCnt < 15) {
+						player.velocity.y = 25;
+					}
+					if (headFlag) {
+						jumpCnt = 15;
+					}
 				}
-				if (headFlag) {
-					jumpCnt = 15;
-					/*player.velocity.y = 0;*/
+
+				else {
+					jumpCnt = 0;
+					player.jumpFlag = true;
 				}
-			}
-			else {
-				jumpCnt = 0;
-				player.jumpFlag = true;
 			}
 		}
+		else
+		{
+			player.velocity.y = 0;
+		}
+		
+
 		
 		if (!TelIsPass(player.pos)) {
 			player.pos = { 10000, 10000 };
@@ -230,12 +244,14 @@ void PlayerUpdate(void)
 void PlayerDraw(void)
 {
 	XY tmpMapPos = GetMapPos();
+	
 	if (player.flag) {
 		DrawGraph(player.pos.x - tmpMapPos.x - player.offsetSize.x, player.pos.y - tmpMapPos.y - player.offsetSize.y, player1[1], true);
 		//DrawCircle(player.pos.x - tmpMapPos.x, player.pos.y  - tmpMapPos.y, 24, 0xff0000, true, true);
 	
 	}
 	DrawFormatString(0, 48, 0x000000, "playerPos: %d , %d", player.pos.x, player.pos.y);
+	DrawCircle(player.pos.x, player.pos.y, 5,  0xff0000, true);
 }
 
 CHARACTER GetPlayer(void) {
