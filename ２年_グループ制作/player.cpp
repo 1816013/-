@@ -176,6 +176,9 @@ void PlayerUpdate(void)
 				if (jumpCnt < 15) {
 					player.velocity.y = 25;
 				}
+				if (headFlag) {
+					jumpCnt = 15;
+				}
 			}
 			else {
 				jumpCnt = 0;
