@@ -87,7 +87,7 @@ void stageMain(void)
 	{
 		for (int j = 0; j < SCREEN_SIZE_Y / CHIP_SIZE_Y; j++)
 		{
-			nowStage[j][i] = stage2[j][i];
+			nowStage[j][i] = stage1[j][i];
 		}
 	}
 }
@@ -204,6 +204,24 @@ bool IsPass(XY pos)
 	case 7:
 	case 8:
 	case 9:
+		ret = false;
+		break;
+	}
+	return ret;
+}
+
+
+// ÃÚÎß°Ä
+bool TelIsPass(XY pos)
+{
+	bool ret = true;
+	int mapNo;
+	XY mapIndex;
+
+	mapIndex = MapPosToIndex(pos);
+	mapNo = nowStage[mapIndex.y][mapIndex.x];
+
+	switch (mapNo) {
 	case 10:
 		ret = false;
 		break;
@@ -211,6 +229,9 @@ bool IsPass(XY pos)
 	return ret;
 }
 
+
+
+// ÃÞÊÞ¯¸Þ—p
 bool HitIsPass(XY pos)
 {
 	bool ret = true;

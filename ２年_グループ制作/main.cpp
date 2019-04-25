@@ -41,7 +41,6 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 			gameMode = GMODE_TITLE;
 			break;
 		case GMODE_TITLE:
-
 			if (trgKey[START])
 			{
 				gameMode = GMODE_GAME;
@@ -62,6 +61,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 					GameCycle += 1;
 					EndPt += 25;
 					gameMode = GMODE_GAME;
+					GameInit();
 
 				}
 				else if ((GameCycle == Arrow/*GameCycleMax*/) || (EndPt >= 100))

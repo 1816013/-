@@ -180,6 +180,7 @@ void PlayerUpdate(void)
 				}
 				if (headFlag) {
 					jumpCnt = 15;
+					/*player.velocity.y = 0;*/
 				}
 			}
 			else {
@@ -188,6 +189,9 @@ void PlayerUpdate(void)
 			}
 		}
 		
+		if (!TelIsPass(player.pos)) {
+			player.pos = { 10000, 10000 };
+		}
 		//// ÃÞÊÞ¯¸Þ—p
 		//movedOffset2 = movedOffset;
 		//movedOffset2.y = movedPos.y - player.hitPosS.y;
