@@ -1,4 +1,5 @@
 #pragma once
+#include <DxLib.h>	
 
 #ifdef _DEBUG
 #define AST() {\
