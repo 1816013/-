@@ -1,22 +1,24 @@
+#include <DxLib.h>
 #include "main.h"
 #include "player.h"
 #include "keycheck.h"
 #include "stage.h"
 
 CHARACTER player;
+int player1[4];
 
 int headFlag;
 int jumpCnt;
 int Gflag;
 void PlayerSysInit(void) 
 {
-	
+	LoadDivGraph("png/プレイヤー１.png", 4, 4, 1, 48, 48, player1);
 }
 
 void PlayerInit(void)
 {
 	player.moveDir = DIR_RIGHT;
-	player.pos = { 5 * MAP_CHIP_SIZE_X , 10 * MAP_CHIP_SIZE_Y };
+	player.pos = { 5 * CHIP_SIZE_X , 15 * CHIP_SIZE_Y };
 
 	player.size = { PLAYER_SIZE_X, PLAYER_SIZE_Y };
 	player.offsetSize = { player.size.x / 2, player.size.y / 2};
@@ -186,43 +188,37 @@ void PlayerUpdate(void)
 			}
 		}
 		
-
-		movedOffset2 = movedOffset;
-		movedOffset2.y = movedPos.y - player.hitPosS.y;
-		movedOffset3 = movedOffset;
-		movedOffset3.y = movedPos.y + player.hitPosE.y - 1;
-
-		if (HitIsPass(movedOffset) && HitIsPass(movedOffset2) && HitIsPass(movedOffset3)) {
-
-		}
-		else {
-			DrawString(0, 30, "Hit", 0xffffff);
-		}
-
-		movedOffset.y = movedPos.y - player.hitPosS.y;
-		movedOffset2 = movedOffset;							// 左上
-		movedOffset2.x = movedPos.x - player.hitPosS.x;
-		movedOffset3 = movedOffset;							// 右上
-		movedOffset3.x = movedPos.x + player.hitPosE.x - 1;
-
-		if (HitIsPass(movedOffset) && HitIsPass(movedOffset2) && HitIsPass(movedOffset3)) {
-
-		}
-		else {
-			DrawString(0, 30, "Hit", 0xffffff);
-		}
-
-		movedOffset.y = movedPos.y + player.hitPosE.y;
-		movedOffset2 = movedOffset;							// 左下
-		movedOffset2.x = movedPos.x - player.hitPosS.x;
-		movedOffset3 = movedOffset;							// 右下
-		movedOffset3.x = movedPos.x + player.hitPosE.x - 1;
-		if (HitIsPass(movedOffset) && HitIsPass(movedOffset2) && HitIsPass(movedOffset3)) {
-			
-		}
-		else {
-			DrawString(0, 30, "Hit", 0xffffff);
-		}
+		//// ﾃﾞﾊﾞｯｸﾞ用
+		//movedOffset2 = movedOffset;
+		//movedOffset2.y = movedPos.y - player.hitPosS.y;
+		//movedOffset3 = movedOffset;
+		//movedOffset3.y = movedPos.y + player.hitPosE.y - 1;
+		//if (HitIsPass(movedOffset) && HitIsPass(movedOffset2) && HitIsPass(movedOffset3)) {
+		//}
+		////else {
+		////	DrawString(0, 30, "Hit", 0xffffff);
+		////}
+		//movedOffset.y = movedPos.y - player.hitPosS.y;
+		//movedOffset2 = movedOffset;							// 左上
+		//movedOffset2.x = movedPos.x - player.hitPosS.x;
+		//movedOffset3 = movedOffset;							// 右上
+		//movedOffset3.x = movedPos.x + player.hitPosE.x - 1;
+		//if (HitIsPass(movedOffset) && HitIsPass(movedOffset2) && HitIsPass(movedOffset3)) {
+		//}
+		////else {
+		////	DrawString(0, 30, "Hit", 0xffffff);
+		////}
+		//movedOffset.y = movedPos.y + player.hitPosE.y;
+		//movedOffset2 = movedOffset;							// 左下
+		//movedOffset2.x = movedPos.x - player.hitPosS.x;
+		//movedOffset3 = movedOffset;							// 右下
+		//movedOffset3.x = movedPos.x + player.hitPosE.x - 1;
+		//if (HitIsPass(movedOffset) && HitIsPass(movedOffset2) && HitIsPass(movedOffset3)) {
+		//	
+		//}
+		////else {
+		////	DrawString(0, 30, "Hit", 0xffffff);
+		////}
 
 	}
 }
@@ -231,13 +227,11 @@ void PlayerDraw(void)
 {
 	XY tmpMapPos = GetMapPos();
 	if (player.flag) {
-		if (player.imgLockCnt > 30) {
-			player.damageFlag = false;
-		}
-		DrawCircle(player.pos.x - tmpMapPos.x, player.pos.y  - tmpMapPos.y, 24, 0xff0000, true, true);
+		DrawGraph(player.pos.x - tmpMapPos.x - player.offsetSize.x, player.pos.y - tmpMapPos.y - player.offsetSize.y, player1[1], true);
+		//DrawCircle(player.pos.x - tmpMapPos.x, player.pos.y  - tmpMapPos.y, 24, 0xff0000, true, true);
 	
 	}
-	DrawFormatString(0, 15, 0x000000, "playerPos: %d , %d", player.pos.x, player.pos.y);
+	DrawFormatString(0, 48, 0x000000, "playerPos: %d , %d", player.pos.x, player.pos.y);
 }
 
 CHARACTER GetPlayer(void) {

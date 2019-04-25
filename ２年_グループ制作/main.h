@@ -1,7 +1,4 @@
 #pragma once
-#include "DxLib.h"
-#include <math.h>
-#include "keycheck.h"
 
 #ifdef _DEBUG
 #define AST() {\
@@ -13,19 +10,15 @@
 #define AST()
 #endif
 
-// íËêî
 #define SCREEN_SIZE_X 1296
 #define SCREEN_SIZE_Y 960
-#define COLOR_MODE 16
+
 
 #define PI 3.141592
 
 #define G 9.8
 #define ACC_G 10
 
-
-
-// íËã`
 enum GAME_MODE {
 	GMODE_INIT,
 	GMODE_TITLE,
@@ -74,15 +67,8 @@ typedef struct {
 	XY_F velocity;		// à⁄ìÆë¨ìx
 }CHARACTER;
 
-// Ãﬂ€ƒ¿≤ÃﬂêÈåæ
-bool SysInit(void);
+
+void SysInit(void);
 void GameInit(void);
 void GameMain(void);
-void GameTitle(void);
 void GameDraw(void);
-void GameClear(void);
-void GameOver(void);
-void HitCheck(void);
-bool FadeInScreen(int);
-bool FadeOutScreen(int);
-void DrawWord(const char* title, int top, int start);
