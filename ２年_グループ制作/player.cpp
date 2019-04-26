@@ -10,23 +10,26 @@ int player1[4];
 int headFlag;
 int jumpCnt;
 int Gflag;
+int jumpFrame;
+
 void PlayerSysInit(void) 
 {
-	LoadDivGraph("png/プレイヤー１.png", 4, 4, 1, 48, 48, player1);
+	LoadDivGraph("png/プレイヤー１サイズ調整済み.png", 4, 4, 1, 48, 48, player1);
 }
 
 void PlayerInit(void)
 {
 	player.moveDir = DIR_RIGHT;
-	player.pos = { 5 * CHIP_SIZE_X , 20 * CHIP_SIZE_Y };
-
+	/*player.pos = { 2 * CHIP_SIZE_X - PLAYER_SIZE_X / 2, 18 * CHIP_SIZE_Y };*/
+	player.pos = { 4 * CHIP_SIZE_X - PLAYER_SIZE_X / 2, 3 * CHIP_SIZE_Y };
 	player.size = { PLAYER_SIZE_X, PLAYER_SIZE_Y };
 	player.offsetSize = { player.size.x / 2, player.size.y / 2};
-	player.hitPosS = { 24,  24 };									// ﾌﾟﾚｲﾔｰの左上
-	player.hitPosE = { 24,  24 };
+	player.hitPosS = { 16,  24 };									// ﾌﾟﾚｲﾔｰの左上
+	player.hitPosE = { 16,  24 };
 	player.velocity = { 0,0 };
 	player.flag = true;
 	player.animCnt = 0;
+	jumpFrame = 15;
 	jumpCnt = 0;
 
 }
@@ -172,7 +175,7 @@ void PlayerUpdate(void)
 		movedPos = player.pos;
 	
 		//　ｼﾞｬﾝﾌﾟ
-		movedOffset.y = movedPos.y - player.size.y;
+		movedOffset.y = movedPos.y - player.hitPosS.y -1;
 		movedOffset2 = movedOffset;							// 左上
 		movedOffset2.x = movedPos.x - player.hitPosS.x;
 		movedOffset3 = movedOffset;							// 右上
@@ -182,11 +185,11 @@ void PlayerUpdate(void)
 			if (!player.jumpFlag) {
 				if (newKey[P1_A]) {
 					jumpCnt++;
-					if (jumpCnt < 15) {
+					if (jumpCnt < jumpFrame) {
 						player.velocity.y = 25;
 					}
 					if (headFlag) {
-						jumpCnt = 15;
+						jumpCnt = jumpFrame;
 					}
 				}
 				else {
@@ -195,10 +198,12 @@ void PlayerUpdate(void)
 				}
 			}
 		}
+		else {
+			jumpCnt = 15;
+		}
+		movedPos = player.pos;
 
-		
-
-		
+		// ﾄﾗｯﾌﾟの判定(仮)
 		if (!TelIsPass(player.pos)) {
 			player.pos = { 10000, 10000 };
 		}
@@ -234,7 +239,33 @@ void PlayerUpdate(void)
 		////	DrawString(0, 30, "Hit", 0xffffff);
 		////}
 
+		// 針
+		if (!NeedleIsPass(player.pos)) {
+			player.flag = false;
+		}
+		movedOffset.y = movedPos.y - player.hitPosS.y - 1;
+		movedOffset2 = movedOffset;							// 左上
+		movedOffset2.x = movedPos.x - player.hitPosS.x -1;
+		movedOffset3 = movedOffset;							// 右上
+		movedOffset3.x = movedPos.x + player.hitPosE.x - 1;
+
+		if (IsPass(movedOffset) && IsPass(movedOffset2) && IsPass(movedOffset3)) {
+			movedOffset.y = movedPos.y + player.hitPosE.y;
+			if (!JumpIsPass(movedOffset)) {
+				player.velocity.y = 80;
+			}
+		}
+
+		// ゴール
+		if (!GoalIsPass(player.pos)) {
+			
+		}
+		
 	}
+	else {												// ﾌﾟﾚｰﾔｰが死んだとき
+			PlayerInit();
+	}
+	player.animCnt++;
 }
 
 void PlayerDraw(void)
@@ -242,9 +273,23 @@ void PlayerDraw(void)
 	XY tmpMapPos = GetMapPos();
 	
 	if (player.flag) {
-		DrawGraph(player.pos.x - tmpMapPos.x - player.offsetSize.x, player.pos.y - tmpMapPos.y - player.offsetSize.y, player1[1], true);
+		if (player.runFlag) {
+			if (player.moveDir == DIR_RIGHT) {
+				DrawGraph(player.pos.x - tmpMapPos.x - player.offsetSize.x, player.pos.y - tmpMapPos.y - player.offsetSize.y, player1[player.animCnt / 15 % 4], true);
+			}
+			if (player.moveDir == DIR_LEFT) {
+				DrawTurnGraph(player.pos.x - tmpMapPos.x - player.offsetSize.x, player.pos.y - tmpMapPos.y - player.offsetSize.y, player1[player.animCnt / 15 % 4], true);
+			}
+		}
+		else {
+			if (player.moveDir == DIR_RIGHT) {
+				DrawGraph(player.pos.x - tmpMapPos.x - player.offsetSize.x, player.pos.y - tmpMapPos.y - player.offsetSize.y, player1[0], true);
+			}
+			if (player.moveDir == DIR_LEFT) {
+				DrawTurnGraph(player.pos.x - tmpMapPos.x - player.offsetSize.x, player.pos.y - tmpMapPos.y - player.offsetSize.y, player1[0], true);
+			}
+		}
 		//DrawCircle(player.pos.x - tmpMapPos.x, player.pos.y  - tmpMapPos.y, 24, 0xff0000, true, true);
-	
 	}
 	DrawFormatString(0, 48, 0x000000, "playerPos: %d , %d", player.pos.x, player.pos.y);
 	DrawCircle(player.pos.x, player.pos.y, 5,  0xff0000, true);

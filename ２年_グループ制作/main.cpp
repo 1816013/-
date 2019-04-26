@@ -14,17 +14,12 @@ int Arrow;
 int EndPt;
 
 // ========= WinMain関数
-int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
+int WINAPI WinMain(HINSTANCE hINSTANCE, HINSTANCE hPrevInstance, LPSTR IpCmdLine, int nCmdShow)
 {
-	
-	// ----------システム処理
-	SetWindowText("Shooting_kadai");
-	//システム処理
-	SetGraphMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, 16);	// 640×480ドット65536色モードに設定
-	ChangeWindowMode(true);							// true:window false:フルスクリーン
-	if (DxLib_Init() == -1) return -1;				//DXライブラリ初期化処理
-	SetDrawScreen(DX_SCREEN_BACK);					//ひとまずバックバッファに描画
 	SysInit();
+	if (SysInit() == false) {
+		return -1;
+	}
 
 	// --------ゲームループ
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
@@ -82,10 +77,21 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	return 0;
 }
 
-void SysInit(void)
+bool SysInit(void)
 {
+	// ----------システム処理
+	SetWindowText("Shooting_kadai");
+	//システム処理
+	SetGraphMode(SCREEN_SIZE_X, SCREEN_SIZE_Y, 16);	// 640×480ドット65536色モードに設定
+	ChangeWindowMode(true);							// true:window false:フルスクリーン
+	if (DxLib_Init() == -1) return false;				//DXライブラリ初期化処理
+	SetDrawScreen(DX_SCREEN_BACK);					//ひとまずバックバッファに描画
+
+	KeyCheckInit();
 	PlayerSysInit();
+	stageSysInit();
 	gameMode = GMODE_INIT;
+	return true;
 }
 
 void GameInit(void)

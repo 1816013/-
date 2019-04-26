@@ -58,18 +58,15 @@ typedef struct {
 	XY hitPosE;			// 当たり判定用右下
 	bool runFlag;
 	bool jumpFlag;
-	bool shotFlag;
 	bool damageFlag;
 	int moveSpeed;
-	int life;
-	int lifeMax;
 	int animCnt;
 	int imgLockCnt;		// ｷｬﾗのｲﾒｰｼﾞ固定用ｶｳﾝﾀ 
 	XY_F velocity;		// 移動速度
 }CHARACTER;
 
 
-void SysInit(void);
+bool SysInit(void);
 void GameInit(void);
 void GameTitle(void);
 void GameMain(void);
