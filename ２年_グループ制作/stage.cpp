@@ -124,8 +124,7 @@ int stage4[20][27] = {
 	0,0,0,0,0,0,0,0,1, 1,1,1,1,1,1,1,0,0, 0,0,0,0,0,0,0,0,0
 };
 
-int stage5[20][27]
-{
+int stage5[20][27]{
 	0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,
 	0,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,
 	0,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,9,
@@ -142,10 +141,10 @@ int stage5[20][27]
 	0,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,0,
 	0,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,0,
 	0,1,1,1,1,1,3,1,1, 1,1,1,1,1,1,1,1,3, 1,1,1,1,1,1,1,0,0,
-	0,1,1,3,1,1,0,0,1, 1,1,1,1,1,1,1,1,0, 0,1,1,1,1,1,1,1,0,
+	0,1,1,3,1,1,0,0,1, 1,1,1,1,1,1,1,1,0, 0,0,1,1,1,1,1,1,0,
 	0,1,1,0,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,0,
 	0,1,1,0,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,0,
-	0,0,0,0,0,0,0,0,0, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,0
+	0,0,0,0,0,0,0,0,0, 3,3,3,3,3,3,3,3,3, 3,3,3,3,3,3,3,3,0
 };
 
 int x1, x2;
@@ -153,6 +152,7 @@ int x1, x2;
 void stageSysInit(void) 
 {
 	LoadDivGraph("png/stage.png", 11, 11, 1, CHIP_SIZE_X, CHIP_SIZE_Y, block, true);
+	coin = LoadGraph("png/ÉRÉCÉì1.png", true);
 }
 
 void stageInit(void)
@@ -167,7 +167,7 @@ void stageMain(void)
 	{
 		for (int j = 0; j < SCREEN_SIZE_Y / CHIP_SIZE_Y; j++)
 		{
-			nowStage[j][i] = stage2[j][i];
+			nowStage[j][i] = stage5[j][i];
 		}
 	}
 	if (trgKey[P2_SHOT]) {
@@ -190,7 +190,7 @@ void stageDraw(void)
 			DrawGraph(i * CHIP_SIZE_X, j * CHIP_SIZE_Y, block[nowStage[j][i]], false);
 
 			//óéâ∫Ç∑ÇÈë´èÍ
-			if (nowStage[j][i] != stage2[j][i])
+			if (nowStage[j][i] != stage2[j][i] && nowStage[j][i] != stage3[j][i] && nowStage[j][i] != stage4[j][i] && nowStage[j][i] != stage5[j][i])
 			{
 				for (int h = 19; h < 22; h++)
 				{
@@ -233,7 +233,7 @@ void stageDraw(void)
 				DrawGraph(12 * CHIP_SIZE_X, 19 * CHIP_SIZE_Y, block[0], false);
 			}
 			// Ω√∞ºﬁ2
-			if (nowStage[j][i] != stage1[j][i])
+			if (nowStage[j][i] != stage1[j][i] && nowStage[j][i] != stage3[j][i] && nowStage[j][i] != stage4[j][i] && nowStage[j][i] != stage5[j][i])
 			{
 				for (int h = 8; h < 11; h++)
 				{
@@ -323,7 +323,7 @@ void stageDraw(void)
 			{
 				for (int h = 9; h < 26; h++)
 				{
-					DrawGraph(h * CHIP_SIZE_X, SCREEN_SIZE_Y - CHIP_SIZE_Y, block[0], false);
+					//DrawGraph(h * CHIP_SIZE_X, SCREEN_SIZE_Y - CHIP_SIZE_Y, block[0], false);
 				}
 				DrawGraph(12 * CHIP_SIZE_X, 9 * CHIP_SIZE_Y, coin, false);
 			}

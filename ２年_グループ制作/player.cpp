@@ -20,8 +20,8 @@ void PlayerSysInit(void)
 void PlayerInit(void)
 {
 	player.moveDir = DIR_RIGHT;
-	/*player.pos = { 2 * CHIP_SIZE_X - PLAYER_SIZE_X / 2, 18 * CHIP_SIZE_Y };*/
-	player.pos = { 4 * CHIP_SIZE_X - PLAYER_SIZE_X / 2, 3 * CHIP_SIZE_Y };
+	player.pos = { 2 * CHIP_SIZE_X - PLAYER_SIZE_X / 2, 18 * CHIP_SIZE_Y };
+	//player.pos = { 4 * CHIP_SIZE_X - PLAYER_SIZE_X / 2, 3 * CHIP_SIZE_Y };
 	player.size = { PLAYER_SIZE_X, PLAYER_SIZE_Y };
 	player.offsetSize = { player.size.x / 2, player.size.y / 2};
 	player.hitPosS = { 16,  24 };									// ﾌﾟﾚｲﾔｰの左上
@@ -88,7 +88,7 @@ void PlayerUpdate(void)
 		}
 		
 		// 移動制限(ﾏｯﾌﾟをｽｸﾛｰﾙさせるときのみ使用)
-		XY tmpMapPos = GetMapPos();
+		/*XY tmpMapPos = GetMapPos();
 		if (player.velocity.x != 0) {
 			if (movedPos.x < tmpMapPos.x + 48)
 			{
@@ -100,7 +100,7 @@ void PlayerUpdate(void)
 				player.velocity.x = 0;
 				movedPos.x = tmpMapPos.x + SCREEN_SIZE_X - 48;
 			}
-		}
+		}*/
 
 		movedPos.x += player.velocity.x * 1;	// 距離の更新
 
