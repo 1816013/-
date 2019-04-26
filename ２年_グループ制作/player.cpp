@@ -18,7 +18,7 @@ void PlayerSysInit(void)
 void PlayerInit(void)
 {
 	player.moveDir = DIR_RIGHT;
-	player.pos = { 5 * CHIP_SIZE_X , 15 * CHIP_SIZE_Y };
+	player.pos = { 5 * CHIP_SIZE_X , 20 * CHIP_SIZE_Y };
 
 	player.size = { PLAYER_SIZE_X, PLAYER_SIZE_Y };
 	player.offsetSize = { player.size.x / 2, player.size.y / 2};
@@ -172,7 +172,7 @@ void PlayerUpdate(void)
 		movedPos = player.pos;
 	
 		//Å@ºﬁ¨›Ãﬂ
-		movedOffset.y = movedPos.y - player.hitPosS.y;
+		movedOffset.y = movedPos.y - player.size.y;
 		movedOffset2 = movedOffset;							// ç∂è„
 		movedOffset2.x = movedPos.x - player.hitPosS.x;
 		movedOffset3 = movedOffset;							// âEè„
@@ -189,17 +189,13 @@ void PlayerUpdate(void)
 						jumpCnt = 15;
 					}
 				}
-
 				else {
 					jumpCnt = 0;
 					player.jumpFlag = true;
 				}
 			}
 		}
-		else
-		{
-			player.velocity.y = 0;
-		}
+
 		
 
 		
