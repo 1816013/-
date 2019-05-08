@@ -72,3 +72,4 @@ void GameTitle(void);
 void GameMain(void);
 void GameDraw(void);
 void GameResult(void);
+void HitCheck();

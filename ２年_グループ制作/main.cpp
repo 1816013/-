@@ -46,6 +46,7 @@ int WINAPI WinMain(HINSTANCE hINSTANCE, HINSTANCE hPrevInstance, LPSTR IpCmdLine
 			break;
 		case GMODE_GAME:
 			GameMain();
+			HitCheck();
 			if (trgKey[START])gameMode = GMODE_RESULT;
 			break;
 		case GMODE_RESULT:
@@ -162,6 +163,14 @@ void GameResult(void)
 		DrawString(0, 0, "GameResult", 0xFFFFFF);
 	}
 	DrawFormatString(0, 24, 0xFFFFFF, "EndPt = %d", EndPt);
+}
+void HitCheck() {
+	for (int i = 0; i < 10; i++) {
+		CHARACTER tmp = GetTrap(i);
+		if (tmp.flag) {
+			PlayerHitCheck(tmp.pos, tmp.size);
+		}
+	}
 }
 
 

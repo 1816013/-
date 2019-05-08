@@ -24,7 +24,9 @@ bool HitIsPass(XY pos);
 bool NeedleIsPass(XY pos);
 bool JumpIsPass(XY pos);
 bool GoalIsPass(XY pos);
+CHARACTER GetTrap(int idx);
 
 void stageInit(void);
+void trapInit(int);
 void stageMain(void);
 void stageDraw(void);

@@ -20,12 +20,12 @@ void PlayerSysInit(void)
 void PlayerInit(void)
 {
 	player.moveDir = DIR_RIGHT;
-	player.pos = { 2 * CHIP_SIZE_X - PLAYER_SIZE_X / 2, 18 * CHIP_SIZE_Y };
+	player.pos = { 3 * CHIP_SIZE_X - PLAYER_SIZE_X / 2, 15 * CHIP_SIZE_Y };
 	//player.pos = { 4 * CHIP_SIZE_X - PLAYER_SIZE_X / 2, 3 * CHIP_SIZE_Y };
 	player.size = { PLAYER_SIZE_X, PLAYER_SIZE_Y };
 	player.offsetSize = { player.size.x / 2, player.size.y / 2};
-	player.hitPosS = { 16,  24 };									// ﾌﾟﾚｲﾔｰの左上
-	player.hitPosE = { 16,  24 };
+	player.hitPosS = { 13,  24 };									// ﾌﾟﾚｲﾔｰの左上
+	player.hitPosE = { 13,  24 };
 	player.velocity = { 0,0 };
 	player.flag = true;
 	player.animCnt = 0;
@@ -203,49 +203,19 @@ void PlayerUpdate(void)
 		}
 		movedPos = player.pos;
 
-		// ﾄﾗｯﾌﾟの判定(仮)
+		// ﾄﾗｯﾌﾟの判定
+		// ﾃﾚﾎﾟｰﾄ
 		if (!TelIsPass(player.pos)) {
-			player.pos = { 10000, 10000 };
+			player.pos = { SCREEN_SIZE_X , 10000 };
 		}
-		//// ﾃﾞﾊﾞｯｸﾞ用
-		//movedOffset2 = movedOffset;
-		//movedOffset2.y = movedPos.y - player.hitPosS.y;
-		//movedOffset3 = movedOffset;
-		//movedOffset3.y = movedPos.y + player.hitPosE.y - 1;
-		//if (HitIsPass(movedOffset) && HitIsPass(movedOffset2) && HitIsPass(movedOffset3)) {
-		//}
-		////else {
-		////	DrawString(0, 30, "Hit", 0xffffff);
-		////}
-		//movedOffset.y = movedPos.y - player.hitPosS.y;
-		//movedOffset2 = movedOffset;							// 左上
-		//movedOffset2.x = movedPos.x - player.hitPosS.x;
-		//movedOffset3 = movedOffset;							// 右上
-		//movedOffset3.x = movedPos.x + player.hitPosE.x - 1;
-		//if (HitIsPass(movedOffset) && HitIsPass(movedOffset2) && HitIsPass(movedOffset3)) {
-		//}
-		////else {
-		////	DrawString(0, 30, "Hit", 0xffffff);
-		////}
-		//movedOffset.y = movedPos.y + player.hitPosE.y;
-		//movedOffset2 = movedOffset;							// 左下
-		//movedOffset2.x = movedPos.x - player.hitPosS.x;
-		//movedOffset3 = movedOffset;							// 右下
-		//movedOffset3.x = movedPos.x + player.hitPosE.x - 1;
-		//if (HitIsPass(movedOffset) && HitIsPass(movedOffset2) && HitIsPass(movedOffset3)) {
-		//	
-		//}
-		////else {
-		////	DrawString(0, 30, "Hit", 0xffffff);
-		////}
 
-		// 針
+		// 針ブロック
 		if (!NeedleIsPass(player.pos)) {
 			player.flag = false;
 		}
 		movedOffset.y = movedPos.y - player.hitPosS.y - 1;
 		movedOffset2 = movedOffset;							// 左上
-		movedOffset2.x = movedPos.x - player.hitPosS.x -1;
+		movedOffset2.x = movedPos.x - player.hitPosS.x ;
 		movedOffset3 = movedOffset;							// 右上
 		movedOffset3.x = movedPos.x + player.hitPosE.x - 1;
 
@@ -256,10 +226,20 @@ void PlayerUpdate(void)
 			}
 		}
 
+
+
+		// 画面外にﾌﾟﾚｲﾔｰが出たら
+		if (player.pos.x > SCREEN_SIZE_X && player.pos.y > SCREEN_SIZE_Y)
+		{
+			player.flag = false;
+		}
+
+
 		// ゴール
 		if (!GoalIsPass(player.pos)) {
 			
 		}
+		
 		
 	}
 	else {												// ﾌﾟﾚｰﾔｰが死んだとき
@@ -297,4 +277,20 @@ void PlayerDraw(void)
 
 CHARACTER GetPlayer(void) {
 	return player;
+}
+
+bool PlayerHitCheck(XY pos, XY size)
+{
+
+	if (player.flag) {
+		if ((pos.x < player.pos.x + player.offsetSize.x)		
+			&& (pos.x + size.x  > player.pos.x - player.offsetSize.x)		
+			&& (pos.y - size.y / 2 < player.pos.y + player.offsetSize.y)	
+			&& (pos.y + size.y / 2 > player.pos.y - player.offsetSize.y)	
+			) {
+			player.flag = false;
+			return true;
+		}
+	}
+	return false;
 }
