@@ -2,14 +2,22 @@
 
 #define CHIP_SIZE_X 48
 #define CHIP_SIZE_Y 48
+#define STAGE_MAX 5
 
-extern XY mapPos;
+
 
 enum EVENT_MODE{
 	E_WALL,
 	E_NEEDLE
 };
 
+enum STAGE_NUM {
+	STAGE1,
+	STAGE2,
+	STAGE3,
+	STAGE4,
+	STAGE5,
+};
 
 
 // Ãﬂ€ƒ¿≤ÃﬂêÈåæ

@@ -61,7 +61,7 @@ typedef struct {
 	bool damageFlag;
 	int moveSpeed;
 	int animCnt;
-	int imgLockCnt;		// ·¬×‚Ì²Ò°¼ÞŒÅ’è—p¶³ÝÀ 
+	int cnt;
 	XY_F velocity;		// ˆÚ“®‘¬“x
 }CHARACTER;
 

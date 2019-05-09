@@ -54,15 +54,4 @@ void KeyCheck()
 		oldKey[i] = newKey[i];						// oldKey
 	}
 
-	//// p2
-	//trgKey[P2_SHOT] = newKey[P2_SHOT] & ~oldKey[P2_SHOT];	// trgKey
-	//upKey[P2_SHOT] = ~newKey[P2_SHOT] & oldKey[P2_SHOT];	// upKey
-	//oldKey[P2_SHOT] = newKey[P2_SHOT];						// oldKey
-
-	////‘JˆÚ—p
-	//trgKey[ENTER] = newKey[ENTER] & ~oldKey[ENTER];	// trgKey
-	//oldKey[ENTER] = newKey[ENTER];						// oldKey
-
-	//trgKey[PAUSE] = newKey[PAUSE] & ~oldKey[PAUSE];	// trgKey
-	//oldKey[PAUSE] = newKey[PAUSE];						// oldKey
 }

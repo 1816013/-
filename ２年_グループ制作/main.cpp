@@ -1,3 +1,4 @@
+#include <time.h>
 #include <DxLib.h>		//Dxlibライブラリを使用する
 #include "main.h"
 #include "stage.h"
@@ -92,6 +93,11 @@ bool SysInit(void)
 	PlayerSysInit();
 	stageSysInit();
 	gameMode = GMODE_INIT;
+
+	// 乱数シード設定
+	int randSeed = (unsigned int)time(NULL);	// 1970.1.1からの秒
+	srand(randSeed);	// どこから読むか指定
+
 	return true;
 }
 
@@ -149,6 +155,11 @@ void GameMain(void)
 	stageMain();
 	PlayerUpdate();
 	GameDraw();
+
+	CHARACTER tmp = GetPlayer();
+	if (!GoalIsPass(tmp.pos)) {
+		gameMode = GMODE_RESULT;
+	}
 }
 
 

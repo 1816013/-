@@ -7,12 +7,10 @@
 int block[16];
 XY mapPos;
 int coin;
-CHARACTER trap[10]; 
-int trapFlag;
-int trapCnt;
-int cnt = 0;
-
+CHARACTER trap[20]; 
+int trapCnt;	// まとめて動かすﾄﾗｯﾌﾟのｶｳﾝﾀ
 EVENT_MODE event;
+STAGE_NUM stage;
 
 int nowStage[20][27] = {
 	1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,
@@ -42,13 +40,13 @@ int stage1[20][27] = {
 	0,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,
 	0,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,
 	0,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,10,1,1,9,
-	0,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,8,8,8,0,0,0,0,0,
+	0,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,12,1, 1,8,8,8,0,0,0,0,0,
 	0,1,1,1,1,1,1,1,1 ,1,1,1,1,1,0,0,0,1, 1,1,1,1,1,1,1,1,0,
 	0,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,0,
-	0,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,0,
-	0,1,1,1,1,1,1,1,1, 1,0,0,0,1,1,1,1,1, 1,1,1,1,1,1,1,1,0,
-	0,1,1,0,0,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,0,0,0,1,1,1,1,0,
-	0,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,0,
+	0,1,1,1,1,1,1,1,1, 1,1,12,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,0,
+	0,1,1,1,1,1,1,1,1, 0,0,0,1,1,1,1,1,1, 1,0,0,0,1,1,1,1,0,
+	0,1,1,0,0,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,0,
+	0,1,1,1,1,1,12,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,0,
 	0,1,1,1,1,0,0,0,8, 1,1,1,1,10,1,1,1,0, 1,1,1,1,1,1,1,1,0,
 	0,1,1,1,1,1,1,13,1, 1,1,1,0,0,0,0,0,13, 1,1,1,1,1,1,1,1,0,
 	0,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,0,
@@ -68,7 +66,7 @@ int stage2[20][27] = {
 	0,1,1,1,1,1,1,1,1, 1,0,0,0,1,1,1,1,1, 1,1,1,0,0,0,1,0,0,
 	0,1,1,1,1,1,1,1,1 ,1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,0,
 	1,1,1,1,1,0,0,0,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,0,
-	0,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,0, 0,0,7,1,1,1,1,1,0,
+	0,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,5,0, 0,0,7,1,1,1,1,1,0,
 	0,0,1,0,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,
 	0,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,
 	0,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,
@@ -95,11 +93,11 @@ int stage3[20][27] = {
 	0,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,0,
 	1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,0,
 	11,1,1,1,1,1,1,1,0, 0,0,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,0,
-	1,2,2,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,0,
-	0,1,1,1,1,1,1,1,1, 1,1,1,1,14,0,0,7,1, 1,1,1,1,0,0,0,0,0,
+	1,2,2,1,1,1,1,1,1, 1,1,1,1,1,12,1,1,1, 1,1,1,1,0,0,0,0,0,
+	0,1,1,1,1,1,1,1,1, 1,1,1,1,1,0,0,7,1, 1,1,1,1,1,1,1,1,0,
 	0,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,0,
 	0,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,0,
-	0,1,1,1,1,1,1,1,1, 1,1,0,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,0,
+	0,1,1,1,1,1,1,1,1, 1,1,0,1,1,1,12,1,1, 1,0,0,1,1,1,1,1,0,
 	0,1,1,1,1,1,1,1,1, 1,0,0,1,1,0,0,1,1, 1,1,1,1,1,1,1,1,0,
 	0,1,1,1,1,1,1,1,1, 0,0,0,1,1,0,0,0,1, 1,1,1,1,1,1,1,1,0,
 	0,1,1,10,1,1,1,1,0, 0,0,0,1,1,0,0,0,0, 1,1,1,1,1,1,1,1,0,
@@ -162,28 +160,45 @@ void stageSysInit(void)
 
 void stageInit(void)
 {
-	for (int i = 0; i < 10; i++) {
+	stage = (STAGE_NUM)(rand() % STAGE_MAX);
+	for (int i = 0; i < 20; i++) {
 		trap[i].pos = { 0, 0 };
 		trap[i].size = { CHIP_SIZE_X, CHIP_SIZE_Y };
+		trap[i].cnt = 0;
+		trap[i].moveSpeed = 13;
 		trapInit(i);
 	}
 	x1 = 0; 
 	x2 = 1;
 }
 void trapInit(int i) {
-
 	// ﾄﾗｯﾌﾟ
+	// ｽﾃｰｼﾞ1用
 	if (nowStage == stage1);
 	{
-		trap[0].pos = {5 * CHIP_SIZE_X, 5 * CHIP_SIZE_Y };
-		if (i >= 1 && i <= 6) {
+		switch (i) {
+		case 0:		// 落下針
+			trap[i].pos = { 5 * CHIP_SIZE_X, 5 * CHIP_SIZE_Y };
+			break;
+		case 1:		// 高速ﾌﾞﾛｯｸ
+			trap[i].pos = { 5 * CHIP_SIZE_X, 0 };
+			break;
+		case 2:		// 普通ﾌﾞﾛｯｸ
+		case 3:
+		case 4:
+		case 5:
 			trap[i].pos = { 5 * CHIP_SIZE_X, (i - 1) * CHIP_SIZE_Y };
+			break;
+		default:
+			break;
 		}
-		trapCnt = 6;
-		for (int i = 0; i < trapCnt + 1; i++) {
-			trap[i].flag = false;
-		}
-		
+		/*trap[0].pos = { 5 * CHIP_SIZE_X, 5 * CHIP_SIZE_Y };
+		trap[1].pos = { 5 * CHIP_SIZE_X, 0 };
+		if (i >= 2 && i <= 5) {
+			trap[i].pos = { 5 * CHIP_SIZE_X, (i - 1) * CHIP_SIZE_Y };
+		}*/
+		trap[1].moveSpeed = 50;
+		trapCnt = 6;	
 	}
 }
 
@@ -193,7 +208,26 @@ void stageMain(void)
 	{
 		for (int j = 0; j < SCREEN_SIZE_Y / CHIP_SIZE_Y; j++)
 		{
-			nowStage[j][i] = stage1[j][i];
+			switch (stage) {
+			case STAGE1:
+				nowStage[j][i] = stage1[j][i];
+				break;
+			case STAGE2:
+				nowStage[j][i] = stage2[j][i];
+				break;
+			case STAGE3:
+				nowStage[j][i] = stage3[j][i];
+				break;
+			case STAGE4:
+				nowStage[j][i] = stage4[j][i];
+				break;
+			case STAGE5:
+				nowStage[j][i] = stage5[j][i];
+				break;
+			default:
+				AST();
+				break;
+			}
 		}
 	}
 	if (trgKey[P2_SHOT]) {
@@ -205,25 +239,30 @@ void stageMain(void)
 
 	// 落下
 	CHARACTER tmp = GetPlayer();
-	for (int j = 0; j < trapCnt; j++) {
-		if (tmp.pos.x < trap[j].pos.x + 3 * CHIP_SIZE_X && tmp.pos.y < trap[j].pos.y + 7 * CHIP_SIZE_Y ) {
-			trap[j].flag = true;
-		}
-		if (trap[j].flag) {
-			trap[j].pos.y += 15;
-		}
-	}
+	if (nowStage == stage1) {
+		for (int i = 0; i < trapCnt; i++) {
+			if (tmp.pos.x < trap[i].pos.x + 2 * CHIP_SIZE_X && tmp.pos.x > trap[i].pos.x - 3 * CHIP_SIZE_X && tmp.pos.y < trap[i].pos.y + 7 * CHIP_SIZE_Y) {
+				trap[i].flag = true;
+			}
 
-	
-	for (int i = 0; i < 10; i++) {
-		if (trap[i].pos.y > SCREEN_SIZE_Y) {
-			trap[i].flag = false;
-			if (cnt > trapCnt)
-			{
-				trapInit(i);
+			if (trap[i].flag) {
+				if (i != 1) {
+					trap[i].pos.y += trap[i].moveSpeed;
+				}
+				else {
+					trap[i].pos.y += trap[i].moveSpeed;
+				}
+				if (trap[i].pos.y > SCREEN_SIZE_Y) {
+					trap[i].cnt++;
+
+					if (trap[i].cnt > 300) {				// 再生成の時間
+						trapInit(i);
+						trap[i].cnt = 0;
+						trap[i].flag = false;
+					}
+				}
 			}
 		}
-
 	}
 	
 }
@@ -237,43 +276,34 @@ void stageDraw(void)
 		{
 			DrawGraph(i * CHIP_SIZE_X, j * CHIP_SIZE_Y, block[nowStage[j][i]], true);
 
-			//落下する足場
+			// ｽﾃｰｼﾞ1
 			if (nowStage[j][i] != stage2[j][i] && nowStage[j][i] != stage3[j][i] && nowStage[j][i] != stage4[j][i] && nowStage[j][i] != stage5[j][i])
 			{
-				for (int h = 19; h < 22; h++)
-				{
-//					DrawGraph(h * CHIP_SIZE_X, 3 * CHIP_SIZE_Y, block[8], true);
-				}
-
+				//落下する足場(落下ﾄﾗｯﾌﾟ)
 				for (int y = 1; y < 6; y++)
 				{
 					DrawGraph(trap[y].pos.x, trap[y].pos.y, block[0], true);					//5 * CHIP_SIZE_X, y * CHIP_SIZE_Y
 				}
-				DrawGraph(trap[0].pos.x, trap[0].pos.y, block[4], true);							//5 * CHIP_SIZE_X,5 * CHIP_SIZE_Y
+				DrawGraph(trap[0].pos.x, trap[0].pos.y, block[4], true);						//5 * CHIP_SIZE_X,5 * CHIP_SIZE_Y
 
-				for (int g = 19; g < 22; g++)
-				{
-					DrawGraph(g * CHIP_SIZE_X, 9 * CHIP_SIZE_Y, block[3], true);
-					DrawGraph(g * CHIP_SIZE_X, 9 * CHIP_SIZE_Y, block[0], true);
-				}
+				// 針を動かす
 
-				//DrawGraph(8 * CHIP_SIZE_X, 11 * CHIP_SIZE_Y, block[8], true);
 
 				//動くトラップとそれを隠すブロック群
 				DrawGraph(26 * CHIP_SIZE_X - 16, SCREEN_SIZE_Y - 96, block[5], true);		//ステ－ジ右の針
 	//			DrawGraph(26 * CHIP_SIZE_X, SCREEN_SIZE_Y - 96, block[0], true);
 
 				DrawGraph(20 * CHIP_SIZE_X, SCREEN_SIZE_Y - 192, block[4], true);
-				DrawGraph(20 * CHIP_SIZE_X, SCREEN_SIZE_Y - 192, block[0], true);
+//				DrawGraph(20 * CHIP_SIZE_X, SCREEN_SIZE_Y - 192, block[0], true);
 
 				DrawGraph(11 * CHIP_SIZE_X, 8 * CHIP_SIZE_Y, block[3], true);
-				DrawGraph(11 * CHIP_SIZE_X, 8 * CHIP_SIZE_Y, block[0], true);
+//				DrawGraph(11 * CHIP_SIZE_X, 8 * CHIP_SIZE_Y, block[0], true);
 
 				DrawGraph(15 * CHIP_SIZE_X, 5 * CHIP_SIZE_Y, block[3], true);
-				DrawGraph(15 * CHIP_SIZE_X, 5 * CHIP_SIZE_Y, block[0], true);
+//				DrawGraph(15 * CHIP_SIZE_X, 5 * CHIP_SIZE_Y, block[0], true);
 
 				DrawGraph(3 * CHIP_SIZE_X, SCREEN_SIZE_Y - CHIP_SIZE_Y, block[3], true);
-				DrawGraph(3 * CHIP_SIZE_X, SCREEN_SIZE_Y - CHIP_SIZE_Y, block[0], true);
+//				DrawGraph(3 * CHIP_SIZE_X, SCREEN_SIZE_Y - CHIP_SIZE_Y, block[0], true);
 
 				//消える足場
 				DrawGraph(13 * CHIP_SIZE_X, 16 * CHIP_SIZE_Y, block[2], true);
@@ -286,34 +316,36 @@ void stageDraw(void)
 				for (int h = 8; h < 11; h++)
 				{
 					DrawGraph(SCREEN_SIZE_X - CHIP_SIZE_X, h * CHIP_SIZE_Y, block[5], true);		
-					DrawGraph(SCREEN_SIZE_X - CHIP_SIZE_X, h * CHIP_SIZE_Y, block[0], true);
+//					DrawGraph(SCREEN_SIZE_X - CHIP_SIZE_X, h * CHIP_SIZE_Y, block[0], true);
 				}
 
 				for (int h = 20; h < 24; h++)
 				{
 					DrawGraph(h * CHIP_SIZE_X, 13 * CHIP_SIZE_Y, block[3], true);
-					DrawGraph(h * CHIP_SIZE_X, 13 * CHIP_SIZE_Y, block[0], true);
+//					DrawGraph(h * CHIP_SIZE_X, 13 * CHIP_SIZE_Y, block[0], true);
 				}
 
 				DrawGraph(9 * CHIP_SIZE_X, 19 * CHIP_SIZE_Y, block[3], true);
-				DrawGraph(9 * CHIP_SIZE_X, 19 * CHIP_SIZE_Y, block[0], true);
+//				DrawGraph(9 * CHIP_SIZE_X, 19 * CHIP_SIZE_Y, block[0], true);
 
 				DrawGraph(24 * CHIP_SIZE_X, 4 * CHIP_SIZE_Y, block[3], true);
-				DrawGraph(24 * CHIP_SIZE_X, 4 * CHIP_SIZE_Y, block[0], true);
+//				DrawGraph(24 * CHIP_SIZE_X, 4 * CHIP_SIZE_Y, block[0], true);
 
 				DrawGraph(20 * CHIP_SIZE_X, 0, block[4], true);
-				DrawGraph(20 * CHIP_SIZE_X, 0, block[0], true);
+//				DrawGraph(20 * CHIP_SIZE_X, 0, block[0], true);
 
 				DrawGraph(2 * CHIP_SIZE_X, 8 * CHIP_SIZE_Y, block[3], true);
-				DrawGraph(2 * CHIP_SIZE_X, 8 * CHIP_SIZE_Y, block[0], true);
+//				DrawGraph(2 * CHIP_SIZE_X, 8 * CHIP_SIZE_Y, block[0], true);
 
 				DrawGraph(0, 6 * CHIP_SIZE_Y, block[6], true);
-				DrawGraph(0, 6 * CHIP_SIZE_Y, block[0], true);
+//				DrawGraph(0, 6 * CHIP_SIZE_Y, block[0], true);
 
 				DrawGraph(8 * CHIP_SIZE_X, 6 * CHIP_SIZE_Y, block[3], true);
-				DrawGraph(8 * CHIP_SIZE_X, 6 * CHIP_SIZE_Y, block[0], true);
+//				DrawGraph(8 * CHIP_SIZE_X, 6 * CHIP_SIZE_Y, block[0], true);
 
-				DrawGraph(5 * CHIP_SIZE_X, 13 * CHIP_SIZE_Y, block[0], true);
+				DrawGraph(16 * CHIP_SIZE_X, 7 * CHIP_SIZE_Y, block[5], true);
+
+//				DrawGraph(5 * CHIP_SIZE_X, 13 * CHIP_SIZE_Y, block[0], true);
 			}
 			//ステージ3
 			if (nowStage[j][i] != stage1[j][i] && nowStage[j][i] != stage2[j][i] && nowStage[j][i] != stage4[j][i] && nowStage[j][i] != stage5[j][i])
@@ -323,22 +355,24 @@ void stageDraw(void)
 				DrawGraph(0, 11 * CHIP_SIZE_Y, block[3], true);
 				for (int y = 0; y < 3; y++)
 				{
-					DrawGraph(y * CHIP_SIZE_X, 11 * CHIP_SIZE_Y, block[0], true);
+		//			DrawGraph(y * CHIP_SIZE_X, 11 * CHIP_SIZE_Y, block[0], true);
 				}
 
 				for (int h = 12; h < 14; h++)
 				{
-					DrawGraph(h * CHIP_SIZE_X, SCREEN_SIZE_Y - CHIP_SIZE_Y, block[0], true);
+		//			DrawGraph(h * CHIP_SIZE_X, SCREEN_SIZE_Y - CHIP_SIZE_Y, block[0], true);
 				}
 
 				DrawGraph(20 * CHIP_SIZE_X, 6 * CHIP_SIZE_Y, block[3], true);
-				DrawGraph(20 * CHIP_SIZE_X, 6 * CHIP_SIZE_Y, block[0], true);
+				//DrawGraph(20 * CHIP_SIZE_X, 6 * CHIP_SIZE_Y, block[0], true);
 
 				DrawGraph(15 * CHIP_SIZE_X, 16 * CHIP_SIZE_Y, block[3], true);
-				DrawGraph(15 * CHIP_SIZE_X, 16 * CHIP_SIZE_Y, block[0], true);
+				//DrawGraph(15 * CHIP_SIZE_X, 16 * CHIP_SIZE_Y, block[0], true);
 
 				DrawGraph(4 * CHIP_SIZE_X, 7 * CHIP_SIZE_Y, block[3], true);
-				DrawGraph(4 * CHIP_SIZE_X, 7 * CHIP_SIZE_Y, block[0], true);
+				//DrawGraph(4 * CHIP_SIZE_X, 7 * CHIP_SIZE_Y, block[0], true);
+
+				//DrawGraph(14 * CHIP_SIZE_X, 12 * CHIP_SIZE_Y, block[0], true);
 
 				DrawGraph(13 * CHIP_SIZE_X, 17 * CHIP_SIZE_Y, coin, true);
 			}
@@ -391,7 +425,6 @@ bool IsPass(XY pos)
 
 	switch (mapNo) {
 	case 0:		// 壁
-	case 2:
 	case 7:
 	case 8:
 		ret = false;

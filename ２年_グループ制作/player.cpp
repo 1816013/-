@@ -20,12 +20,12 @@ void PlayerSysInit(void)
 void PlayerInit(void)
 {
 	player.moveDir = DIR_RIGHT;
-	player.pos = { 3 * CHIP_SIZE_X - PLAYER_SIZE_X / 2, 15 * CHIP_SIZE_Y };
+	player.pos = { 2 * CHIP_SIZE_X - PLAYER_SIZE_X / 2, 18 * CHIP_SIZE_Y };
 	//player.pos = { 4 * CHIP_SIZE_X - PLAYER_SIZE_X / 2, 3 * CHIP_SIZE_Y };
 	player.size = { PLAYER_SIZE_X, PLAYER_SIZE_Y };
 	player.offsetSize = { player.size.x / 2, player.size.y / 2};
 	player.hitPosS = { 13,  24 };									// ﾌﾟﾚｲﾔｰの左上
-	player.hitPosE = { 13,  24 };
+	player.hitPosE = { 13,  24 };									// ﾌﾟﾚｲﾔｰの右下
 	player.velocity = { 0,0 };
 	player.flag = true;
 	player.animCnt = 0;
@@ -39,6 +39,7 @@ void PlayerUpdate(void)
 	bool playerMoved = false;
 
 	XY movedPos = player.pos;
+	// offsetは今のﾌﾟﾚｲﾔｰの1ﾏｽあとの座標
 	XY movedOffset = movedPos;
 	XY movedOffset2 = movedPos;
 	XY movedOffset3 = movedPos;
@@ -46,7 +47,6 @@ void PlayerUpdate(void)
 
 	XY playeroldPos = player.pos;
 
-	player.imgLockCnt++;
 	player.runFlag = false;
 	headFlag = false;
 	Gflag = true;
@@ -68,11 +68,12 @@ void PlayerUpdate(void)
 			player.velocity.x -= ACC_RUN * 1;				// 速度の更新
 			playerMoved = true;
 			player.runFlag = true;
-			if (player.velocity.x < -VELOCITY_X_MAX) {
-				player.velocity.x = -VELOCITY_X_MAX;
+			if (player.velocity.x < -VELOCITY_X_MAX) {	
+				player.velocity.x = -VELOCITY_X_MAX;		
 			}
 		}		
-		if (!player.runFlag) {								// 止まった時の減速処理
+		// 止まった時の減速処理
+		if (!player.runFlag) {								
 			if (player.velocity.x > 0) {
 				player.velocity.x -= ACC_STOP;
 				if (player.velocity.x < 0) {
@@ -104,19 +105,22 @@ void PlayerUpdate(void)
 
 		movedPos.x += player.velocity.x * 1;	// 距離の更新
 
-		if (player.velocity.x > 0) {
+		if (player.velocity.x > 0) {							// 右
 			movedOffset.x = movedPos.x + player.hitPosE.x;
 		}
-		if (player.velocity.x < 0) {
+		if (player.velocity.x < 0) {							// 左
 			movedOffset.x = movedPos.x - player.hitPosS.x;
 		}
+
+		// 左下
 		movedOffset2 = movedOffset;
 		movedOffset2.y = movedPos.y - player.hitPosS.y;
+		// 右下
 		movedOffset3 = movedOffset;
-		movedOffset3.y = movedPos.y + player.hitPosE.y - 1;
+		movedOffset3.y = movedPos.y + player.hitPosE.y - 1;			// ‐1は調整用
 
 		if (IsPass(movedOffset) && IsPass(movedOffset2) && IsPass(movedOffset3)) {
-			player.pos = movedPos;
+			player.pos = movedPos;													// 
 		}
 		else {
 			tmpPos = MapPosToMoveIndex(movedOffset, player.jumpFlag, player.velocity);
@@ -233,16 +237,10 @@ void PlayerUpdate(void)
 		{
 			player.flag = false;
 		}
-
-
-		// ゴール
-		if (!GoalIsPass(player.pos)) {
-			
-		}
 		
 		
 	}
-	else {												// ﾌﾟﾚｰﾔｰが死んだとき
+	else {	// ﾌﾟﾚｰﾔｰが死んだとき
 			PlayerInit();
 	}
 	player.animCnt++;
@@ -269,7 +267,6 @@ void PlayerDraw(void)
 				DrawTurnGraph(player.pos.x - tmpMapPos.x - player.offsetSize.x, player.pos.y - tmpMapPos.y - player.offsetSize.y, player1[0], true);
 			}
 		}
-		//DrawCircle(player.pos.x - tmpMapPos.x, player.pos.y  - tmpMapPos.y, 24, 0xff0000, true, true);
 	}
 	DrawFormatString(0, 48, 0x000000, "playerPos: %d , %d", player.pos.x, player.pos.y);
 	DrawCircle(player.pos.x, player.pos.y, 5,  0xff0000, true);
