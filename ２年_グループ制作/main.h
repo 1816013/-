@@ -62,6 +62,7 @@ typedef struct {
 	int moveSpeed;
 	int animCnt;
 	int cnt;
+	int shape;			// 当たり判定用 0: 矩形と矩形 1:矩形と線
 	XY_F velocity;		// 移動速度
 }CHARACTER;
 

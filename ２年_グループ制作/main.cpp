@@ -176,10 +176,10 @@ void GameResult(void)
 	DrawFormatString(0, 24, 0xFFFFFF, "EndPt = %d", EndPt);
 }
 void HitCheck() {
-	for (int i = 0; i < 10; i++) {
+	for (int i = 0; i < 20; i++) {
 		CHARACTER tmp = GetTrap(i);
 		if (tmp.flag) {
-			PlayerHitCheck(tmp.pos, tmp.size);
+			PlayerHitCheck(tmp.pos, tmp.size, tmp.shape);
 		}
 	}
 }

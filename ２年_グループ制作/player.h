@@ -17,7 +17,7 @@ void PlayerSysInit(void);
 void PlayerInit(void);
 void PlayerUpdate(void);
 void PlayerDraw(void);
-bool PlayerHitCheck(XY pos, XY size);
+bool PlayerHitCheck(XY pos, XY size, int shape);
 
 
 CHARACTER GetPlayer(void);

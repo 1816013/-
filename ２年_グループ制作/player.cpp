@@ -233,7 +233,7 @@ void PlayerUpdate(void)
 
 
 		// 画面外にﾌﾟﾚｲﾔｰが出たら
-		if (player.pos.x > SCREEN_SIZE_X && player.pos.y > SCREEN_SIZE_Y)
+		if (player.pos.x > SCREEN_SIZE_X || player.pos.y > SCREEN_SIZE_Y)
 		{
 			player.flag = false;
 		}
@@ -276,17 +276,30 @@ CHARACTER GetPlayer(void) {
 	return player;
 }
 
-bool PlayerHitCheck(XY pos, XY size)
+bool PlayerHitCheck(XY pos, XY size, int shape)
 {
-
+	//矩形と矩形
 	if (player.flag) {
-		if ((pos.x < player.pos.x + player.offsetSize.x)		
-			&& (pos.x + size.x  > player.pos.x - player.offsetSize.x)		
-			&& (pos.y - size.y / 2 < player.pos.y + player.offsetSize.y)	
-			&& (pos.y + size.y / 2 > player.pos.y - player.offsetSize.y)	
-			) {
-			player.flag = false;
-			return true;
+		if (shape == 0) {
+			if ((pos.x < player.pos.x + player.hitPosE.x)
+				&& (pos.x + size.x > player.pos.x - player.hitPosS.x)
+				&& (pos.y < player.pos.y + player.hitPosE.y)
+				&& (pos.y + size.y > player.pos.y - player.hitPosS.y)
+				) {
+				player.flag = false;
+				return true;
+			}
+		}
+	// 線と矩形
+		if (shape == 1) {
+			if ((pos.x + size.x / 2 < player.pos.x + player.hitPosE.x)
+				&& (pos.x + size.x / 2 > player.pos.x - player.hitPosS.x)
+				&& (pos.y < player.pos.y + player.hitPosE.y)
+				&& (pos.y + size.y > player.pos.y - player.hitPosS.y)
+				) {
+				player.flag = false;
+				return true;
+			}
 		}
 	}
 	return false;
