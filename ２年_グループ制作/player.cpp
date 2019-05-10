@@ -12,6 +12,14 @@ int jumpCnt;
 int Gflag;
 int jumpFrame;
 
+XY movedPos = player.pos;
+// offsetは今のﾌﾟﾚｲﾔｰの1ﾏｽあとの座標
+XY movedOffset = movedPos;
+XY movedOffset2 = movedPos;
+XY movedOffset3 = movedPos;
+
+
+
 void PlayerSysInit(void) 
 {
 	LoadDivGraph("png/プレイヤー１サイズ調整済み.png", 4, 4, 1, 48, 48, player1);
@@ -37,15 +45,16 @@ void PlayerInit(void)
 void PlayerUpdate(void)
 {
 	bool playerMoved = false;
-
-	XY movedPos = player.pos;
-	// offsetは今のﾌﾟﾚｲﾔｰの1ﾏｽあとの座標
-	XY movedOffset = movedPos;
-	XY movedOffset2 = movedPos;
-	XY movedOffset3 = movedPos;
 	XY tmpPos;
-
 	XY playeroldPos = player.pos;
+	movedPos = player.pos;
+
+	// offsetは今のﾌﾟﾚｲﾔｰの1ﾏｽあとの座標
+	// offsetは1ﾙｰﾌﾟ毎に初期化
+
+	movedOffset = movedPos;
+	movedOffset2 = movedPos;
+	movedOffset3 = movedPos;
 
 	player.runFlag = false;
 	headFlag = false;
@@ -118,6 +127,8 @@ void PlayerUpdate(void)
 		// 右下
 		movedOffset3 = movedOffset;
 		movedOffset3.y = movedPos.y + player.hitPosE.y - 1;			// ‐1は調整用
+		/*SetOffset();
+		movedOffset3.x -= 1;*/
 
 		if (IsPass(movedOffset) && IsPass(movedOffset2) && IsPass(movedOffset3)) {
 			player.pos = movedPos;													// 
@@ -136,18 +147,22 @@ void PlayerUpdate(void)
 		
 		// 重力
 		movedPos = player.pos;
-		movedOffset = movedPos;	
+		
 
 		movedPos.y -= player.velocity.y * SECOND_PER_FRAME;
 		player.velocity.y -= ACC_G * SECOND_PER_FRAME;
 
 		// ﾌﾞﾛｯｸのﾁｪｯｸ
 		// 頭上のﾌﾞﾛｯｸのﾁｪｯｸ
+		movedOffset = movedPos;
 		movedOffset.y = movedPos.y - player.hitPosS.y;
 		movedOffset2 = movedOffset;							// 左上
 		movedOffset2.x = movedPos.x - player.hitPosS.x;
 		movedOffset3 = movedOffset;							// 右上
 		movedOffset3.x = movedPos.x + player.hitPosE.x - 1;
+		/*SetOffset();
+		movedOffset3.x -= 1;*/
+
 
 		if (IsPass(movedOffset) && IsPass(movedOffset2) && IsPass(movedOffset3)) {
 			player.pos = movedPos;
@@ -156,17 +171,21 @@ void PlayerUpdate(void)
 			headFlag = true;
 			tmpPos = MapPosToMoveIndex(movedOffset, headFlag, player.velocity);
 			player.pos.y = tmpPos.y + player.hitPosS.y;
+			player.velocity.y -= 1;
 			player.velocity.y *= -1;
 		}
 		movedPos = player.pos;
 
 		// 足下のﾌﾞﾛｯｸのﾁｪｯｸ
-		movedOffset.y = movedPos.y + player.hitPosE.y;
-		movedOffset2 = movedOffset;							// 左下
-		movedOffset2.x = movedPos.x - player.hitPosS.x;
-		movedOffset3 = movedOffset;							// 右下
-		movedOffset3.x = movedPos.x + player.hitPosE.x - 1;
 
+		movedOffset.y = movedPos.y + player.hitPosE.y;
+		movedOffset2 = movedOffset;							// 左上
+		movedOffset2.x = movedPos.x - player.hitPosS.x;
+		movedOffset3 = movedOffset;							// 右上
+		movedOffset3.x = movedPos.x + player.hitPosE.x - 1;
+		/*movedOffset.y = movedPos.y + player.hitPosE.y;
+		SetOffset();;
+		movedOffset3.x -= 1;*/
 		if (IsPass(movedOffset) && IsPass(movedOffset2) && IsPass(movedOffset3)) {
 			player.pos = movedPos;
 		}
@@ -179,11 +198,13 @@ void PlayerUpdate(void)
 		movedPos = player.pos;
 	
 		//　ｼﾞｬﾝﾌﾟ
-		movedOffset.y = movedPos.y - player.hitPosS.y -1;
-		movedOffset2 = movedOffset;							// 左上
+		movedOffset.y = movedPos.y - player.hitPosS.y - 1;
+	/*	movedOffset2 = movedOffset;							// 左上
 		movedOffset2.x = movedPos.x - player.hitPosS.x;
 		movedOffset3 = movedOffset;							// 右上
-		movedOffset3.x = movedPos.x + player.hitPosE.x - 1;
+		movedOffset3.x = movedPos.x + player.hitPosE.x - 1;*/
+		SetOffset();;
+		movedOffset3.x -= 1;
 
 		if (IsPass(movedOffset) && IsPass(movedOffset2) && IsPass(movedOffset3)) {
 			if (!player.jumpFlag) {
@@ -217,19 +238,19 @@ void PlayerUpdate(void)
 		if (!NeedleIsPass(player.pos)) {
 			player.flag = false;
 		}
-		movedOffset.y = movedPos.y - player.hitPosS.y - 1;
+
+		// ｼﾞｬﾝﾌﾟﾌﾞﾛｯｸ
+		movedOffset.y = movedPos.y - player.hitPosS.y - 1;	// 頭上
 		movedOffset2 = movedOffset;							// 左上
 		movedOffset2.x = movedPos.x - player.hitPosS.x ;
 		movedOffset3 = movedOffset;							// 右上
 		movedOffset3.x = movedPos.x + player.hitPosE.x - 1;
-
-		if (IsPass(movedOffset) && IsPass(movedOffset2) && IsPass(movedOffset3)) {
+		if (IsPass(movedOffset) && IsPass(movedOffset2) && IsPass(movedOffset3)) {			// 1ﾏｽのところではジャンプしない
 			movedOffset.y = movedPos.y + player.hitPosE.y;
 			if (!JumpIsPass(movedOffset)) {
 				player.velocity.y = 80;
 			}
 		}
-
 
 
 		// 画面外にﾌﾟﾚｲﾔｰが出たら
@@ -241,7 +262,9 @@ void PlayerUpdate(void)
 		
 	}
 	else {	// ﾌﾟﾚｰﾔｰが死んだとき
+		if (trgKey[ENTER]) {
 			PlayerInit();
+		}
 	}
 	player.animCnt++;
 }
@@ -276,11 +299,11 @@ CHARACTER GetPlayer(void) {
 	return player;
 }
 
-bool PlayerHitCheck(XY pos, XY size, int shape)
+bool PlayerHitCheck(XY pos, XY size, int type)
 {
 	//矩形と矩形
 	if (player.flag) {
-		if (shape == 0) {
+		if (type == 0) {
 			if ((pos.x < player.pos.x + player.hitPosE.x)
 				&& (pos.x + size.x > player.pos.x - player.hitPosS.x)
 				&& (pos.y < player.pos.y + player.hitPosE.y)
@@ -291,7 +314,7 @@ bool PlayerHitCheck(XY pos, XY size, int shape)
 			}
 		}
 	// 線と矩形
-		if (shape == 1) {
+		if (type == 1) {
 			if ((pos.x + size.x / 2 < player.pos.x + player.hitPosE.x)
 				&& (pos.x + size.x / 2 > player.pos.x - player.hitPosS.x)
 				&& (pos.y < player.pos.y + player.hitPosE.y)
@@ -303,4 +326,11 @@ bool PlayerHitCheck(XY pos, XY size, int shape)
 		}
 	}
 	return false;
+}
+
+void SetOffset(void) {									// ﾌﾟﾚｲﾔｰの右端と左端のｵﾌｾｯﾄ 
+	movedOffset2 = movedOffset;							// 左上
+	movedOffset2.x = movedPos.x - player.hitPosS.x;
+	movedOffset3 = movedOffset;							// 右上
+	movedOffset3.x = movedPos.x + player.hitPosE.x;
 }

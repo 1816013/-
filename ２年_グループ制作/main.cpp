@@ -31,7 +31,7 @@ int WINAPI WinMain(HINSTANCE hINSTANCE, HINSTANCE hPrevInstance, LPSTR IpCmdLine
 		case GMODE_INIT:
 			GameCycle = 1;
 			Arrow = 3;
-			EndPt = 25;
+			EndPt = 15;
 			/*GameCycleMax = 3;*/
 			GameInit();
 			gameMode = GMODE_TITLE;
@@ -56,7 +56,7 @@ int WINAPI WinMain(HINSTANCE hINSTANCE, HINSTANCE hPrevInstance, LPSTR IpCmdLine
 				if ((GameCycle < Arrow/*GameCycleMax*/) && (EndPt < 100))
 				{
 					GameCycle += 1;
-					EndPt += 25;
+					EndPt += 10;
 					gameMode = GMODE_GAME;
 					GameInit();
 
@@ -179,7 +179,7 @@ void HitCheck() {
 	for (int i = 0; i < 20; i++) {
 		CHARACTER tmp = GetTrap(i);
 		if (tmp.flag) {
-			PlayerHitCheck(tmp.pos, tmp.size, tmp.shape);
+			PlayerHitCheck(tmp.pos, tmp.size, tmp.type);
 		}
 	}
 }

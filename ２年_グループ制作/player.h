@@ -18,6 +18,7 @@ void PlayerInit(void);
 void PlayerUpdate(void);
 void PlayerDraw(void);
 bool PlayerHitCheck(XY pos, XY size, int shape);
+void SetOffset(void);
 
 
 CHARACTER GetPlayer(void);

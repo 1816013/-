@@ -49,7 +49,7 @@ typedef struct {
 
 typedef struct {
 	bool flag;
-	int type;
+	int type;	// 当たり判定用 0: 矩形と矩形 1:矩形と線 2: ﾌﾞﾛｯｸ(死なない)
 	MOVE_DIR moveDir;	// 向いている向き
 	XY pos;				// 位置
 	XY size;			// ｻｲｽﾞ
@@ -62,10 +62,20 @@ typedef struct {
 	int moveSpeed;
 	int animCnt;
 	int cnt;
-	int shape;			// 当たり判定用 0: 矩形と矩形 1:矩形と線
 	XY_F velocity;		// 移動速度
 }CHARACTER;
 
+typedef struct {
+	int PlusPt;
+	int BonusPt;	//仮　特定の条件によるボーナス
+	int EndPt;		//仮　ゲーム終了のための必要Pt
+}PT;
+
+typedef struct {
+	int playerCnt;
+	int DeathCnt;	//仮　プレイヤーの死亡回数
+	int DeathBonusCnt;
+}CNT;
 
 bool SysInit(void);
 void GameInit(void);
