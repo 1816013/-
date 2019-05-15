@@ -2,14 +2,10 @@
 
 #define CHIP_SIZE_X 48
 #define CHIP_SIZE_Y 48
-#define STAGE_MAX 5
 
 
 
-enum EVENT_MODE{
-	E_WALL,
-	E_NEEDLE
-};
+
 
 enum STAGE_NUM {
 	STAGE1,
@@ -17,6 +13,7 @@ enum STAGE_NUM {
 	STAGE3,
 	STAGE4,
 	STAGE5,
+	STAGE_MAX
 };
 
 

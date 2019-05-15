@@ -3,6 +3,7 @@
 #include "player.h"
 #include "keycheck.h"
 #include "stage.h"
+#include "effect.h"
 
 CHARACTER player;
 int player1[4];
@@ -203,7 +204,7 @@ void PlayerUpdate(void)
 		movedOffset2.x = movedPos.x - player.hitPosS.x;
 		movedOffset3 = movedOffset;							// 右上
 		movedOffset3.x = movedPos.x + player.hitPosE.x - 1;*/
-		SetOffset();;
+		SetOffset();
 		movedOffset3.x -= 1;
 
 		if (IsPass(movedOffset) && IsPass(movedOffset2) && IsPass(movedOffset3)) {
@@ -231,11 +232,12 @@ void PlayerUpdate(void)
 		// ﾄﾗｯﾌﾟの判定
 		// ﾃﾚﾎﾟｰﾄ
 		if (!TelIsPass(player.pos)) {
-			player.pos = { SCREEN_SIZE_X , 10000 };
+			player.pos = { 100000 , 0 };
 		}
 
 		// 針ブロック
 		if (!NeedleIsPass(player.pos)) {
+			TobichiriGenerator(player.pos);
 			player.flag = false;
 		}
 
@@ -254,14 +256,17 @@ void PlayerUpdate(void)
 
 
 		// 画面外にﾌﾟﾚｲﾔｰが出たら
-		if (player.pos.x > SCREEN_SIZE_X || player.pos.y > SCREEN_SIZE_Y)
+		if ( player.pos.y > SCREEN_SIZE_Y)
 		{
+			
 			player.flag = false;
 		}
 		
 		
 	}
 	else {	// ﾌﾟﾚｰﾔｰが死んだとき
+	//	EffectGenerator(player.pos);
+	
 		if (trgKey[ENTER]) {
 			PlayerInit();
 		}
@@ -292,7 +297,7 @@ void PlayerDraw(void)
 		}
 	}
 	DrawFormatString(0, 48, 0x000000, "playerPos: %d , %d", player.pos.x, player.pos.y);
-	DrawCircle(player.pos.x, player.pos.y, 5,  0xff0000, true);
+	//DrawCircle(player.pos.x, player.pos.y, 5,  0xff0000, true);
 }
 
 CHARACTER GetPlayer(void) {
@@ -310,10 +315,11 @@ bool PlayerHitCheck(XY pos, XY size, int type)
 				&& (pos.y + size.y > player.pos.y - player.hitPosS.y)
 				) {
 				player.flag = false;
+				TobichiriGenerator(player.pos);
 				return true;
 			}
 		}
-	// 線と矩形
+		// 縦線と矩形
 		if (type == 1) {
 			if ((pos.x + size.x / 2 < player.pos.x + player.hitPosE.x)
 				&& (pos.x + size.x / 2 > player.pos.x - player.hitPosS.x)
@@ -321,11 +327,24 @@ bool PlayerHitCheck(XY pos, XY size, int type)
 				&& (pos.y + size.y > player.pos.y - player.hitPosS.y)
 				) {
 				player.flag = false;
+				TobichiriGenerator(player.pos);
 				return true;
 			}
 		}
+		// 横線と矩形
+		if (type == 2) {
+			if ((pos.x < player.pos.x + player.hitPosE.x)
+				&& (pos.x + size.x / 2> player.pos.x - player.hitPosS.x)
+				&& (pos.y + size.y / 2 < player.pos.y + player.hitPosE.y)
+				&& (pos.y + size.y / 2> player.pos.y - player.hitPosS.y)
+				) {
+				player.flag = false;
+				TobichiriGenerator(player.pos);
+				return true;
+			}
+		}
+		return false;
 	}
-	return false;
 }
 
 void SetOffset(void) {									// ﾌﾟﾚｲﾔｰの右端と左端のｵﾌｾｯﾄ 

@@ -4,6 +4,7 @@
 #include "stage.h"
 #include "player.h"
 #include "keycheck.h"
+#include "effect.h"
 
 GAME_MODE gameMode;
 int gameCounter;
@@ -92,6 +93,7 @@ bool SysInit(void)
 	KeyCheckInit();
 	PlayerSysInit();
 	stageSysInit();
+	EffectSysInit();
 	gameMode = GMODE_INIT;
 
 	// óêêîÉVÅ[Éhê›íË
@@ -105,6 +107,7 @@ void GameInit(void)
 {
 	stageInit();
 	PlayerInit();
+	EffectInit();
 }
 
 void GameTitle(void) 
@@ -154,6 +157,7 @@ void GameMain(void)
 {
 	stageMain();
 	PlayerUpdate();
+	EffectUpdate();
 	GameDraw();
 
 	CHARACTER tmp = GetPlayer();
@@ -189,6 +193,7 @@ void GameDraw(void)
 {
 	stageDraw();
 	PlayerDraw();
+	EffectDraw();
 	DrawFormatString(0, 12, 0xFFFFFF, "GameCeycle = %d", GameCycle);
 	DrawFormatString(0, 24, 0xFFFFFF, "Arrow = %d", Arrow);
 	DrawFormatString(0, 0, 0xFFFFFF, "GameMain", gameCounter);

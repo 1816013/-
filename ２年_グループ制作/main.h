@@ -37,6 +37,13 @@ enum MOVE_DIR {
 	DIR_MAX
 };
 
+enum T_EVENT_MODE {
+	BLOCK_FALL,
+	BLOCK_STOP,
+	BLOCK_POP,
+	BLOCK_MOVE
+};
+
 typedef struct {
 	float x;
 	float y;
@@ -63,6 +70,7 @@ typedef struct {
 	int animCnt;
 	int cnt;
 	XY_F velocity;		// ˆÚ“®‘¬“x
+	T_EVENT_MODE tEvent;
 }CHARACTER;
 
 typedef struct {
