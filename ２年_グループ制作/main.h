@@ -23,6 +23,8 @@
 enum GAME_MODE {
 	GMODE_INIT,
 	GMODE_TITLE,
+	GMODE_SELECT,
+	GMODE_BATTLESELECT,
 	GMODE_GAME,
 	GMODE_RESULT,
 	GMODE_GAMEOVER,
@@ -71,6 +73,9 @@ typedef struct {
 	int cnt;
 	XY_F velocity;		// ˆÚ“®‘¬“x
 	T_EVENT_MODE tEvent;
+	int point;
+	int jyuni;
+	int skin;
 }CHARACTER;
 
 typedef struct {
@@ -88,6 +93,8 @@ typedef struct {
 bool SysInit(void);
 void GameInit(void);
 void GameTitle(void);
+void GameSelect(void);
+void GameBattleSelect(void);
 void GameMain(void);
 void GameDraw(void);
 void GameResult(void);
