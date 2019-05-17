@@ -7,6 +7,7 @@
 #include "keycheck.h"
 #include "effect.h"
 
+
 GAME_MODE gameMode;
 int gameCounter;
 //int pause;	// Îß°½Þ—p	0:Îß°½Þ‚µ‚Ä‚¢‚È‚¢@1:Îß°½Þ’†
@@ -19,6 +20,7 @@ PT pt;
 CNT cnt;
 int Arrow;
 int EndPt;
+int stopCnt = 0;
 
 // ========= WinMainŠÖ”
 int WINAPI WinMain(HINSTANCE hINSTANCE, HINSTANCE hPrevInstance, LPSTR IpCmdLine, int nCmdShow)
@@ -310,18 +312,23 @@ void GameMain(void)
 
 	if (trgKey[START]) {
 		gameMode = GMODE_RESULT;
+		stopCnt = 0;
 		/*HitCheck();*/
 
 	}
-	stageMain();
-	PlayerUpdate();
-	EffectUpdate();
+	stopCnt++;
+	if (stopCnt > 30) {
+		stageMain();
+		PlayerUpdate();
+		EffectUpdate();
+	}
 	GameDraw();
 
 	CHARACTER tmp = GetPlayer();
 	for (int i = 1; i <= 4; i++)
 	{
 		if (!GoalIsPass(tmp.pos)) {
+			stopCnt = 0;
 			gameMode = GMODE_RESULT;
 			player[i].point += pt.PlusPt + pt.BonusPt;
 		}
@@ -372,7 +379,7 @@ void GameResult(void)
 }
 void HitCheck() {
 	for (int i = 0; i < 20; i++) {
-		CHARACTER tmp = GetTrap(i);
+		TRAP tmp = GetTrap(i);
 		if (tmp.flag) {
 			PlayerHitCheck(tmp.pos, tmp.size, tmp.type);
 		}

@@ -53,5 +53,4 @@ void KeyCheck()
 		upKey[i] = ~newKey[i] & oldKey[i];	// upKey
 		oldKey[i] = newKey[i];						// oldKey
 	}
-
 }

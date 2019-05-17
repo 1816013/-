@@ -34,18 +34,12 @@ enum GAME_MODE {
 enum MOVE_DIR {
 	DIR_UP,
 	DIR_RIGHT,
-	DIR_DOWN,
+	DIR_DOWN,			
 	DIR_LEFT,
 	DIR_MAX
 };
 
-enum T_EVENT_MODE {
-	BLOCK_FALL,
-	BLOCK_STOP,
-	BLOCK_POP,
-	BLOCK_MOVE,
-	BLOCK_SAVE
-};
+
 
 typedef struct {
 	float x;
@@ -59,7 +53,6 @@ typedef struct {
 
 typedef struct {
 	bool flag;
-	int type;	// 当たり判定用 0: 矩形と矩形 1:矩形と線 2: ﾌﾞﾛｯｸ(死なない)
 	MOVE_DIR moveDir;	// 向いている向き
 	XY pos;				// 位置
 	XY size;			// ｻｲｽﾞ
@@ -68,12 +61,8 @@ typedef struct {
 	XY hitPosE;			// 当たり判定用右下
 	bool runFlag;
 	bool jumpFlag;
-	bool damageFlag;
-	int moveSpeed;
 	int animCnt;
-	int cnt;
 	XY_F velocity;		// 移動速度
-	T_EVENT_MODE tEvent;
 	int point;
 	int jyuni;
 	int skin;
