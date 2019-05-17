@@ -43,7 +43,8 @@ enum T_EVENT_MODE {
 	BLOCK_FALL,
 	BLOCK_STOP,
 	BLOCK_POP,
-	BLOCK_MOVE
+	BLOCK_MOVE,
+	BLOCK_SAVE
 };
 
 typedef struct {

@@ -13,6 +13,7 @@ enum STAGE_NUM {
 	STAGE3,
 	STAGE4,
 	STAGE5,
+	EX_STAGE1,
 	STAGE_MAX
 };
 
@@ -25,10 +26,10 @@ XY MapIndexToPos(XY index);
 XY MapPosToMoveIndex(XY pos, bool flag, XY_F velocity);
 XY GetMapPos();
 bool TelIsPass(XY pos);
-bool HitIsPass(XY pos);
 bool NeedleIsPass(XY pos);
 bool JumpIsPass(XY pos);
 bool GoalIsPass(XY pos);
+bool SaveIsPass(XY pos);
 CHARACTER GetTrap(int idx);
 
 void stageInit(void);

@@ -8,11 +8,12 @@
 FILE* fp;
 
 //int mapData[20*27];
-int block[16];
+int block[18];
 XY mapPos;
 int coin;
 int arrow;
 int bowgun[6];
+int saveP[2];
 CHARACTER trap[20]; 
 int trapCnt;	// ‚Ü‚Æ‚ß‚Ä“®‚©‚·Ä×¯Ìß‚Ì¶³ÝÀ
 
@@ -157,19 +158,44 @@ int stage5[20][27]{
 	1,1,1,1,7,1,1,1,1, 1,2,2,2,2,2,2,2,2, 2,2,2,2,2,2,2,2,1
 };
 
+int Iwanna[20][27] = {
+	1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,
+	1,0,0,13,0,0,0,1,0, 0,0,0,0,0,0,0,0,1, 0,0,0,0,0,0,0,0,1,
+	1,9,0,0,0,0,0,1,0, 0,0,0,1,16,1,1,1,1, 0,0,0,0,0,0,0,0,1,
+	1,1,1,1,0,0,0,13,0, 0,0,0,0,0,0,13,0,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,12,0,0,0, 0,0,1,1,1,1,15,0,1,
+	1,0,0,0,0,0,0,0,0, 0,0,0,1,1,1,1,1,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,1,1,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,12, 0,0,0,0,12,0,0,0,0, 0,1,1,2,1,1,1,0,1,
+	1,0,0,0,0,1,0,0,1, 15,0,0,14,1,15,0,0,0, 0,0,0,0,13,0,0,0,1,
+	1,0,0,0,0,1,0,0,1, 15,0,0,0,13,0,0,0,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,12,1,0,0,1, 15,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,1,1,
+	1,0,1,1,1,1,0,0,1, 15,0,0,0,0,12,0,0,0, 12,0,0,0,1,0,0,0,1,
+	1,0,0,0,0,0,0,0,1, 15,0,1,1,0,1,0,0,0, 1,0,0,0,1,0,16,0,1,
+	1,0,0,0,0,0,0,0,1, 15,0,1,0,0,1,0,0,0, 1,0,0,14,1,0,0,0,1,
+	1,0,0,0,0,0,12,0,1, 15,0,1,0,0,1,0,0,0, 1,15,0,0,1,0,0,0,1,
+	1,1,1,1,1,1,1,1,1, 15,0,1,0,0,1,12,12,12, 1,0,0,0,1,1,1,0,1,
+	1,0,0,0,13,0,0,0,0, 0,0,1,0,14,1,1,1,1, 1,0,1,0,13,0,13,0,1,
+	1,0,0,0,0,0,0,0,0, 0,0,1,0,0,0,0,0,0, 0,0,1,0,0,0,0,0,1,
+	1,0,0,12,0,0,12,12,0,0,0,1,0,0,0,0,0,0, 0,0,1,0,0,12,0,0,1,
+	1,1,1,1,1,1,1,1,1, 2,7,1,1,1,1,1,2,2, 1,1,1,1,1,1,1,1,1
+};
+
 int x1, x2;
 
 void stageSysInit(void) 
 {
-	if((LoadDivGraph("png/stage2.png", 16, 16, 1, CHIP_SIZE_X, CHIP_SIZE_Y, block, true))== -1)AST();
+	if((LoadDivGraph("png/stage3.png", 18, 16, 2, CHIP_SIZE_X, CHIP_SIZE_Y, block, true))== -1)AST();
+
 	coin = LoadGraph("png/ƒRƒCƒ“1.png", true);
 	if((arrow = LoadGraph("png/–î1.png", true)) == - 1) AST();
 	if (LoadDivGraph("png/ƒ{ƒEƒKƒ“‰ü.png", 6, 6, 1, CHIP_SIZE_X, CHIP_SIZE_Y, bowgun, true) == -1) AST();
+	if (LoadDivGraph("png/ƒZƒuƒ|.png", 2, 2, 1, CHIP_SIZE_X, CHIP_SIZE_Y, saveP, true) == -1) AST();
 }
 
 void stageInit(void)	
 {
-	stage = STAGE2/*(STAGE_NUM)(rand() % STAGE_MAX)*/;
+	stage = EX_STAGE1/*(STAGE_NUM)(rand() % STAGE_MAX)*/;
 
 	/*switch (stage) {
 	case STAGE1:
@@ -206,60 +232,60 @@ void trapInit(int i) {
 	trap[i].moveSpeed = 15;
 	trap[i].type = 0;															// “–‚½‚è”»’è‚ð‹éŒ`‚Æ‹éŒ`‚Å‰Šú‰»
 	trap[i].tEvent = BLOCK_FALL;												// ƒCƒxƒ“ƒg‚Í—Ž‰º‚Å‰Šú‰»
-	
+
 	// ½Ã°¼Þ1—p
 	if (stage == STAGE1)
 	{
 		switch (i) {
-		// —Ž‰ºj
-		case 0:		
+			// —Ž‰ºj
+		case 0:
 			trap[i].pos = { 5 * CHIP_SIZE_X, 5 * CHIP_SIZE_Y };
 			break;
-		// ‚‘¬—Ž‰ºÌÞÛ¯¸
-		case 1:		
+			// ‚‘¬—Ž‰ºÌÞÛ¯¸
+		case 1:
 			trap[i].pos = { 5 * CHIP_SIZE_X, 0 };
 			trap[i].moveSpeed = 50;
 			break;
-		// •’Ê—Ž‰ºÌÞÛ¯¸
-		case 2:		
+			// •’Ê—Ž‰ºÌÞÛ¯¸
+		case 2:
 		case 3:
 		case 4:
 		case 5:
 			trap[i].pos = { 5 * CHIP_SIZE_X, (i - 1) * CHIP_SIZE_Y };
 			break;
-		// 1/6j
-		case 6:		
-			trap[i].pos = { 4 * CHIP_SIZE_X, 19 * CHIP_SIZE_Y - CHIP_SIZE_Y / 6};
+			// 1/6j
+		case 6:
+			trap[i].pos = { 4 * CHIP_SIZE_X, 19 * CHIP_SIZE_Y - CHIP_SIZE_Y / 6 };
 			trap[i].type = 1;																	// “–‚½‚è”»’è‚ð¬‚³‚­‚·‚é‚½‚ß@1
 			trap[i].flag = true;																// “®‚«‚ª‚È‚¢‚½‚ßí‚Étrue
 			trap[i].tEvent = BLOCK_STOP;
 			break;
-		// ”ò‚Ño‚·j(ŽÀÛ‚Í”ò‚Ño‚·‚Ì‚Å‚Í‚È‚­j‚Ìã‚É”wŒi‚ð•`‰æ‚µ‚Ä‰B‚µ‚Ä‚¢‚½j‚ðoŒ»‚³‚¹‚é) 
-		case 7:		
-			trap[i].pos = { 20 * CHIP_SIZE_X, 17 * CHIP_SIZE_Y};
-			trap[i].type = 3;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@3
-        	trap[i].flag = true;																// ÌßÚ²Ô°‚ª‹ß‚Ã‚­‚Ü‚Åtrue
+			// ”ò‚Ño‚·j(ŽÀÛ‚Í”ò‚Ño‚·‚Ì‚Å‚Í‚È‚­j‚Ìã‚É”wŒi‚ð•`‰æ‚µ‚Ä‰B‚µ‚Ä‚¢‚½j‚ðoŒ»‚³‚¹‚é) 
+		case 7:
+			trap[i].pos = { 20 * CHIP_SIZE_X, 17 * CHIP_SIZE_Y };
+			trap[i].type = 4;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@4
+			trap[i].flag = true;																// ÌßÚ²Ô°‚ª‹ß‚Ã‚­‚Ü‚Åtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		case 8:
 			trap[i].pos = { 12 * CHIP_SIZE_X, 7 * CHIP_SIZE_Y };
-			trap[i].type = 3;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@3
+			trap[i].type = 4;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@4
 			trap[i].flag = true;																// ÌßÚ²Ô°‚ª‹ß‚Ã‚­‚Ü‚Åtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		case 9:
 			trap[i].pos = { 16 * CHIP_SIZE_X, 4 * CHIP_SIZE_Y };
-			trap[i].type = 3;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@3
+			trap[i].type = 4;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@4
 			trap[i].flag = true;																// ÌßÚ²Ô°‚ª‹ß‚Ã‚­‚Ü‚Åtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		case 10:
 			trap[i].pos = { 17 * CHIP_SIZE_X, 17 * CHIP_SIZE_Y };
-			trap[i].type = 3;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@3
+			trap[i].type = 4;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@4
 			trap[i].flag = true;																// ÌßÚ²Ô°‚ª‹ß‚Ã‚­‚Ü‚Åtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
-		// –î
+			// –î
 		case 11:
 			trap[i].pos = { 25 * CHIP_SIZE_X, 18 * CHIP_SIZE_Y };
 			trap[i].type = 2;
@@ -272,52 +298,52 @@ void trapInit(int i) {
 		if (i >= 2 && i <= 5) {
 			trap[i].pos = { 5 * CHIP_SIZE_X, (i - 1) * CHIP_SIZE_Y };
 		}*/
-		
+
 	}
 
 	if (stage == STAGE2) {
 		switch (i) {
-		// ”ò‚Ño‚·j(ŽÀÛ‚Í”ò‚Ño‚·‚Ì‚Å‚Í‚È‚­j‚Ìã‚É”wŒi‚ð•`‰æ‚µ‚Ä‰B‚µ‚Ä‚¢‚½j‚ðoŒ»‚³‚¹‚é) 
+			// ”ò‚Ño‚·j(ŽÀÛ‚Í”ò‚Ño‚·‚Ì‚Å‚Í‚È‚­j‚Ìã‚É”wŒi‚ð•`‰æ‚µ‚Ä‰B‚µ‚Ä‚¢‚½j‚ðoŒ»‚³‚¹‚é) 
 		case 0:
 		case 1:
 		case 2:
 		case 3:
 			trap[i].pos = { 20 * CHIP_SIZE_X + i * CHIP_SIZE_X, 12 * CHIP_SIZE_Y };
-			trap[i].type = 3;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@3
+			trap[i].type = 4;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@4
 			trap[i].flag = true;																// ÌßÚ²Ô°‚ª‹ß‚Ã‚­‚Ü‚Åtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		case 4:
 			trap[i].pos = { 9 * CHIP_SIZE_X, 18 * CHIP_SIZE_Y };
-			trap[i].type = 3;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@3
+			trap[i].type = 4;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@4
 			trap[i].flag = true;																// ÌßÚ²Ô°‚ª‹ß‚Ã‚­‚Ü‚Åtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		case 5:
 			trap[i].pos = { 20 * CHIP_SIZE_X, CHIP_SIZE_Y };
-			trap[i].type = 3;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@3
+			trap[i].type = 4;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@4
 			trap[i].flag = true;																// ÌßÚ²Ô°‚ª‹ß‚Ã‚­‚Ü‚Åtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		case 6:
 			trap[i].pos = { 2 * CHIP_SIZE_X, 7 * CHIP_SIZE_Y };
-			trap[i].type = 3;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@3
+			trap[i].type = 4;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@4
 			trap[i].flag = true;																// ÌßÚ²Ô°‚ª‹ß‚Ã‚­‚Ü‚Åtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		case 7:
 			trap[i].pos = { 8 * CHIP_SIZE_X, 5 * CHIP_SIZE_Y };
-			trap[i].type = 3;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@3
+			trap[i].type = 4;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@4
 			trap[i].flag = true;																// ÌßÚ²Ô°‚ª‹ß‚Ã‚­‚Ü‚Åtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		case 8:
 			trap[i].pos = { 15 * CHIP_SIZE_X, 7 * CHIP_SIZE_Y };
-			trap[i].type = 3;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@3
+			trap[i].type = 4;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@4
 			trap[i].flag = true;																// ÌßÚ²Ô°‚ª‹ß‚Ã‚­‚Ü‚Åtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
-		// –î
+			// –î
 		case 9:
 		case 10:
 		case 11:
@@ -341,19 +367,19 @@ void trapInit(int i) {
 			// ”ò‚Ño‚·j
 		case 1:
 			trap[i].pos = { 20 * CHIP_SIZE_X, 5 * CHIP_SIZE_Y };
-			trap[i].type = 3;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@3
+			trap[i].type = 4;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@4
 			trap[i].flag = true;																// ÌßÚ²Ô°‚ª‹ß‚Ã‚­‚Ü‚Åtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		case 2:
 			trap[i].pos = { 15 * CHIP_SIZE_X, 15 * CHIP_SIZE_Y };
-			trap[i].type = 3;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@3
+			trap[i].type = 4;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@4
 			trap[i].flag = true;																// ÌßÚ²Ô°‚ª‹ß‚Ã‚­‚Ü‚Åtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		case 3:
 			trap[i].pos = { 4 * CHIP_SIZE_X, 6 * CHIP_SIZE_Y };
-			trap[i].type = 3;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@3
+			trap[i].type = 4;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@4
 			trap[i].flag = true;																// ÌßÚ²Ô°‚ª‹ß‚Ã‚­‚Ü‚Åtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
@@ -365,45 +391,45 @@ void trapInit(int i) {
 	if (stage == STAGE5) {
 		switch (i) {
 		case 0:		// •’Ê—Ž‰ºÌÞÛ¯¸
-		case 1:	
-		case 2:		
+		case 1:
+		case 2:
 		case 3:
 		case 4:
 			trap[i].pos = { 7 * CHIP_SIZE_X + (i + 1) * CHIP_SIZE_X, 0 };
 			break;
 		case 5:
 			trap[i].pos = { 4 * CHIP_SIZE_X, 15 * CHIP_SIZE_Y };
-			trap[i].type = 3;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@3
+			trap[i].type = 4;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@3
 			trap[i].flag = true;																// ÌßÚ²Ô°‚ª‹ß‚Ã‚­‚Ü‚Åtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		case 6:
 			trap[i].pos = { 14 * CHIP_SIZE_X, 15 * CHIP_SIZE_Y };
-			trap[i].type = 3;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@3
+			trap[i].type = 4;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@4
 			trap[i].flag = true;																// ÌßÚ²Ô°‚ª‹ß‚Ã‚­‚Ü‚Åtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		case 7:
 			trap[i].pos = { 11 * CHIP_SIZE_X, 10 * CHIP_SIZE_Y };
-			trap[i].type = 3;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@3
+			trap[i].type = 4;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@4
 			trap[i].flag = true;																// ÌßÚ²Ô°‚ª‹ß‚Ã‚­‚Ü‚Åtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		case 8:
 			trap[i].pos = { 13 * CHIP_SIZE_X, 11 * CHIP_SIZE_Y };
-			trap[i].type = 3;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@3
+			trap[i].type = 4;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@4
 			trap[i].flag = true;																// ÌßÚ²Ô°‚ª‹ß‚Ã‚­‚Ü‚Åtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		case 9:
 			trap[i].pos = { 2 * CHIP_SIZE_X, 5 * CHIP_SIZE_Y };
-			trap[i].type = 3;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@3
+			trap[i].type = 4;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@4
 			trap[i].flag = true;																// ÌßÚ²Ô°‚ª‹ß‚Ã‚­‚Ü‚Åtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		case 10:
 			trap[i].pos = { 12 * CHIP_SIZE_X, 7 * CHIP_SIZE_Y };
-			trap[i].type = 3;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@3
+			trap[i].type = 4;																	// “–‚½‚è”»’è‚ª‚È‚¢‚½‚ß@4
 			trap[i].flag = true;																// ÌßÚ²Ô°‚ª‹ß‚Ã‚­‚Ü‚Åtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
@@ -435,6 +461,9 @@ void stageMain(void)
 				break;
 			case STAGE5:
 				nowStage[j][i] = stage5[j][i];
+				break;
+			case EX_STAGE1:
+				nowStage[j][i] = Iwanna[j][i];
 				break;
 			default:
 				AST();
@@ -574,6 +603,7 @@ void stageMain(void)
 			}
 
 		}
+
 	}
 }
 
@@ -730,8 +760,7 @@ void stageDraw(void)
 
 				DrawGraph(12 * CHIP_SIZE_X, 10 * CHIP_SIZE_Y, coin, false);
 				DrawGraph(CHIP_SIZE_X, 5 * CHIP_SIZE_Y, coin, false);
-			}
-		}
+			}		}
 	}
 	DrawFormatString(0, 60, 0x000000, "trap.pos x %d, y %d" , trap[11].pos.x, trap[11].pos.y);
 }
@@ -834,8 +863,7 @@ bool GoalIsPass(XY pos)
 	return ret;
 }
 
-// ÃÞÊÞ¯¸Þ—p
-bool HitIsPass(XY pos)
+bool SaveIsPass(XY pos)
 {
 	bool ret = true;
 	int mapNo;
@@ -845,12 +873,14 @@ bool HitIsPass(XY pos)
 	mapNo = nowStage[mapIndex.y][mapIndex.x];
 
 	switch (mapNo) {
-	case 2:
+	case 16:
+		nowStage[mapIndex.y][mapIndex.x] = 17;
 		ret = false;
 		break;
 	}
 	return ret;
 }
+
 
 XY MapPosToIndex(XY pos)
 {

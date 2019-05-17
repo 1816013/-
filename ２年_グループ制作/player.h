@@ -22,3 +22,4 @@ void SetOffset(void);
 
 
 CHARACTER GetPlayer(void);
+bool GetSaveFlag();

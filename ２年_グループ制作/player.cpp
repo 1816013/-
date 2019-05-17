@@ -13,6 +13,10 @@ int jumpCnt;
 int Gflag;
 int jumpFrame;
 
+bool saveFlag;
+
+XY savePos;	
+
 XY movedPos = player.pos;
 // offsetは今のﾌﾟﾚｲﾔｰの1ﾏｽあとの座標
 XY movedOffset = movedPos;
@@ -24,12 +28,13 @@ XY movedOffset3 = movedPos;
 void PlayerSysInit(void) 
 {
 	LoadDivGraph("png/プレイヤー１サイズ調整済み.png", 4, 4, 1, 48, 48, player1);
+	savePos = { 13 * CHIP_SIZE_X - PLAYER_SIZE_X / 2, 4 * CHIP_SIZE_Y };		// プレイヤーリス地初期化
 }
 
 void PlayerInit(void)
 {
 	player.moveDir = DIR_RIGHT;
-	player.pos = { 2 * CHIP_SIZE_X - PLAYER_SIZE_X / 2, 18 * CHIP_SIZE_Y };
+	player.pos = savePos;
 	//player.pos = { 4 * CHIP_SIZE_X - PLAYER_SIZE_X / 2, 3 * CHIP_SIZE_Y };
 	player.size = { PLAYER_SIZE_X, PLAYER_SIZE_Y };
 	player.offsetSize = { player.size.x / 2, player.size.y / 2};
@@ -97,21 +102,6 @@ void PlayerUpdate(void)
 				}
 			}
 		}
-		
-		// 移動制限(ﾏｯﾌﾟをｽｸﾛｰﾙさせるときのみ使用)
-		/*XY tmpMapPos = GetMapPos();
-		if (player.velocity.x != 0) {
-			if (movedPos.x < tmpMapPos.x + 48)
-			{
-				player.velocity.x = 0;
-				movedPos.x = tmpMapPos.x + 48;
-			}
-
-			if (movedPos.x > tmpMapPos.x + SCREEN_SIZE_X - 48) {
-				player.velocity.x = 0;
-				movedPos.x = tmpMapPos.x + SCREEN_SIZE_X - 48;
-			}
-		}*/
 
 		movedPos.x += player.velocity.x * 1;	// 距離の更新
 
@@ -253,12 +243,16 @@ void PlayerUpdate(void)
 				player.velocity.y = 80;
 			}
 		}
+		movedOffset = player.pos;
+
+		if (!SaveIsPass(player.pos)) {
+			savePos = player.pos;
+		}
 
 
 		// 画面外にﾌﾟﾚｲﾔｰが出たら
 		if ( player.pos.y > SCREEN_SIZE_Y)
 		{
-			
 			player.flag = false;
 		}
 		

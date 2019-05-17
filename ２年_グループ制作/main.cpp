@@ -335,6 +335,7 @@ void GameResult(void)
 		if ((GameCycle < GameCycleMax) && (player[1].point < pt.EndPt))
 		{
 			GameCycle += 1;
+			PlayerSysInit();
 			GameInit();
 			gameMode = GMODE_GAME;
 		}
@@ -374,6 +375,11 @@ void HitCheck() {
 		CHARACTER tmp = GetTrap(i);
 		if (tmp.flag) {
 			PlayerHitCheck(tmp.pos, tmp.size, tmp.type);
+		}
+		else {
+			if (tmp.type == 3) {
+				PlayerHitCheck(tmp.pos, tmp.size, tmp.type);
+			}
 		}
 	}
 }
