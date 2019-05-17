@@ -256,7 +256,7 @@ void trapInit(int i) {
 	trap[i].pos = { 0, 0 };
 	trap[i].size = { CHIP_SIZE_X, CHIP_SIZE_Y };
 	trap[i].cnt = 0;
-	trap[i].moveSpeed = 15;
+	trap[i].moveSpeed = NOMAL_SPEED;
 	trap[i].type = 0;															// 当たり判定を矩形と矩形で初期化
 	trap[i].tEvent = BLOCK_FALL;												// イベントは落下で初期化
 
@@ -272,7 +272,7 @@ void trapInit(int i) {
 			// 高速落下ﾌﾞﾛｯｸ
 		case 1:
 			trap[i].pos = { 5 * CHIP_SIZE_X, 0 };
-			trap[i].moveSpeed = 50;
+			trap[i].moveSpeed = HIGH_SPEED;
 			break;
 			// 普通落下ﾌﾞﾛｯｸ
 		case 2:
