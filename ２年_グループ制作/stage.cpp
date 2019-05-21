@@ -8,16 +8,20 @@
 FILE* fp;
 
 //int mapData[20*27];
+
+// ﾏｯﾌﾟﾁｯﾌﾟ画像
 int block[18];
 XY mapPos;
-int coin;
-int arrow;
-int bowgun[6];
+
+// 画像ﾊﾝﾄﾞﾙ
+int coin;			// ｺｲﾝ
+int arrow;			// 矢
+int bowgun[6];		// ﾎﾞｳｶﾞﾝ
 
 TRAP trap[TRAP_MAX];
 STAGE_NUM stage;
 
-
+// ｽﾃｰｼﾞNo
 int nowStage[CHIP_MAX_Y][CHIP_MAX_X] = {
 	0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,
 	0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,
@@ -156,6 +160,30 @@ int stage5[CHIP_MAX_Y][CHIP_MAX_X]{
 	1,1,1,1,7,1,1,1,1, 1,2,2,2,2,2,2,2,2, 2,2,2,2,2,2,2,2,1
 };
 
+int stage6[CHIP_MAX_Y][CHIP_MAX_X] = {
+	1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,
+	1,0,0,0,1,0,0,0,0, 0,0,0,0,0,0,0,0,1, 0,0,0,0,0,0,0,0,0,
+	1,0,0,0,1,0,0,0,0, 0,0,0,0,0,0,0,0,1, 0,0,0,0,0,0,0,0,9,
+	1,0,0,0,1,0,0,0,0, 0,0,0,0,0,0,0,0,1, 0,0,0,1,1,1,1,1,1,
+	1,0,0,0,1,0,0,0,0, 0,0,0,0,0,0,0,0,2, 0,0,0,0,0,0,0,0,1,
+	1,12,0,0,2,0,0,0,0, 0,0,0,0,0,0,0,0,1, 0,0,0,12,0,0,0,0,1,
+	1,1,1,2,1,0,0,0,0, 0,0,0,0,0,0,0,0,1, 0,0,1,1,1,0,0,0,1,
+	1,0,0,0,0,0,0,0,0, 0,0,12,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0, 1,1,1,1,1,15,0,0,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,1,1,0,0,0, 0,0,0,0,0,0,0,0,0, 1,1,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,1,1,1,1,
+	1,1,1,1,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0, 0,0,0,1,2,7,1,0,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,12, 0,0,0,0,0,0,0,0,0, 0,0,12,0,0,0,0,0,1,
+	1,0,0,0,0,0,1,1,1, 1,0,0,0,0,0,0,0,0, 1,1,1,1,1,0,0,0,1,
+	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
+	1,1,1,1,2,1,1,1,1, 1,2,2,2,2,2,2,2,2, 1,1,1,1,1,1,1,1,1
+};
+
+
 int Iwanna[CHIP_MAX_Y][CHIP_MAX_X] = {
 	1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,
 	1,0,0,13,0,0,0,1,0, 0,0,0,0,0,0,0,0,1, 0,0,0,0,0,0,0,0,1,
@@ -179,6 +207,30 @@ int Iwanna[CHIP_MAX_Y][CHIP_MAX_X] = {
 	1,1,1,1,1,1,1,1,1, 2,7,1,1,1,1,1,2,2, 1,1,1,1,1,1,1,1,1
 };
 
+int stage7[CHIP_MAX_Y][CHIP_MAX_X] = {
+	1,1,1,0,1,1,1,1,1,        1,1,1,1,1,1,0,1,1,     1,1,1,1,1,1,1,1,1,
+	1,1,1,0,1,1,1,0,0,        1,0,0,0,0,0,0,0,0,     0,0,0,0,0,0,0,0,1,
+	1,13,13,0,13,13,13,0,0,   1,0,0,12,0,0,0,0,0,     0,12,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0,        13,0,14,1,15,0,0,0,0,     14,1,15,0,0,0,14,1,1,
+	1,0,0,0,0,0,0,0,0,        0,0,0,13,0,0,0,0,0,     0,13,0,0,0,0,1,13,1,
+	1,9,0,0,0,0,0,0,0,       0,0,0,0,0,0,0,0,0,     0,0,0,0,14,1,13,0,1,
+	1,1,2,2,1,2,2 ,1,1,       12,12,0,0,12,0,0,0,0,      0,0,0,0,0,13,0,0,1,
+	1,13,13,13,13,13,13,0,0, 1,1,1,1,1,12,12,11,0,      0,12,12,12,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0,       0,0,0,1,13,1,1,1,1,      1,1,1,1,1,1,1,0,1,
+	1,0,0,0,0,0,0,0,0,       0,0,0,1,0,0,0,0,0,      0,0,0,0,0,0,13,0,1,
+	1,0,0,0,0,0,0,0,0,       1,1,0,1,0,0,0,0,0,      0,0,0,0,0,0,0,0,1,
+	1,0,0,0,12,0,12,0,2,    13,1,0,1,0,0,12,0,12,      0,12,0,12,0,12,0,0,1,
+	1,0,14,1,1,1,1,2,13,    0,1,0,1,0,1,1,1,1,     1,1,1,1,1,1,1,7,1,
+	1,0,0,0,0,0,0,13,0,     0,1,0,1,0,0,0,0,0,       0,0,0,0,0.0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0,      0,1,0,1,0,0,0,0,0,       0,0,0,0,0,0,0,0,1,
+	1,1,1,1,1,1,1,1,1,      0,1,0,1,7,1,2,1,1,       1,2,1,1,1,2,1,0,1,
+	1,13,0,0,13,13,0,0,13  ,0,1,0,0,0,0,0,0,0,       0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0,      0,1,0,16,0,0,0,0,0,       0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,12,0,0,     0,1,0,0,0,12,12 ,0,0,   12,12,0,0,12,12,0,0,0,
+	1,1,2,2,1,1,1,1,1,      7,1,12,1,1,1,1,1,1,      1,1,1,1,1,1,1,1,1
+};
+
+
 int x1, x2;
 
 void stageSysInit(void) 
@@ -192,13 +244,14 @@ void stageSysInit(void)
 
 void stageInit(void)	
 {
-	stage = (STAGE_NUM)(rand() % STAGE_MAX);
+	// ﾗﾝﾀﾞﾑで出した値でｽﾃｰｼﾞを決める
+	stage = EX_STAGE2/*(STAGE_NUM)(rand() % STAGE_MAX)*/;
 
 	for (int i = 0; i < SCREEN_SIZE_X / CHIP_SIZE_X; i++)
 	{
 		for (int j = 0; j < SCREEN_SIZE_Y / CHIP_SIZE_Y; j++)
 		{
-			switch (stage) {					// ﾗﾝﾀﾞﾑで出した値でｽﾃｰｼﾞを決める
+			switch (stage) {					
 			case STAGE1:
 				nowStage[j][i] = stage1[j][i];
 				break;
@@ -214,8 +267,14 @@ void stageInit(void)
 			case STAGE5:
 				nowStage[j][i] = stage5[j][i];
 				break;
+			case STAGE6:
+				nowStage[j][i] = stage6[j][i];
+				break;
 			case EX_STAGE1:
 				nowStage[j][i] = Iwanna[j][i];
+				break;
+			case EX_STAGE2:
+				nowStage[j][i] = stage7[j][i];
 				break;
 			default:
 				AST();
@@ -245,6 +304,7 @@ void stageInit(void)
 	fread(&mapData, sizeof(mapData), 1, fp);
 	fclose(fp);*/
 	
+	// ﾄﾗｯﾌﾟの初期化
 	for (int i = 0; i < TRAP_MAX; i++) {
 		trapInit(i);
 	}
@@ -256,12 +316,13 @@ void trapInit(int i) {
 	trap[i].pos = { 0, 0 };
 	trap[i].size = { CHIP_SIZE_X, CHIP_SIZE_Y };
 	trap[i].cnt = 0;
+	trap[i].cntMax = 200;
 	trap[i].moveSpeed = NOMAL_SPEED;
 	trap[i].type = 0;															// 当たり判定を矩形と矩形で初期化
 	trap[i].tEvent = BLOCK_FALL;												// イベントは落下で初期化
 
 
-	// ｽﾃｰｼﾞ1用
+	// ｽﾃｰｼﾞ1
 	if (stage == STAGE1)
 	{
 		switch (i) {
@@ -284,51 +345,37 @@ void trapInit(int i) {
 			// 1/6針
 		case 6:
 			trap[i].pos = { 4 * CHIP_SIZE_X, 19 * CHIP_SIZE_Y - CHIP_SIZE_Y / 6 };
-			trap[i].type = 1;																	// 当たり判定を小さくするため　1
-			trap[i].flag = true;																// 動きがないため常にtrue
+		
 			trap[i].tEvent = BLOCK_STOP;
 			break;
 			// 飛び出す針(実際は飛び出すのではなく針の上に背景を描画して隠していた針を出現させる) 
 		case 7:
-			trap[i].pos = { 20 * CHIP_SIZE_X, 17 * CHIP_SIZE_Y };
-			trap[i].type = 4;																	// 当たり判定がないため　4
-			trap[i].flag = true;																// ﾌﾟﾚｲﾔｰが近づくまでtrue
+			trap[i].pos = { 20 * CHIP_SIZE_X, 17 * CHIP_SIZE_Y };		
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		case 8:
 			trap[i].pos = { 12 * CHIP_SIZE_X, 7 * CHIP_SIZE_Y };
-			trap[i].type = 4;																	// 当たり判定がないため　4
-			trap[i].flag = true;																// ﾌﾟﾚｲﾔｰが近づくまでtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		case 9:
 			trap[i].pos = { 16 * CHIP_SIZE_X, 4 * CHIP_SIZE_Y };
-			trap[i].type = 4;																	// 当たり判定がないため　4
-			trap[i].flag = true;																// ﾌﾟﾚｲﾔｰが近づくまでtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		case 10:
 			trap[i].pos = { 17 * CHIP_SIZE_X, 17 * CHIP_SIZE_Y };
-			trap[i].type = 4;																	// 当たり判定がないため　4
-			trap[i].flag = true;																// ﾌﾟﾚｲﾔｰが近づくまでtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 			// 矢
 		case 11:
 			trap[i].pos = { 25 * CHIP_SIZE_X, 18 * CHIP_SIZE_Y };
-			trap[i].type = 2;
 			trap[i].tEvent = BLOCK_MOVE;
 		default:
 			break;
 		}
-		/*trap[0].pos = { 5 * CHIP_SIZE_X, 5 * CHIP_SIZE_Y };
-		trap[1].pos = { 5 * CHIP_SIZE_X, 0 };
-		if (i >= 2 && i <= 5) {
-			trap[i].pos = { 5 * CHIP_SIZE_X, (i - 1) * CHIP_SIZE_Y };
-		}*/
 
 	}
 
+	// ｽﾃｰｼﾞ2
 	if (stage == STAGE2) {
 		switch (i) {
 			// 飛び出す針(実際は飛び出すのではなく針の上に背景を描画して隠していた針を出現させる) 
@@ -378,37 +425,31 @@ void trapInit(int i) {
 			trap[i].pos = { 25 * CHIP_SIZE_X, 8 * CHIP_SIZE_Y + (i - 8) * CHIP_SIZE_Y };
 			trap[i].type = 2;
 			trap[i].tEvent = BLOCK_MOVE;
+			trap[i].cntMax = 0;
 			break;
 		default:
 			break;
 		}
 	}
 
+	// ｽﾃｰｼﾞ3
 	if (stage == STAGE3) {
 		switch (i) {
 		case 0:
 			trap[i].pos = { 25 * CHIP_SIZE_X, 3 * CHIP_SIZE_Y - CHIP_SIZE_Y / 6 };
-			trap[i].type = 1;
-			trap[i].flag = true;	// 動きがないため常にtrue
 			trap[i].tEvent = BLOCK_STOP;
 			break;
 			// 飛び出す針
 		case 1:
 			trap[i].pos = { 20 * CHIP_SIZE_X, 5 * CHIP_SIZE_Y };
-			trap[i].type = 4;																	// 当たり判定がないため　4
-			trap[i].flag = true;																// ﾌﾟﾚｲﾔｰが近づくまでtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		case 2:
 			trap[i].pos = { 15 * CHIP_SIZE_X, 15 * CHIP_SIZE_Y };
-			trap[i].type = 4;																	// 当たり判定がないため　4
-			trap[i].flag = true;																// ﾌﾟﾚｲﾔｰが近づくまでtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		case 3:
 			trap[i].pos = { 4 * CHIP_SIZE_X, 6 * CHIP_SIZE_Y };
-			trap[i].type = 4;																	// 当たり判定がないため　4
-			trap[i].flag = true;																// ﾌﾟﾚｲﾔｰが近づくまでtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		default:
@@ -416,14 +457,13 @@ void trapInit(int i) {
 		}
 	}
 
+	// ｽﾃｰｼﾞ4
 	if (stage == STAGE4) {
 		switch (i) {
 		case 0:
 		case 1:
 		case 2:
 			trap[i].pos = { CHIP_SIZE_X + CHIP_SIZE_X * i, 13 * CHIP_SIZE_Y };
-			trap[i].type = 4;																	// 当たり判定がないため　4
-			trap[i].flag = true;																// ﾌﾟﾚｲﾔｰが近づくまでtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		default:
@@ -431,6 +471,7 @@ void trapInit(int i) {
 		}
 	}
 
+	// ｽﾃｰｼﾞ5
 	if (stage == STAGE5) {
 		switch (i) {
 		case 0:		// 普通落下ﾌﾞﾛｯｸ
@@ -442,159 +483,271 @@ void trapInit(int i) {
 			break;
 		case 5:
 			trap[i].pos = { 4 * CHIP_SIZE_X, 15 * CHIP_SIZE_Y };
-			trap[i].type = 4;																	// 当たり判定がないため　3
-			trap[i].flag = true;																// ﾌﾟﾚｲﾔｰが近づくまでtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		case 6:
 			trap[i].pos = { 14 * CHIP_SIZE_X, 15 * CHIP_SIZE_Y };
-			trap[i].type = 4;																	// 当たり判定がないため　4
-			trap[i].flag = true;																// ﾌﾟﾚｲﾔｰが近づくまでtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		case 7:
 			trap[i].pos = { 11 * CHIP_SIZE_X, 10 * CHIP_SIZE_Y };
-			trap[i].type = 4;																	// 当たり判定がないため　4
-			trap[i].flag = true;																// ﾌﾟﾚｲﾔｰが近づくまでtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		case 8:
 			trap[i].pos = { 13 * CHIP_SIZE_X, 11 * CHIP_SIZE_Y };
-			trap[i].type = 4;																	// 当たり判定がないため　4
-			trap[i].flag = true;																// ﾌﾟﾚｲﾔｰが近づくまでtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		case 9:
 			trap[i].pos = { 2 * CHIP_SIZE_X, 5 * CHIP_SIZE_Y };
-			trap[i].type = 4;																	// 当たり判定がないため　4
-			trap[i].flag = true;																// ﾌﾟﾚｲﾔｰが近づくまでtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		case 10:
 			trap[i].pos = { 12 * CHIP_SIZE_X, 7 * CHIP_SIZE_Y };
-			trap[i].type = 4;																	// 当たり判定がないため　4
-			trap[i].flag = true;																// ﾌﾟﾚｲﾔｰが近づくまでtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		default:
 			break;
 		}
 	}
+
+	// ｽﾃｰｼﾞ6
+	if (stage == STAGE6) {
+		switch (i) {
+		// 飛び出す針
+		case 0:	
+			trap[i].pos = { 8 * CHIP_SIZE_X, 15 * CHIP_SIZE_Y };
+			trap[i].tEvent = BLOCK_POP;
+			break;
+		case 1:
+			trap[i].pos = { 20 * CHIP_SIZE_X, 15 * CHIP_SIZE_Y };
+			trap[i].tEvent = BLOCK_POP;
+			break;
+		case 2:
+			trap[i].pos = {  CHIP_SIZE_X, 5 * CHIP_SIZE_Y };
+			trap[i].tEvent = BLOCK_POP;
+			break;
+		case 3:
+			trap[i].pos = { 11 * CHIP_SIZE_X, 7 * CHIP_SIZE_Y };
+			trap[i].tEvent = BLOCK_POP;
+			break;
+		case 4:
+			trap[i].pos = { 14 * CHIP_SIZE_X, 8 * CHIP_SIZE_Y };
+			trap[i].tEvent = BLOCK_POP;
+			break;
+		case 5:
+			trap[i].pos = { 21 * CHIP_SIZE_X, 5 * CHIP_SIZE_Y };
+			trap[i].tEvent = BLOCK_POP;
+			break;
+		// 6分の1針
+		case 6:
+			trap[i].pos = { 23 * CHIP_SIZE_X, 3 * CHIP_SIZE_Y - CHIP_SIZE_Y / 6};
+			trap[i].tEvent = BLOCK_STOP;
+			break;
+		default:
+			break;
+		}
+	}
+
+	// EXｽﾃｰｼﾞ2
+	if (stage == EX_STAGE2)
+	{
+		switch (i) {
+			// 落下針
+		case 0:
+			trap[i].pos = { 3 * CHIP_SIZE_X, 2 * CHIP_SIZE_Y };
+			break;
+			// 普通落下ﾌﾞﾛｯｸ
+		case 1:
+		case 2:
+			trap[i].pos = { 3 * CHIP_SIZE_X, (i - 1)* CHIP_SIZE_Y };
+			break;
+		case 3:
+			trap[i].pos = { 15 * CHIP_SIZE_X, 0 };
+			break;
+		// 矢
+		case 4:
+			trap[i].pos = { 26 * CHIP_SIZE_X, 18 * CHIP_SIZE_Y };
+			trap[i].tEvent = BLOCK_MOVE;
+			break;
+		case 5:
+			trap[i].pos = { 23 * CHIP_SIZE_X, 4 * CHIP_SIZE_Y };
+			trap[i].tEvent = BLOCK_MOVE;
+			break;
+		default:
+			break;
+		}
+
+	}
+
+	// ｲﾍﾞﾝﾄごとのﾄﾗｯﾌﾟの初期化
+	switch (trap[i].tEvent) {
+	case BLOCK_FALL:
+		break;
+	case BLOCK_POP:
+		trap[i].type = 4;																	// 当たり判定がないため　4
+		trap[i].flag = true;																// ﾌﾟﾚｲﾔｰが近づくまでtrue
+		trap[i].cntMax = 100;
+		break;
+	case BLOCK_MOVE:
+		trap[i].type = 2;
+		break;
+	case BLOCK_STOP:
+		trap[i].type = 1;																	// 当たり判定を小さくするため　1
+		trap[i].flag = true;																// 動きがないため常にtrue
+		break;
+	}
 }
 
 void stageMain(void)
 {
-	CHARACTER tmp = GetPlayer();
+	
+	// ﾄﾗｯﾌﾟの動作
 	for (int i = 0; i < TRAP_MAX; i++) {
-		if (stage == STAGE1) {
-			// 岩落としﾄﾗｯﾌﾟ
-			if (trap[i].tEvent == BLOCK_FALL) {
-				if (tmp.pos.x < trap[i].pos.x + 2 * CHIP_SIZE_X && tmp.pos.x > trap[i].pos.x - 3 * CHIP_SIZE_X && tmp.pos.y < trap[i].pos.y + 7 * CHIP_SIZE_Y) {
-					trap[i].flag = true;						// ﾄﾗｯﾌﾟの起動
-				}
-				TrapMove(trap[i].tEvent, i, 200);
-		
-			}
-			// 針飛び出し
-			if (trap[i].tEvent == BLOCK_POP) {
-				if (tmp.pos.x < trap[i].pos.x + CHIP_SIZE_X * 2
-					&& tmp.pos.x > trap[i].pos.x - CHIP_SIZE_X
-					&& tmp.pos.y < trap[i].pos.y + CHIP_SIZE_Y
-					&& tmp.pos.y > trap[i].pos.y - CHIP_SIZE_Y) {
-					TrapMove(trap[i].tEvent, i, 0);
-				}
-				else {
-					trap[i].flag = true;
-				}
-			}
-			// 矢
-			if (trap[i].tEvent == BLOCK_MOVE) {
-				if (tmp.pos.x > trap[i].pos.x - 13 * CHIP_SIZE_X
-					&& tmp.pos.y < trap[i].pos.y + CHIP_SIZE_Y * 2
-					&& tmp.pos.y > trap[i].pos.y - CHIP_SIZE_Y) {
-					trap[i].flag = true;
-				}
-				TrapMove(trap[i].tEvent, i, 200);
-				
-			}
-		}
+		for (int j = 0; j < 4; j++) {
+			CHARACTER tmp = GetPlayer(j);
+			if (stage == STAGE1) {
+				// 岩落としﾄﾗｯﾌﾟ
+				if (trap[i].tEvent == BLOCK_FALL) {
+					if (tmp.pos.x < trap[i].pos.x + 2 * CHIP_SIZE_X && tmp.pos.x > trap[i].pos.x - 3 * CHIP_SIZE_X && tmp.pos.y < trap[i].pos.y + 7 * CHIP_SIZE_Y) {
+						trap[i].flag = true;						// ﾄﾗｯﾌﾟの起動
+					}
 
-		if (stage == STAGE2) {
-			// 針飛び出し
-			if (trap[i].tEvent == BLOCK_POP) {
-				if (tmp.pos.x < trap[i].pos.x + CHIP_SIZE_X * 2
-					&& tmp.pos.x > trap[i].pos.x - CHIP_SIZE_X
-					&& tmp.pos.y < trap[i].pos.y + CHIP_SIZE_Y
-					&& tmp.pos.y > trap[i].pos.y - CHIP_SIZE_Y) {
-					TrapMove(trap[i].tEvent, i, 0);
 				}
-				else {
-					trap[i].flag = true;
+				// 針飛び出し
+				if (trap[i].tEvent == BLOCK_POP) {
+					if (tmp.pos.x < trap[i].pos.x + CHIP_SIZE_X * 2
+						&& tmp.pos.x > trap[i].pos.x - CHIP_SIZE_X
+						&& tmp.pos.y < trap[i].pos.y + CHIP_SIZE_Y
+						&& tmp.pos.y > trap[i].pos.y - CHIP_SIZE_Y) {
+						trap[i].flag = false;
+						trap[i].cnt = 0;
+					}
 				}
-			}
-			// 矢
-			if (trap[i].tEvent == BLOCK_MOVE) {
-				trap[i].flag = true;
-				TrapMove(trap[i].tEvent, i, 0);
-				if (trap[i].cnt > 200) {
-					trapInit(i);
-					trap[i].cnt = 0;
-					trap[i].flag = false;
+				// 矢
+				if (trap[i].tEvent == BLOCK_MOVE) {
+					if (tmp.pos.x > trap[i].pos.x - 13 * CHIP_SIZE_X
+						&& tmp.pos.y < trap[i].pos.y + CHIP_SIZE_Y * 2
+						&& tmp.pos.y > trap[i].pos.y - CHIP_SIZE_Y) {
+						trap[i].flag = true;
+					}
 				}
 			}
-		}
 
-		if (stage == STAGE3) {
-			// 針飛び出し
-			if (trap[i].tEvent == BLOCK_POP) {
-				if (tmp.pos.x < trap[i].pos.x + CHIP_SIZE_X * 2
-					&& tmp.pos.x > trap[i].pos.x - CHIP_SIZE_X
-					&& tmp.pos.y < trap[i].pos.y + CHIP_SIZE_Y
-					&& tmp.pos.y > trap[i].pos.y - CHIP_SIZE_Y) {
-					TrapMove(trap[i].tEvent, i, 0);
+			if (stage == STAGE2) {
+				// 針飛び出し
+				if (trap[i].tEvent == BLOCK_POP) {
+					if (tmp.pos.x < trap[i].pos.x + CHIP_SIZE_X * 2
+						&& tmp.pos.x > trap[i].pos.x - CHIP_SIZE_X
+						&& tmp.pos.y < trap[i].pos.y + CHIP_SIZE_Y
+						&& tmp.pos.y > trap[i].pos.y - CHIP_SIZE_Y) {
+						trap[i].flag = false;
+						trap[i].cnt = 0;
+					}
 				}
-				else {
-					trap[i].flag = true;
-				}
-			}
-		}
-
-		if (stage == STAGE4) {
-			if (trap[i].tEvent == BLOCK_POP) {
-				if (tmp.pos.x < trap[i].pos.x + CHIP_SIZE_X * 2
-					&& tmp.pos.x > trap[i].pos.x - CHIP_SIZE_X
-					&& tmp.pos.y < trap[i].pos.y + CHIP_SIZE_Y
-					&& tmp.pos.y > trap[i].pos.y - CHIP_SIZE_Y * 2) {
-					TrapMove(trap[i].tEvent, i, 0);
-				}
-				else {
-					trap[i].flag = true;
-				}
-			}
-		}
-		if (stage == STAGE5) {
-			// 岩落としﾄﾗｯﾌﾟ
-			if (trap[i].tEvent == BLOCK_FALL) {
-				if (tmp.pos.x < trap[i].pos.x + 2 * CHIP_SIZE_X && tmp.pos.x > trap[i].pos.x - 3 * CHIP_SIZE_X && tmp.pos.y < trap[i].pos.y + 7 * CHIP_SIZE_Y) {
-					trap[i].flag = true;						// ﾄﾗｯﾌﾟの起動
-				}
-				TrapMove(trap[i].tEvent, i, 200);
-			}
-			// 針飛び出し
-			if (trap[i].tEvent == BLOCK_POP) {
-				if (tmp.pos.x < trap[i].pos.x + CHIP_SIZE_X * 2
-					&& tmp.pos.x > trap[i].pos.x - CHIP_SIZE_X
-					&& tmp.pos.y < trap[i].pos.y + CHIP_SIZE_Y
-					&& tmp.pos.y > trap[i].pos.y - CHIP_SIZE_Y) {
-					TrapMove(trap[i].tEvent, i, 0);
-				}
-				else {
+				// 矢
+				if (trap[i].tEvent == BLOCK_MOVE) {
 					trap[i].flag = true;
 				}
 			}
 
-		}
+			if (stage == STAGE3) {
+				// 針飛び出し
+				if (trap[i].tEvent == BLOCK_POP) {
+					if (tmp.pos.x < trap[i].pos.x + CHIP_SIZE_X * 2
+						&& tmp.pos.x > trap[i].pos.x - CHIP_SIZE_X
+						&& tmp.pos.y < trap[i].pos.y + CHIP_SIZE_Y
+						&& tmp.pos.y > trap[i].pos.y - CHIP_SIZE_Y) {
+						trap[i].flag = false;
+						trap[i].cnt = 0;
+					}
+				}
+			}
 
+			if (stage == STAGE4) {
+				if (trap[i].tEvent == BLOCK_POP) {
+					if (tmp.pos.x < trap[i].pos.x + CHIP_SIZE_X * 2
+						&& tmp.pos.x > trap[i].pos.x - CHIP_SIZE_X
+						&& tmp.pos.y < trap[i].pos.y + CHIP_SIZE_Y
+						&& tmp.pos.y > trap[i].pos.y - CHIP_SIZE_Y * 2) {
+						trap[i].flag = false;
+						trap[i].cnt = 0;
+					}
+				}
+			}
+
+			if (stage == STAGE5) {
+				// 岩落としﾄﾗｯﾌﾟ
+				if (trap[i].tEvent == BLOCK_FALL) {
+					if (tmp.pos.x < trap[i].pos.x + 2 * CHIP_SIZE_X && tmp.pos.x > trap[i].pos.x - 3 * CHIP_SIZE_X && tmp.pos.y < trap[i].pos.y + 7 * CHIP_SIZE_Y) {
+						trap[i].flag = true;						// ﾄﾗｯﾌﾟの起動
+					}
+				}
+				// 針飛び出し
+				if (trap[i].tEvent == BLOCK_POP) {
+					if (tmp.pos.x < trap[i].pos.x + CHIP_SIZE_X * 2
+						&& tmp.pos.x > trap[i].pos.x - CHIP_SIZE_X
+						&& tmp.pos.y < trap[i].pos.y + CHIP_SIZE_Y
+						&& tmp.pos.y > trap[i].pos.y - CHIP_SIZE_Y) {
+						trap[i].flag = false;
+						trap[i].cnt = 0;
+					}
+
+				}
+			}
+
+			if (stage == STAGE6) {
+				// 針飛び出し
+				if (trap[i].tEvent == BLOCK_POP) {
+					if (tmp.pos.x < trap[i].pos.x + (CHIP_SIZE_X + CHIP_SIZE_X / 2)
+						&& tmp.pos.x > trap[i].pos.x - CHIP_SIZE_X
+						&& tmp.pos.y < trap[i].pos.y + CHIP_SIZE_Y
+						&& tmp.pos.y > trap[i].pos.y - CHIP_SIZE_Y) {
+						trap[i].flag = false;
+						trap[i].cnt = 0;
+					}
+				}
+			}
+
+			if (stage == EX_STAGE2) {
+				// 岩落としﾄﾗｯﾌﾟ
+				if (trap[i].tEvent == BLOCK_FALL) {
+					if (tmp.pos.x < trap[i].pos.x + 2 * CHIP_SIZE_X && tmp.pos.x > trap[i].pos.x - 3 * CHIP_SIZE_X && tmp.pos.y < trap[i].pos.y + 7 * CHIP_SIZE_Y) {
+						trap[i].flag = true;						// ﾄﾗｯﾌﾟの起動
+					}
+				}
+				// 矢
+				if (trap[i].tEvent == BLOCK_MOVE) {
+					if (tmp.pos.x > trap[i].pos.x - 13 * CHIP_SIZE_X
+						&& tmp.pos.y < trap[i].pos.y + CHIP_SIZE_Y * 2
+						&& tmp.pos.y > trap[i].pos.y - CHIP_SIZE_Y) {
+						trap[i].flag = true;
+					}
+				}
+			}
+		}
+	}
+
+	for (int i = 0; i < TRAP_MAX; i++) {
+		TrapMove(trap[i].tEvent, i, DIR_LEFT);
+		if (trap[i].pos.x < 0 || trap[i].pos.y > SCREEN_SIZE_Y) {
+			trap[i].cnt++;
+			if (trap[i].cnt > trap[i].cntMax) {				// 再生成の時間
+				trapInit(i);
+				trap[i].cnt = 0;
+			}
+		}
+	}
+	//セーブポイント１ﾙｰﾌﾟ毎に初期化判定
+	for (int i = 0; i < SCREEN_SIZE_X / CHIP_SIZE_X; i++)
+	{
+		for (int j = 0; j < SCREEN_SIZE_Y / CHIP_SIZE_Y; j++)
+		{
+			switch (nowStage[j][i]) {
+			case 17:
+				nowStage[j][i] = 16;
+				break;
+			}
+		}
 	}
 }
 
@@ -664,7 +817,7 @@ void stageDraw(void)
 				// ｺｲﾝ
 				DrawGraph(3 * CHIP_SIZE_X, 25 * CHIP_SIZE_Y, coin, false);
 			}
-			//ステージ3
+			// ｽﾃｰｼﾞ3
 			if (stage == STAGE3)
 			{
 				// 偽ｺﾞｰﾙ
@@ -686,10 +839,10 @@ void stageDraw(void)
 				// ｺｲﾝ
 				DrawGraph(13 * CHIP_SIZE_X, 17 * CHIP_SIZE_Y, coin, false);
 			}
-			//ステージ4
+			// ｽﾃｰｼﾞ4
 			if (stage == STAGE4)
 			{
-				
+				// 飛び出す針
 				for (int h = 0; h < 3; h++)
 				{
 					if (trap[h].flag) {
@@ -697,7 +850,7 @@ void stageDraw(void)
 					}
 				}
 				
-
+				// 半透明床を隠す普通の床
 				for (int y = 8; y < 16; y++)
 				{
 					DrawGraph(y * CHIP_SIZE_X, SCREEN_SIZE_Y - CHIP_SIZE_Y, block[1], true);
@@ -711,8 +864,6 @@ void stageDraw(void)
 				DrawGraph(11 * CHIP_SIZE_X, 17 * CHIP_SIZE_Y, block[1], true);
 				DrawGraph(11 * CHIP_SIZE_X, 11 * CHIP_SIZE_Y, block[1], true);
 
-				
-
 				for (int h = 2; h < 4; h++)
 				{
 					DrawGraph(h * CHIP_SIZE_X, 5 * CHIP_SIZE_Y, block[1], true);
@@ -723,25 +874,66 @@ void stageDraw(void)
 				DrawGraph(25 * CHIP_SIZE_X, 7 * CHIP_SIZE_Y, coin, false);
 				
 			}
-			//ステージ5
+			// ｽﾃｰｼﾞ5
 			if (stage == STAGE5)
 			{
+				// 落下するﾌﾞﾛｯｸ
 				for (int k = 0; k < 5; k++)
 				{
  					DrawGraph(trap[k].pos.x, trap[k].pos.y, block[1], true);			// //trap[] = { 0 ~ 3}
 				}
+				// 飛び出す針
 				for (int k = 5; k < 11; k++)
 				{
 					if (trap[k].flag) {
 						DrawGraph(trap[k].pos.x, trap[k].pos.y, block[0], true);			// //trap[] = { 0 ~ 3}
 					}
 				}
-					DrawGraph(12 * CHIP_SIZE_X, 10 * CHIP_SIZE_Y, coin, false);
-					DrawGraph(CHIP_SIZE_X, 5 * CHIP_SIZE_Y, coin, false);
+				// ｺｲﾝ
+				DrawGraph(12 * CHIP_SIZE_X, 10 * CHIP_SIZE_Y, coin, false);
+				DrawGraph(CHIP_SIZE_X, 5 * CHIP_SIZE_Y, coin, false);
+			}
+			// ｽﾃｰｼﾞ6
+			if (stage == STAGE6) {
+				// 飛び出す針
+				for (int k = 0; k < 6; k++) {
+					if (trap[k].flag) {
+						DrawGraph(trap[k].pos.x, trap[k].pos.y, block[0], true);
+					}
+				}
+				DrawGraph(trap[6].pos.x, trap[6].pos.y, block[3], true);
+				DrawGraph(23 * CHIP_SIZE_X, 3 * CHIP_SIZE_Y, block[1], true);					// ﾄﾗｯﾌﾟの下側を隠すﾌﾞﾛｯｸ
+				// ｺｲﾝ
+				DrawGraph( CHIP_SIZE_X, 4 * CHIP_SIZE_Y, coin, false);
+			}
+
+			if (stage == EX_STAGE2) {
+				// 落下するﾌﾞﾛｯｸ
+				DrawGraph(trap[0].pos.x, trap[0].pos.y, block[4], true);
+				for (int k = 1; k < 4; k++){
+					
+					DrawGraph(trap[k].pos.x, trap[k].pos.y, block[1], true);					//trap[] = { 1 ~ 5}23 * CHIP_SIZE_X, 4 * CHIP_SIZE_Y
+				}
+				// ﾎﾞｳｶﾞﾝと矢
+				if (!trap[4].flag) {
+					DrawGraph(26 * CHIP_SIZE_X, 18 * CHIP_SIZE_Y, bowgun[2], true);
+				}
+				else {
+					DrawGraph(26 * CHIP_SIZE_X, 18 * CHIP_SIZE_Y, bowgun[0], true);
+				}
+				if (!trap[5].flag) {
+					DrawGraph(23 * CHIP_SIZE_X, 4 * CHIP_SIZE_Y, bowgun[2], true);
+				}
+				else {
+					DrawGraph(23 * CHIP_SIZE_X, 4 * CHIP_SIZE_Y, bowgun[0], true);
+				}
+				for (int l = 4; l < 6; l++) {
+					
+					DrawGraph(trap[l].pos.x, trap[l].pos.y, arrow, true);
+				}
 			}
 		}		
-	}
-	//DrawFormatString(0, 60, 0x000000, "trap.pos x %d, y %d" , trap[11].pos.x, trap[11].pos.y);
+	}	//DrawFormatString(0, 60, 0x000000, "trap.pos x %d, y %d" , trap[11].pos.x, trap[11].pos.y);
 }
 
 bool IsPass(XY pos)
@@ -795,6 +987,7 @@ bool NeedleIsPass(XY pos)
 	case 4:
 	case 5:
 	case 6:
+	case 11:
 	case 12:
 	case 13:
 	case 14:
@@ -855,6 +1048,8 @@ bool SaveIsPass(XY pos)
 		ret = false;
 		break;
 	}
+
+
 	return ret;
 }
 
@@ -898,42 +1093,27 @@ TRAP GetTrap(int i) {
 	return trap[i];
 }
 
-void TrapMove(T_EVENT_MODE event, int i, int cnt) {
+void TrapMove(T_EVENT_MODE event, int i, MOVE_DIR dir) {
 	
 	switch (event) {
 	case BLOCK_FALL:
 		if (trap[i].flag) {
 			trap[i].pos.y += trap[i].moveSpeed;
-			if (trap[i].pos.y > SCREEN_SIZE_Y) {
-				trap[i].cnt++;
-				if (trap[i].cnt > cnt) {				// 再生成の時間
-					trapInit(i);
-					trap[i].cnt = 0;
-					trap[i].flag = false;
-				}
-			}
 		}
 		break;
 	case BLOCK_POP:
-		trap[i].flag = false;
+		trap[i].cnt++;
+		if (trap[i].cnt > trap[i].cntMax) {				// 再生成の時間
+			trapInit(i);
+			trap[i].cnt = 0;
+		}
 		break;
 	case BLOCK_MOVE:
 		if (trap[i].flag) {
 			trap[i].pos.x -= trap[i].moveSpeed;
-			if (trap[i].pos.x < 0) {
-				trap[i].cnt++;
-				if (trap[i].cnt > cnt) {
-					trapInit(i);
-					trap[i].cnt = 0;
-					trap[i].flag = false;
-				}
-			}
 		}
 		break;
-	case BLOCK_STOP:
-		break;
 	default:
-		AST();
 		break;
 
 	}

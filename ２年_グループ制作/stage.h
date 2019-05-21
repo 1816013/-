@@ -6,6 +6,7 @@
 #define CHIP_MAX_X 27
 #define CHIP_MAX_Y 20
 
+#define TRAP_MAX 15
 enum TRAP_SPEED {
 	NOMAL_SPEED = 15,
 	HIGH_SPEED = 50
@@ -17,7 +18,9 @@ enum STAGE_NUM {
 	STAGE3,
 	STAGE4,
 	STAGE5,
+	STAGE6,
 	EX_STAGE1,
+	EX_STAGE2,
 	STAGE_MAX
 };
 
@@ -36,6 +39,7 @@ typedef struct {
 	TRAP_SPEED moveSpeed;
 	int animCnt;
 	int cnt;
+	int cntMax;
 	T_EVENT_MODE tEvent;
 	MOVE_DIR moveDir;
 
@@ -61,7 +65,8 @@ bool JumpIsPass(XY pos);
 bool GoalIsPass(XY pos);
 bool SaveIsPass(XY pos);
 TRAP GetTrap(int i);
+void TrapGenerator(XY tmp);
 
-void TrapMove(T_EVENT_MODE event, int i, int cnt);
+void TrapMove(T_EVENT_MODE event, int i, MOVE_DIR dir);
 
 

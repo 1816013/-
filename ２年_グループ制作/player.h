@@ -10,6 +10,10 @@
 #define ACC_STOP 0.30			// 停止加速度
 #define VELOCITY_X_MAX 9		// ﾌﾟﾚｲﾔｰ最大速度
 
+
+#define PLAYER_MAX 4
+
+
 enum OFFSET_TYPE {
 	OFFSET_LEFT_RIGHT,			// 0: movedOffsetはﾌﾟﾚｲﾔｰの移動方向の端の中心movedOffset2はﾌﾟﾚｲﾔｰの頭上の中心movedOffset3はﾌﾟﾚｲﾔｰの足下の中心				
 	OFFSET_HEAD,				// 1: movedOffsetはﾌﾟﾚｲﾔｰの頭上movedOffset2はﾌﾟﾚｲﾔｰの頭上の左端movedOffset3はﾌﾟﾚｲﾔｰの足下の右端
@@ -25,6 +29,7 @@ void PlayerUpdate(void);
 void PlayerDraw(void);
 bool PlayerHitCheck(XY pos, XY size, int shape);
 void SetOffset(OFFSET_TYPE);
+bool PlayerKeyCheck(int i);
+bool PlayerJumpKeyCheck(int i);
 
-
-CHARACTER GetPlayer(void);
+CHARACTER GetPlayer(int i);

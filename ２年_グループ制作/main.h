@@ -20,6 +20,7 @@
 #define G 9.8
 #define ACC_G 10
 
+
 enum GAME_MODE {
 	GMODE_INIT,
 	GMODE_TITLE,
@@ -61,6 +62,7 @@ typedef struct {
 	XY hitPosE;			// 当たり判定用右下
 	bool runFlag;		// 走っているか
 	bool jumpFlag;		// ｼﾞｬﾝﾌﾟ中か
+	bool headFlag;
 	int animCnt;		// ｱﾆﾒｰｼｮﾝ用
 	XY_F velocity;		// 移動速度
 	int point;

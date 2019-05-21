@@ -4,7 +4,7 @@
 #include "stage.h"
 
 
-#define EFFECT_MAX			5000
+#define EFFECT_MAX			9000
 #define TOBICHIRI_MAX		300
 #define BLOCK_EFFECT_MAX	12	
 #define TIME_MAX			150
