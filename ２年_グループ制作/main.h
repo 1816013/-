@@ -28,7 +28,7 @@ enum GAME_MODE {
 	GMODE_BATTLESELECT,
 	GMODE_GAME,
 	GMODE_RESULT,
-	GMODE_GAMEOVER,
+	GMODE_F_RESULT,
 	GMODE_MAX
 };
 
@@ -66,6 +66,7 @@ typedef struct {
 	int animCnt;		// ｱﾆﾒｰｼｮﾝ用
 	XY_F velocity;		// 移動速度
 	int point;
+	int sortPt;
 	int jyuni;
 	int skin;
 }CHARACTER;
@@ -74,12 +75,14 @@ typedef struct {
 	int PlusPt;
 	int BonusPt;	//仮　特定の条件によるボーナス
 	int EndPt;		//仮　ゲーム終了のための必要Pt
+	int CoinPt;
 }PT;
 
 typedef struct {
 	int playerCnt;
 	int DeathCnt;	//仮　プレイヤーの死亡回数
 	int DeathBonusCnt;
+	int GoalCnt;
 }CNT;
 
 bool SysInit(void);
@@ -90,4 +93,7 @@ void GameBattleSelect(void);
 void GameMain(void);
 void GameDraw(void);
 void GameResult(void);
+void GameFinalResult(void);
 void HitCheck();
+int GetPlayerCnt(void);
+void RankSort();

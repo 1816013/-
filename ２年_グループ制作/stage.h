@@ -21,6 +21,7 @@ enum STAGE_NUM {
 	STAGE6,
 	EX_STAGE1,
 	EX_STAGE2,
+	LOBBY_STAGE,
 	STAGE_MAX
 };
 
@@ -65,7 +66,7 @@ bool JumpIsPass(XY pos);
 bool GoalIsPass(XY pos);
 bool SaveIsPass(XY pos);
 TRAP GetTrap(int i);
-void TrapGenerator(XY tmp);
+bool CoinIsPass(XY pos);
 
 void TrapMove(T_EVENT_MODE event, int i, MOVE_DIR dir);
 

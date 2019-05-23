@@ -8,12 +8,13 @@
 
 
 CHARACTER player[PLAYER_MAX];
-int pImage[PLAYER_MAX][4];
+int pImage[PLAYER_MAX][PLAYER_IMAGE_MAX];
 
 int jumpCnt[PLAYER_MAX];
 int Gflag;
+bool goalFlag[PLAYER_MAX];
 int jumpFrame[PLAYER_MAX];
-
+int playerMax;
 bool saveFlag;
 
 XY savePos[PLAYER_MAX];	
@@ -32,33 +33,40 @@ void PlayerSysInit(void)
 	LoadDivGraph("png/プレイヤー3.png", 4, 4, 1, 48, 48, pImage[2]);
 	LoadDivGraph("png/プレイヤー4.png", 4, 4, 1, 48, 48, pImage[3]);
 	for (int i = 0; i < PLAYER_MAX; i++) {
-		savePos[i] = { 13 * CHIP_SIZE_X - PLAYER_SIZE_X / 2, 18 * CHIP_SIZE_Y - PLAYER_SIZE_Y / 2 };		// プレイヤーリス地初期化
+		savePos[i] = { 2 * CHIP_SIZE_X - PLAYER_SIZE_X / 2, 19 * CHIP_SIZE_Y - PLAYER_SIZE_Y / 2 };		// プレイヤーリス地初期化
 	}
 }
 
 void PlayerInit(void)
 {
+	
 	for (int i = 0; i < PLAYER_MAX; i++) {
 		player[i].moveDir = DIR_RIGHT;
-		player[i].pos = savePos[i];
 		//player.pos = { 4 * CHIP_SIZE_X - PLAYER_SIZE_X / 2, 3 * CHIP_SIZE_Y };
 		player[i].size = { PLAYER_SIZE_X, PLAYER_SIZE_Y };
 		player[i].offsetSize = { player[i].size.x / 2, player[i].size.y / 2 };
 		player[i].hitPosS = { 13,  24 };									// ﾌﾟﾚｲﾔｰの左上
 		player[i].hitPosE = { 13,  24 };									// ﾌﾟﾚｲﾔｰの右下
 		player[i].velocity = { 0,0 };
-		player[i].flag = true;
 		player[i].animCnt = 0;
 		jumpFrame[i] = 15;
 		jumpCnt[i] = 0;
+		goalFlag[i] = false;
 	}
+	playerMax = GetPlayerCnt();
+	for (int j = 0; j < playerMax; j++) {
+		player[j].pos = savePos[j];
+		player[j].flag = true;
+	}
+	
 
 
 }
 
 void PlayerUpdate(void)
 {
-	for (int i = 0; i < PLAYER_MAX; i++) {
+	playerMax = GetPlayerCnt();
+	for (int i = 0; i < playerMax; i++) {
 		//　1ﾙｰﾌﾟ毎に初期化する変数
 		XY tmpPos;
 		//XY playeroldPos = player.pos;
@@ -249,6 +257,10 @@ void PlayerUpdate(void)
 				savePos[i] = player[i].pos;
 			}
 
+			if (!GoalIsPass(player[i].pos)) {
+				player[i].flag = false;
+				goalFlag[i] = true;
+			}
 
 			// 画面外にﾌﾟﾚｲﾔｰが出たら
 			if (player[i].pos.y > SCREEN_SIZE_Y)
@@ -259,11 +271,12 @@ void PlayerUpdate(void)
 
 		}
 		else {	// ﾌﾟﾚｰﾔｰが死んだとき
-
-			if (trgKey[ENTER]) {
-				player[i].pos = savePos[i];
-				player[i].velocity = { 0,0 };
-				player[i].flag = true;
+			if (!goalFlag[i]) {
+				if (trgKey[ENTER]) {
+					player[i].pos = savePos[i];
+					player[i].velocity = { 0,0 };
+					player[i].flag = true;
+				}
 			}
 		}
 		player[i].animCnt++;
@@ -293,7 +306,7 @@ void PlayerDraw(void)
 				}
 			}
 		}
-		DrawFormatString(0, 48, 0x000000, "playerPos: %d , %d", player[i].pos.x, player[i].pos.y);
+		DrawFormatString(0, 48, 0x000000, "playerPos 1: %d , %d", player[0].pos.x, player[0].pos.y);
 		//DrawCircle(player.pos.x, player.pos.y, 5,  0xff0000, true);
 	}
 }

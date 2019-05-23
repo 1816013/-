@@ -45,7 +45,6 @@ int WINAPI WinMain(HINSTANCE hINSTANCE, HINSTANCE hPrevInstance, LPSTR IpCmdLine
 			{
 				gameMode = GMODE_SELECT;
 			}
-
 			GameTitle();
 			break;
 		case GMODE_SELECT:
@@ -53,27 +52,22 @@ int WINAPI WinMain(HINSTANCE hINSTANCE, HINSTANCE hPrevInstance, LPSTR IpCmdLine
 			break;
 		case GMODE_BATTLESELECT:
 			GameBattleSelect();
+			GameInit();
 			break;
 		case GMODE_GAME:
 			GameMain();
 			HitCheck();
-			if (trgKey[START])gameMode = GMODE_RESULT;
+			if (trgKey[START])gameMode = GMODE_RESULT;	// ﾃﾞﾊﾞｯｸﾞ用
 			break;
 		case GMODE_RESULT:
 			GameResult();
-			if (trgKey[START])
-				if ((GameCycle < Arrow/*GameCycleMax*/) && (EndPt < 100))
-				{
-					GameCycle += 1;
-					EndPt += 10;
-					gameMode = GMODE_GAME;
-					GameInit();
-
-				}
-				else if ((GameCycle == Arrow/*GameCycleMax*/) || (EndPt >= 100))
-				{
-					gameMode = GMODE_INIT/*GAMEOVER*/;
-				}
+			break;
+		case GMODE_F_RESULT:
+			GameFinalResult();
+			if (trgKey[START]) {
+				SysInit();
+				gameMode = GMODE_INIT;
+			}
 
 			break;
 		default:
@@ -114,9 +108,11 @@ bool SysInit(void)
 	cnt.playerCnt = 1;
 	cnt.DeathCnt = 0;
 	pt.EndPt = 0;
+	pt.CoinPt = 20;
 	for (int i = 0; i < 4; i++)
 	{
 		playerPt[i].point = 0;
+		playerPt[i].sortPt = 0;
 
 		playerPt[i].skin = 1;
 	}
@@ -126,7 +122,7 @@ bool SysInit(void)
 
 void GameInit(void)
 {
-	
+	cnt.GoalCnt = 0;
 	stageInit();
 	PlayerInit();
 	EffectInit();
@@ -166,7 +162,7 @@ void GameSelect(void)
 {
 	DrawString(0, 0, "playerSelect", 0xFFFFFF);
 
-	for (int i = 0; i <= cnt.playerCnt; i++)
+	for (int i = 0; i < cnt.playerCnt; i++)
 	{
 		DrawFormatString(0, 100 + (12 * i), 0xFFFFFF, "player = %d", playerPt[i].skin);
 	}
@@ -256,25 +252,23 @@ void GameBattleSelect(void)
 	if (trgKey[START])
 	{
 		gameMode = GMODE_GAME;
-
+		
+ 		
 	}
 }
 
 void GameMain(void)
 {
 	srand((unsigned)time(NULL));						//仮　乱数を実行するたびにランダム化
-
-	playerPt[0].jyuni = rand() % 4 + 1;					//仮　元となる順位
-	for (int i = 0; i < 4; i++)
+ 	playerPt[0].jyuni = rand() % 4 + 1;					//仮　元となる順位
+	
+	for (int i = 0; i < 3; i++)
 	{
-		playerPt[i].jyuni = playerPt[i - 1].jyuni + 1;				//仮　順位をランダムに決める 1～4位　例　player1の順位はplayer1 - 1 の順位に1を足したもの
-		if (playerPt[i].jyuni == 5) {
-			playerPt[i].jyuni = 1;
+		playerPt[i + 1].jyuni = playerPt[i].jyuni + 1;				//仮　順位をランダムに決める 1～4位　例　player1の順位はplayer1 - 1 の順位に1を足したもの
+		if (playerPt[i + 1].jyuni > 4) {
+			playerPt[i + 1].jyuni = 1;
 		}
 	}
-
-	pt.BonusPt = 0;
-
 
 	for (int i = 0; i < 4; i++)
 	{
@@ -325,10 +319,19 @@ void GameMain(void)
 	GameDraw();
 
 	
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < cnt.playerCnt; i++)
 	{
 		CHARACTER tmp = GetPlayer(i);
-		if (!GoalIsPass(tmp.pos)) {
+		// ｺﾞｰﾙ判定
+		if (tmp.flag) {
+			if (!GoalIsPass(tmp.pos)) {
+				cnt.GoalCnt++;
+			}
+			if (!CoinIsPass(tmp.pos)) {
+				pt.BonusPt += pt.CoinPt;
+			}
+		}
+		if (cnt.GoalCnt > cnt.playerCnt) {
 			stopCnt = 0;
 			gameMode = GMODE_RESULT;
 			playerPt[i].point += pt.PlusPt + pt.BonusPt;
@@ -340,7 +343,7 @@ void GameMain(void)
 
 void GameResult(void)
 {
-	if (trgKey[START])
+	if (trgKey[START]) {
 		if ((GameCycle < GameCycleMax) && (playerPt[1].point < pt.EndPt))
 		{
 			GameCycle += 1;
@@ -350,35 +353,40 @@ void GameResult(void)
 		}
 		else if ((GameCycle == GameCycleMax) || (playerPt[1].point >= pt.EndPt))
 		{
-			SysInit();
-			gameMode = GMODE_INIT/*GAMEOVER*/;
+			gameMode = GMODE_F_RESULT/*GAMEOVER*/;
 		}
-	if ((GameCycle == GameCycleMax) || (playerPt[1].point >= pt.EndPt))
-	{
-		DrawString(0, 0, "FinalResult", 0xFFFFFF);
 	}
-	else
-	{
-		DrawString(0, 0, "GameResult", 0xFFFFFF);
-	}
-	DrawFormatString(0, 12, 0xFFFFFF, "player1.Pt = %d", playerPt[1].point);
-
+	
+	// 描画
+	DrawString(0, 0, "GameResult", 0xFFFFFF);
 	DrawFormatString(0, 60, 0xFFFFFF, "DeathCnt = %d", cnt.DeathCnt);
 	DrawFormatString(0, 72, 0xFFFFFF, "BonusPt = %d", pt.BonusPt);
 	DrawFormatString(0, 84, 0xFFFFFF, "EndPt = %d", pt.EndPt);
-
-
-
-	DrawFormatString(0, 108, 0xFFFFFF, "player1 jyuni = %d位", playerPt[1].jyuni); //仮　順位描写
-
-	DrawFormatString(0, 24, 0xFFFFFF, "player2.Pt = %d", playerPt[2].point);
-	DrawFormatString(0, 36, 0xFFFFFF, "player3.Pt = %d", playerPt[3].point);
-	DrawFormatString(0, 48, 0xFFFFFF, "player4.Pt = %d", playerPt[4].point);
-
-	DrawFormatString(0, 120, 0xFFFFFF, "player2 jyuni = %d位", playerPt[2].jyuni); //仮　順位描写
-	DrawFormatString(0, 132, 0xFFFFFF, "player3 jyuni = %d位", playerPt[3].jyuni); //仮　順位描写
-	DrawFormatString(0, 144, 0xFFFFFF, "player4 jyuni = %d位", playerPt[4].jyuni); //仮　順位描写
+	for (int i = 0; i < cnt.playerCnt; i++) {
+		DrawFormatString(0, 12 * (i + 1), 0xFFFFFF, "player%d.Pt = %d", i + 1, playerPt[i].point);
+		DrawFormatString(0, 108 + 12 * (i +1 ), 0xFFFFFF, "player%d jyuni = %d位", i + 1, playerPt[i].jyuni); //仮　順位描写
+	}
 }
+
+void GameFinalResult(void) {
+	
+	
+
+	for (int i = 0; i < cnt.playerCnt; i++) {
+		playerPt[i].sortPt = playerPt[i].point;
+	}
+
+	RankSort();		// 順位付けソート
+
+	// 描画系
+	DrawString(0, 0, "FinalResult", 0xFFFFFF);
+	for (int i = 0; i < cnt.playerCnt; i++) {
+		DrawFormatString(0, 12 * (i + 1), 0xFFFFFF, "player%d.Pt = %d", i + 1, playerPt[i].point);
+		DrawFormatString(0, 108 + 12 * (i + 1), 0xFFFFFF, "player%d jyuni = %d位", i + 1, playerPt[i].jyuni); //仮　順位描写
+		DrawFormatString(0, 180 + 12 * (i + 1), 0xFFFFFF, "player%d.sortPt = %d", i + 1, playerPt[i].sortPt);
+	}
+}
+
 void HitCheck() {
 	for (int i = 0; i < TRAP_MAX; i++) {
 		TRAP tmp = GetTrap(i);
@@ -397,4 +405,38 @@ void GameDraw(void)
 	DrawFormatString(0, 12, 0xFFFFFF, "GameCeycle = %d", GameCycle);
 	DrawFormatString(0, 24, 0xFFFFFF, "Arrow = %d", Arrow);
 	DrawFormatString(0, 0, 0xFFFFFF, "GameMain", gameCounter);
+}
+
+int GetPlayerCnt(void) {
+	return cnt.playerCnt;
+}
+
+void RankSort() {
+	CHARACTER tmp;
+	for (int j = 0; j < cnt.playerCnt - 1; j++) {
+		for (int i = 0; i < cnt.playerCnt - 1; i++) {
+			if (playerPt[i].sortPt < playerPt[i + 1].sortPt) {
+				tmp.sortPt = playerPt[i].sortPt;
+				playerPt[i].sortPt = playerPt[i + 1].sortPt;
+				playerPt[i + 1].sortPt = tmp.sortPt;
+			}
+		}
+	}
+	for (int i = 0; i < cnt.playerCnt; i++) {
+		for (int j = 0; j < cnt.playerCnt; j++) {
+			if (playerPt[i].sortPt == playerPt[j].point)
+			{
+					playerPt[j].jyuni = i + 1;
+				if (playerPt[i].sortPt == playerPt[i - 1].sortPt) 
+				{
+					playerPt[j].jyuni = i ;
+					if (playerPt[i].sortPt == playerPt[i - 2].sortPt) 
+					{
+						playerPt[j].jyuni = i - 1;
+					}
+				}
+			}
+		}
+	}
+
 }

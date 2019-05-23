@@ -4,17 +4,17 @@
 #include "keycheck.h"
 #include "player.h"
 
-#define TRAP_MAX 15
+#define TRAP_MAX 20
 FILE* fp;
 
 //int mapData[20*27];
 
 // œØÃﬂ¡ØÃﬂâÊëú
-int block[18];
+int block[19];
 XY mapPos;
 
 // âÊëú ›ƒﬁŸ
-int coin;			// ∫≤›
+//int coin;			// ∫≤›
 int arrow;			// ñÓ
 int bowgun[6];		// Œﬁ≥∂ﬁ›
 
@@ -85,7 +85,7 @@ int stage2[CHIP_MAX_Y][CHIP_MAX_X] = {
 	1,0,0,1,7,2,0,0,0, 0,0,1,1,1,1,7,0,0, 0,0,1,1,1,1,0,0,1,
 	1,0,0,1,0,0,1,0,0, 0,0,13,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
 	1,0,0,1,0,0,0,1,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
-	1,0,0,1,0,0,0,0,1, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,1,18,0,0,0,1, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
 	1,0,0,1,0,0,0,0,0, 1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
 	1,0,0,1,0,0,0,0,0, 12,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
 	1,1,7,1,1,1,1,1,1, 1,7,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1
@@ -102,14 +102,14 @@ int stage3[CHIP_MAX_Y][CHIP_MAX_X] = {
 	1,0,0,0,1,1,1,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
 	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
 	0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
-	12,0,0,0,0,0,0,0,1, 1,1,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
+	11,0,0,0,0,0,0,0,1, 1,1,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
 	1,2,1,0,0,0,0,0,0, 0,0,0,0,0,0,12,0,0, 0,0,0,0,1,1,1,1,1,
 	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,1,1,7,0, 0,0,0,0,0,0,0,0,1,
 	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
 	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
 	1,0,0,0,0,0,0,0,0, 0,0,1,0,0,0,12,0,0, 1,1,1,0,0,0,0,0,1,
 	1,0,0,0,0,0,0,0,0, 0,1,1,0,0,1,1,0,0, 0,0,0,0,0,0,0,0,1,
-	1,0,0,0,0,0,0,0,0, 1,1,1,0,0,1,1,1,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0, 1,1,1,0,18,1,1,1,0, 0,0,0,0,0,0,0,0,1,
 	1,0,0,10,0,0,0,0,1, 1,1,1,0,0,1,1,1,1, 0,0,0,0,0,0,0,0,1,
 	1,1,1,1,1,1,1,1,1, 1,1,1,2,2,1,1,1,1, 1,1,1,1,1,1,1,1,1
 };
@@ -122,7 +122,7 @@ int stage4[CHIP_MAX_Y][CHIP_MAX_X] = {
 	1,0,0,0,0,0,0,1,1, 1,1,0,0,0,0,0,0,0, 0,1,1,2,0,0,0,0,1,
 	1,1,2,2,1,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
 	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,1,1,1,0, 0,0,0,0,0,0,0,0,1,
-	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,18,1,
 	1,0,0,0,0,1,1,2,1, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
 	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,12,1,0,1,
 	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
@@ -143,13 +143,13 @@ int stage5[CHIP_MAX_Y][CHIP_MAX_X]{
 	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,9,
 	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,1,1,1,1,1,1,
 	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
-	1,0,12,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
+	1,18,12,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
 	1,1,1,1,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,2,1,1,0,0,0,0,1,
 	1,0,0,0,0,0,0,0,0, 0,0,0,12,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
 	1,0,0,0,0,0,0,0,0, 0,1,1,1,1,1,0,0,0, 0,0,0,0,0,0,0,0,1,
 	1,0,0,0,0,1,1,0,0, 0,2,0,0,0,2,0,0,0, 0,0,0,0,0,0,0,0,1,
 	1,0,0,0,0,0,0,0,0, 0,1,15,0,0,1,0,0,0, 0,0,0,0,0,0,0,0,1,
-	1,15,0,0,0,0,0,0,0, 0,1,0,0,12,1,0,1,1, 7,1,0,0,0,0,0,0,1,
+	1,15,0,0,0,0,0,0,0, 0,1,18, 0,12,1,0,1,1, 7,1,0,0,0,0,0,0,1,
 	1,1,1,1,0,0,0,0,0, 0,1,1,2,1,1,0,0,0, 0,0,0,0,0,0,0,0,1,
 	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
 	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
@@ -165,7 +165,7 @@ int stage6[CHIP_MAX_Y][CHIP_MAX_X] = {
 	1,0,0,0,1,0,0,0,0, 0,0,0,0,0,0,0,0,1, 0,0,0,0,0,0,0,0,0,
 	1,0,0,0,1,0,0,0,0, 0,0,0,0,0,0,0,0,1, 0,0,0,0,0,0,0,0,9,
 	1,0,0,0,1,0,0,0,0, 0,0,0,0,0,0,0,0,1, 0,0,0,1,1,1,1,1,1,
-	1,0,0,0,1,0,0,0,0, 0,0,0,0,0,0,0,0,2, 0,0,0,0,0,0,0,0,1,
+	1,18,0,0,1,0,0,0,0, 0,0,0,0,0,0,0,0,2, 0,0,0,0,0,0,0,0,1,
 	1,12,0,0,2,0,0,0,0, 0,0,0,0,0,0,0,0,1, 0,0,0,12,0,0,0,0,1,
 	1,1,1,2,1,0,0,0,0, 0,0,0,0,0,0,0,0,1, 0,0,1,1,1,0,0,0,1,
 	1,0,0,0,0,0,0,0,0, 0,0,12,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
@@ -208,13 +208,13 @@ int Iwanna[CHIP_MAX_Y][CHIP_MAX_X] = {
 };
 
 int stage7[CHIP_MAX_Y][CHIP_MAX_X] = {
-	1,1,1,0,1,1,1,1,1,        1,1,1,1,1,1,0,1,1,     1,1,1,1,1,1,1,1,1,
-	1,1,1,0,1,1,1,0,0,        1,0,0,0,0,0,0,0,0,     0,0,0,0,0,0,0,0,1,
-	1,13,13,0,13,13,13,0,0,   1,0,0,12,0,0,0,0,0,     0,12,0,0,0,0,0,0,1,
+	1,1,1,0,1,1,0,1,1,        1,1,1,1,1,1,0,1,1,     1,1,1,1,1,1,1,1,1,
+	1,1,1,0,1,1,0,0,0,        1,0,0,0,0,0,0,0,0,     0,0,0,0,0,0,0,0,1,
+	1,13,13,0,13,13,0,0,0,   1,0,0,12,0,0,0,0,0,     0,12,0,0,0,0,0,0,1,
 	1,0,0,0,0,0,0,0,0,        13,0,14,1,15,0,0,0,0,     14,1,15,0,0,0,14,1,1,
 	1,0,0,0,0,0,0,0,0,        0,0,0,13,0,0,0,0,0,     0,13,0,0,0,0,1,13,1,
 	1,9,0,0,0,0,0,0,0,       0,0,0,0,0,0,0,0,0,     0,0,0,0,14,1,13,0,1,
-	1,1,2,2,1,2,2 ,1,1,       12,12,0,0,12,0,0,0,0,      0,0,0,0,0,13,0,0,1,
+	1,1,2,2,1,2,2 ,1,1,       12,12,0,0,12,0,0,0,0,      0,0,0,0,0,13,16,0,1,
 	1,13,13,13,13,13,13,0,0, 1,1,1,1,1,12,12,11,0,      0,12,12,12,0,0,0,0,1,
 	1,0,0,0,0,0,0,0,0,       0,0,0,1,13,1,1,1,1,      1,1,1,1,1,1,1,0,1,
 	1,0,0,0,0,0,0,0,0,       0,0,0,1,0,0,0,0,0,      0,0,0,0,0,0,13,0,1,
@@ -230,14 +230,36 @@ int stage7[CHIP_MAX_Y][CHIP_MAX_X] = {
 	1,1,2,2,1,1,1,1,1,      7,1,12,1,1,1,1,1,1,      1,1,1,1,1,1,1,1,1
 };
 
+int lobbyStage[20][27] = {
+	1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,
+	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,
+	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,9,
+	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,1,1,1,1,1,1,
+	1,0,0,0,0,0,0,1,1, 1,1,15,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,1,1,1,1, 1,0,0,0,0,0,0,0,1,
+	1,1,2,1,1,1,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,1,1,2,2,1,0,1,
+	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1, 1,1,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0, 0,0,1,1,1,1,1,0,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,1,1,1,1, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,12,0,0, 0,0,0,0,0,0,0,0,1,
+	1,1,1,1,1,1,1,1,1, 1,7,1,1,1,1,1,1,1, 1,1,0,0,0,0,1,1,1
+};
 
 int x1, x2;
 
 void stageSysInit(void) 
 {
-	if((LoadDivGraph("png/stage3.png", 18, 16, 2, CHIP_SIZE_X, CHIP_SIZE_Y, block, true))== -1)AST();
+	if((LoadDivGraph("png/stage4.png", 19, 16, 2, CHIP_SIZE_X, CHIP_SIZE_Y, block, true))== -1)AST();
 
-	coin = LoadGraph("png/ÉRÉCÉì1.png", true);
+	/*coin = LoadGraph("png/ÉRÉCÉì1.png", true);*/
 	if((arrow = LoadGraph("png/ñÓ1.png", true)) == - 1) AST();
 	if (LoadDivGraph("png/É{ÉEÉKÉìâ¸.png", 6, 6, 1, CHIP_SIZE_X, CHIP_SIZE_Y, bowgun, true) == -1) AST();
 }
@@ -245,7 +267,7 @@ void stageSysInit(void)
 void stageInit(void)	
 {
 	// ◊›¿ﬁ—Ç≈èoÇµÇΩílÇ≈Ω√∞ºﬁÇåàÇﬂÇÈ
-	stage = EX_STAGE2/*(STAGE_NUM)(rand() % STAGE_MAX)*/;
+	stage = (STAGE_NUM)(rand() % 6);
 
 	for (int i = 0; i < SCREEN_SIZE_X / CHIP_SIZE_X; i++)
 	{
@@ -275,6 +297,9 @@ void stageInit(void)
 				break;
 			case EX_STAGE2:
 				nowStage[j][i] = stage7[j][i];
+				break;
+			case LOBBY_STAGE:
+				nowStage[j][i] = lobbyStage[j][i];
 				break;
 			default:
 				AST();
@@ -554,22 +579,27 @@ void trapInit(int i) {
 		switch (i) {
 			// óéâ∫êj
 		case 0:
-			trap[i].pos = { 3 * CHIP_SIZE_X, 2 * CHIP_SIZE_Y };
+		case 1:
+			trap[i].pos = { 3 * CHIP_SIZE_X + (3 * CHIP_SIZE_X * i), 2 * CHIP_SIZE_Y };
 			break;
 			// ïÅí óéâ∫Ãﬁ€Ø∏
-		case 1:
 		case 2:
-			trap[i].pos = { 3 * CHIP_SIZE_X, (i - 1)* CHIP_SIZE_Y };
-			break;
 		case 3:
-			trap[i].pos = { 15 * CHIP_SIZE_X, 0 };
+			trap[i].pos = { 3 * CHIP_SIZE_X, (i - 2)* CHIP_SIZE_Y };			// ÉSÅ[ÉãëO
+			break;
+		case 4:
+		case 5:
+			trap[i].pos = { 6 * CHIP_SIZE_X, (i - 4)* CHIP_SIZE_Y };			// ÉSÅ[ÉãëO
+			break;
+		case 6:
+			trap[i].pos = { 15 * CHIP_SIZE_X, 0 };	//ê^ÇÒíÜè„
 			break;
 		// ñÓ
-		case 4:
+		case 7:
 			trap[i].pos = { 26 * CHIP_SIZE_X, 18 * CHIP_SIZE_Y };
 			trap[i].tEvent = BLOCK_MOVE;
 			break;
-		case 5:
+		case 8:
 			trap[i].pos = { 23 * CHIP_SIZE_X, 4 * CHIP_SIZE_Y };
 			trap[i].tEvent = BLOCK_MOVE;
 			break;
@@ -601,7 +631,7 @@ void trapInit(int i) {
 void stageMain(void)
 {
 	
-	// ƒ◊ØÃﬂÇÃìÆçÏ
+	// ƒ◊ØÃﬂÇÃãNìÆ
 	for (int i = 0; i < TRAP_MAX; i++) {
 		for (int j = 0; j < 4; j++) {
 			CHARACTER tmp = GetPlayer(j);
@@ -727,6 +757,7 @@ void stageMain(void)
 		}
 	}
 
+	// ìÆÇ≠ƒ◊ØÃﬂÇÃà⁄ìÆ
 	for (int i = 0; i < TRAP_MAX; i++) {
 		TrapMove(trap[i].tEvent, i, DIR_LEFT);
 		if (trap[i].pos.x < 0 || trap[i].pos.y > SCREEN_SIZE_Y) {
@@ -763,6 +794,12 @@ void stageDraw(void)
 			// Ω√∞ºﬁ1
 			if (stage == STAGE1)
 			{
+				// îÚÇ—èoÇ∑êjÇâBÇ∑îwåi
+				for (int k = 7; k <= 10; k++) {
+					if (trap[k].flag) {
+						DrawGraph(trap[k].pos.x, trap[k].pos.y, block[0], true);				//trap[] = { 7 ~ 10}
+					}
+				}
 				//óéâ∫ƒ◊ØÃﬂ
 				DrawGraph(trap[0].pos.x, trap[0].pos.y, block[4], true);						//5 * CHIP_SIZE_X,5 * CHIP_SIZE_Y
 				for (int y = 1; y < 6; y++)
@@ -773,13 +810,7 @@ void stageDraw(void)
 				DrawGraph(trap[6].pos.x, trap[6].pos.y, block[3], true);
 				DrawGraph(4 * CHIP_SIZE_X, 19 * CHIP_SIZE_Y, block[1], true);					// ƒ◊ØÃﬂÇÃâ∫ë§ÇâBÇ∑Ãﬁ€Ø∏
 
-				// îÚÇ—èoÇ∑êjÇâBÇ∑îwåi
-				for (int k = 7; k <= 10; k++) {
-					if (trap[k].flag) {
-						DrawGraph(trap[k].pos.x, trap[k].pos.y, block[0], true);				//trap[] = { 7 ~ 10}
-					}
-				}
-
+		
 				// É{ÉEÉKÉìÇ∆ñÓ
 				if (!trap[11].flag) {
 					DrawGraph(25 * CHIP_SIZE_X, 18 * CHIP_SIZE_Y, bowgun[2], true);
@@ -794,6 +825,8 @@ void stageDraw(void)
 			// Ω√∞ºﬁ2
 			if (stage == STAGE2)
 			{
+				// ∫≤›
+			//	DrawGraph(4 * CHIP_SIZE_X, 16 * CHIP_SIZE_Y, coin, false);
 			// îÚÇ—èoÇ∑êj
 				for (int k = 0; k < 9; k++)
 				{
@@ -814,16 +847,11 @@ void stageDraw(void)
 				}
 				// ãUä‚
 				DrawGraph(25 * CHIP_SIZE_X, 4 * CHIP_SIZE_Y, block[1], true);
-				// ∫≤›
-				DrawGraph(3 * CHIP_SIZE_X, 25 * CHIP_SIZE_Y, coin, false);
+				
 			}
 			// Ω√∞ºﬁ3
 			if (stage == STAGE3)
 			{
-				// ãU∫ﬁ∞Ÿ
-				DrawGraph(0, 10 * CHIP_SIZE_Y, block[11], true);
-
-
 				// 1/6êj
 				DrawGraph(trap[0].pos.x, trap[0].pos.y, block[3], true);
 				DrawGraph(25 * CHIP_SIZE_X, 3 * CHIP_SIZE_Y, block[1], true);
@@ -837,7 +865,7 @@ void stageDraw(void)
 				}
 
 				// ∫≤›
-				DrawGraph(13 * CHIP_SIZE_X, 17 * CHIP_SIZE_Y, coin, false);
+			//	DrawGraph(13 * CHIP_SIZE_X, 17 * CHIP_SIZE_Y, coin, false);
 			}
 			// Ω√∞ºﬁ4
 			if (stage == STAGE4)
@@ -871,17 +899,12 @@ void stageDraw(void)
 
 				DrawGraph(21 * CHIP_SIZE_X, 4 * CHIP_SIZE_Y, block[1], true);
 				DrawGraph(25 * CHIP_SIZE_X, 3 * CHIP_SIZE_Y, block[1], true);
-				DrawGraph(25 * CHIP_SIZE_X, 7 * CHIP_SIZE_Y, coin, false);
+				//DrawGraph(25 * CHIP_SIZE_X, 7 * CHIP_SIZE_Y, coin, false);
 				
 			}
 			// Ω√∞ºﬁ5
 			if (stage == STAGE5)
 			{
-				// óéâ∫Ç∑ÇÈÃﬁ€Ø∏
-				for (int k = 0; k < 5; k++)
-				{
- 					DrawGraph(trap[k].pos.x, trap[k].pos.y, block[1], true);			// //trap[] = { 0 ~ 3}
-				}
 				// îÚÇ—èoÇ∑êj
 				for (int k = 5; k < 11; k++)
 				{
@@ -889,9 +912,15 @@ void stageDraw(void)
 						DrawGraph(trap[k].pos.x, trap[k].pos.y, block[0], true);			// //trap[] = { 0 ~ 3}
 					}
 				}
+				// óéâ∫Ç∑ÇÈÃﬁ€Ø∏
+				for (int k = 0; k < 5; k++)
+				{
+ 					DrawGraph(trap[k].pos.x, trap[k].pos.y, block[1], true);			// //trap[] = { 0 ~ 3}
+				}
+				
 				// ∫≤›
-				DrawGraph(12 * CHIP_SIZE_X, 10 * CHIP_SIZE_Y, coin, false);
-				DrawGraph(CHIP_SIZE_X, 5 * CHIP_SIZE_Y, coin, false);
+			//	DrawGraph(12 * CHIP_SIZE_X, 10 * CHIP_SIZE_Y, coin, false);
+			//	DrawGraph(CHIP_SIZE_X, 5 * CHIP_SIZE_Y, coin, false);
 			}
 			// Ω√∞ºﬁ6
 			if (stage == STAGE6) {
@@ -904,30 +933,31 @@ void stageDraw(void)
 				DrawGraph(trap[6].pos.x, trap[6].pos.y, block[3], true);
 				DrawGraph(23 * CHIP_SIZE_X, 3 * CHIP_SIZE_Y, block[1], true);					// ƒ◊ØÃﬂÇÃâ∫ë§ÇâBÇ∑Ãﬁ€Ø∏
 				// ∫≤›
-				DrawGraph( CHIP_SIZE_X, 4 * CHIP_SIZE_Y, coin, false);
+			//	DrawGraph( CHIP_SIZE_X, 4 * CHIP_SIZE_Y, coin, false);
 			}
 
 			if (stage == EX_STAGE2) {
 				// óéâ∫Ç∑ÇÈÃﬁ€Ø∏
 				DrawGraph(trap[0].pos.x, trap[0].pos.y, block[4], true);
-				for (int k = 1; k < 4; k++){
+				DrawGraph(trap[1].pos.x, trap[1].pos.y, block[4], true);
+				for (int k = 2; k < 7; k++){
 					
 					DrawGraph(trap[k].pos.x, trap[k].pos.y, block[1], true);					//trap[] = { 1 ~ 5}23 * CHIP_SIZE_X, 4 * CHIP_SIZE_Y
 				}
 				// Œﬁ≥∂ﬁ›Ç∆ñÓ
-				if (!trap[4].flag) {
+				if (!trap[7].flag) {
 					DrawGraph(26 * CHIP_SIZE_X, 18 * CHIP_SIZE_Y, bowgun[2], true);
 				}
 				else {
 					DrawGraph(26 * CHIP_SIZE_X, 18 * CHIP_SIZE_Y, bowgun[0], true);
 				}
-				if (!trap[5].flag) {
+				if (!trap[8].flag) {
 					DrawGraph(23 * CHIP_SIZE_X, 4 * CHIP_SIZE_Y, bowgun[2], true);
 				}
 				else {
 					DrawGraph(23 * CHIP_SIZE_X, 4 * CHIP_SIZE_Y, bowgun[0], true);
 				}
-				for (int l = 4; l < 6; l++) {
+				for (int l = 7; l < 9; l++) {
 					
 					DrawGraph(trap[l].pos.x, trap[l].pos.y, arrow, true);
 				}
@@ -1048,8 +1078,23 @@ bool SaveIsPass(XY pos)
 		ret = false;
 		break;
 	}
+	return ret;
+}
 
+bool CoinIsPass(XY pos) {
+	bool ret = true;
+	int mapNo;
+	XY mapIndex;
 
+	mapIndex = MapPosToIndex(pos);
+	mapNo = nowStage[mapIndex.y][mapIndex.x];
+
+	switch (mapNo) {
+	case 18:
+		nowStage[mapIndex.y][mapIndex.x] = 0;
+		ret = false;
+		break;
+	}
 	return ret;
 }
 

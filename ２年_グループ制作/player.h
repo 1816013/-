@@ -12,7 +12,7 @@
 
 
 #define PLAYER_MAX 4
-
+#define PLAYER_IMAGE_MAX 4
 
 enum OFFSET_TYPE {
 	OFFSET_LEFT_RIGHT,			// 0: movedOffsetはﾌﾟﾚｲﾔｰの移動方向の端の中心movedOffset2はﾌﾟﾚｲﾔｰの頭上の中心movedOffset3はﾌﾟﾚｲﾔｰの足下の中心				
