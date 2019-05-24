@@ -63,6 +63,8 @@ typedef struct {
 	bool runFlag;		// ‘–‚Á‚Ä‚¢‚é‚©
 	bool jumpFlag;		// ¼Þ¬ÝÌß’†‚©
 	bool headFlag;
+	bool goalFlag;
+	int selectFlag;
 	int animCnt;		// ±ÆÒ°¼®Ý—p
 	XY_F velocity;		// ˆÚ“®‘¬“x
 	int point;
@@ -97,3 +99,4 @@ void GameFinalResult(void);
 void HitCheck();
 int GetPlayerCnt(void);
 void RankSort();
+GAME_MODE GetGameMode();

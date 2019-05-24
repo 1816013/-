@@ -12,10 +12,10 @@ int pImage[PLAYER_MAX][PLAYER_IMAGE_MAX];
 
 int jumpCnt[PLAYER_MAX];
 int Gflag;
-bool goalFlag[PLAYER_MAX];
 int jumpFrame[PLAYER_MAX];
 int playerMax;
 bool saveFlag;
+int goalCnt;
 
 XY savePos[PLAYER_MAX];	
 
@@ -39,7 +39,6 @@ void PlayerSysInit(void)
 
 void PlayerInit(void)
 {
-	
 	for (int i = 0; i < PLAYER_MAX; i++) {
 		player[i].moveDir = DIR_RIGHT;
 		//player.pos = { 4 * CHIP_SIZE_X - PLAYER_SIZE_X / 2, 3 * CHIP_SIZE_Y };
@@ -51,16 +50,15 @@ void PlayerInit(void)
 		player[i].animCnt = 0;
 		jumpFrame[i] = 15;
 		jumpCnt[i] = 0;
-		goalFlag[i] = false;
+		player[i].goalFlag = false;
+		player[i].jyuni = 0;
 	}
 	playerMax = GetPlayerCnt();
 	for (int j = 0; j < playerMax; j++) {
 		player[j].pos = savePos[j];
 		player[j].flag = true;
 	}
-	
-
-
+	goalCnt = 0;
 }
 
 void PlayerUpdate(void)
@@ -258,8 +256,11 @@ void PlayerUpdate(void)
 			}
 
 			if (!GoalIsPass(player[i].pos)) {
+				player[i].pos = { 0 , 0 };
 				player[i].flag = false;
-				goalFlag[i] = true;
+				player[i].goalFlag = true;
+				goalCnt++;
+				player[i].jyuni = goalCnt;
 			}
 
 			// 画面外にﾌﾟﾚｲﾔｰが出たら
@@ -271,10 +272,10 @@ void PlayerUpdate(void)
 
 		}
 		else {	// ﾌﾟﾚｰﾔｰが死んだとき
-			if (!goalFlag[i]) {
+			if (!player[i].goalFlag) {
+				player[i].pos = savePos[i];
+				player[i].velocity = { 0,0 };
 				if (trgKey[ENTER]) {
-					player[i].pos = savePos[i];
-					player[i].velocity = { 0,0 };
 					player[i].flag = true;
 				}
 			}
@@ -318,8 +319,8 @@ CHARACTER GetPlayer(int i) {
 bool PlayerHitCheck(XY pos, XY size, int type)
 {
 	for (int i = 0; i < PLAYER_MAX; i++) {
-		//矩形と矩形
 		if (player[i].flag) {
+			//矩形と矩形(ﾌﾟﾚｲﾔｰ死亡)
 			if (type == 0) {
 				if ((pos.x < player[i].pos.x + player[i].hitPosE.x)
 					&& (pos.x + size.x > player[i].pos.x - player[i].hitPosS.x)
@@ -355,7 +356,17 @@ bool PlayerHitCheck(XY pos, XY size, int type)
 					return true;
 				}
 			}
-			
+			//矩形と矩形(セレクト用)
+			if (type == 3) {
+				if ((pos.x < player[i].pos.x + player[i].hitPosE.x)
+					&& (pos.x + size.x > player[i].pos.x - player[i].hitPosS.x)
+					&& (pos.y < player[i].pos.y + player[i].hitPosE.y)
+					&& (pos.y + size.y > player[i].pos.y - player[i].hitPosS.y)
+					) {
+					player[i].selectFlag = 1;
+					return true;
+				}
+			}
 		}
 	}
 	return false;

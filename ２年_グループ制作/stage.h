@@ -22,14 +22,20 @@ enum STAGE_NUM {
 	EX_STAGE1,
 	EX_STAGE2,
 	LOBBY_STAGE,
+	TITLE_STAGE,
 	STAGE_MAX
+};
+enum STAGE_LEVEL {
+	NOMAL_STAGE,
+	EX_STAGE
 };
 
 enum T_EVENT_MODE {
 	BLOCK_FALL,
 	BLOCK_POP,
 	BLOCK_MOVE,
-	BLOCK_STOP
+	BLOCK_STOP,
+	BLOCK_SELECT
 };
 
 typedef struct {
@@ -43,7 +49,6 @@ typedef struct {
 	int cntMax;
 	T_EVENT_MODE tEvent;
 	MOVE_DIR moveDir;
-
 } TRAP;
 
 
