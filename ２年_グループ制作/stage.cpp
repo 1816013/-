@@ -17,9 +17,10 @@ XY mapPos;
 int arrow;			// 矢
 int bowgun[6];		// ﾎﾞｳｶﾞﾝ
 
-int round3;
-int round5;
-int round7;
+int round[3];
+int pNum[PLAYER_MAX];
+
+
 
 TRAP trap[TRAP_MAX];
 STAGE_NUM stage;
@@ -311,9 +312,13 @@ void stageSysInit(void)
 	/*coin = LoadGraph("png/コイン1.png", true);*/
 	if((arrow = LoadGraph("png/矢1.png", true)) == - 1) AST();
 	if (LoadDivGraph("png/ボウガン改.png", 6, 6, 1, CHIP_SIZE_X, CHIP_SIZE_Y, bowgun, true) == -1) AST();
-	round3 = LoadGraph("png/3select.png", true);
-	round5 = LoadGraph("png/5select.png", true);
-	round7 = LoadGraph("png/7select.png", true);
+	round[0] = LoadGraph("png/1select.png", true);
+	round[1] = LoadGraph("png/2select.png", true);
+	round[2] = LoadGraph("png/3select.png", true);
+	pNum[0] = LoadGraph("png/ネーム1.png");
+	pNum[1] = LoadGraph("png/ネーム2.png");
+	pNum[2] = LoadGraph("png/ネーム3.png");
+	pNum[3] = LoadGraph("png/ネーム4.png");
 }
 
 void stageInit(void)	
@@ -678,14 +683,17 @@ void trapInit(int i) {
 		case 0:
 			trap[i].pos = { 10 * CHIP_SIZE_X, 9 * CHIP_SIZE_Y };
 			trap[i].tEvent = BLOCK_SELECT;
+			trap[i].type = 3;
 			break;
 		case 1:
 			trap[i].pos = { 3 * CHIP_SIZE_X, 5 * CHIP_SIZE_Y };
 			trap[i].tEvent = BLOCK_SELECT;
+			trap[i].type = 4;
 			break;
 		case 2:
 			trap[i].pos = { 18 * CHIP_SIZE_X, 5 * CHIP_SIZE_Y };
 			trap[i].tEvent = BLOCK_SELECT;
+			trap[i].type = 5;
 			break;
 		}
 	}
@@ -695,7 +703,7 @@ void trapInit(int i) {
 	case BLOCK_FALL:
 		break;
 	case BLOCK_POP:
-		trap[i].type = 4;																	// 当たり判定がないため　4
+		trap[i].type = 6;																	// 当たり判定がないため　6
 		trap[i].flag = true;																// ﾌﾟﾚｲﾔｰが近づくまでtrue
 		trap[i].cntMax = 100;
 		break;
@@ -708,7 +716,6 @@ void trapInit(int i) {
 		break;
 	case BLOCK_SELECT:
 		trap[i].size = { CHIP_SIZE_X * 6, CHIP_SIZE_Y * 6};
-		trap[i].type = 3;
 		trap[i].flag = true;
 		break;
 	}
@@ -1051,9 +1058,24 @@ void stageDraw(void)
 
 			if (stage == LOBBY_STAGE) {
 			
-				DrawGraph(trap[0].pos.x, trap[0].pos.y, round3, false);
-				DrawGraph(trap[1].pos.x, trap[1].pos.y, round5, false);
-				DrawGraph(trap[2].pos.x, trap[2].pos.y, round7, false);
+				for (int k = 0; k < 3; k++) {
+					DrawGraph(trap[k].pos.x, trap[k].pos.y, round[k], false);
+				}
+			
+				for (int l = 0; l < PLAYER_MAX; l++) {
+					CHARACTER tmp = GetPlayer(l);
+					if (tmp.selectFlag) {
+						if (tmp.cycleType == 1) {
+							DrawGraph(10 * CHIP_SIZE_X + 48 * l, 8 * CHIP_SIZE_Y, pNum[l], false);
+						}
+						if (tmp.cycleType == 2) {
+							DrawGraph(3 * CHIP_SIZE_X + 48 * l, 4 * CHIP_SIZE_Y, pNum[l], false);
+						}
+						if (tmp.cycleType == 3) {
+							DrawGraph(18 * CHIP_SIZE_X + 48 * l, 4 * CHIP_SIZE_Y, pNum[l], false);
+						}
+					}
+				}
 				
 			}
 		}		

@@ -64,7 +64,8 @@ typedef struct {
 	bool jumpFlag;		// ¼Þ¬ÝÌß’†‚©
 	bool headFlag;
 	bool goalFlag;
-	int selectFlag;
+	bool selectFlag;
+	int cycleType;
 	int animCnt;		// ±ÆÒ°¼®Ý—p
 	XY_F velocity;		// ˆÚ“®‘¬“x
 	int point;

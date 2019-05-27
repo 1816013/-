@@ -165,27 +165,6 @@ void GameSelect(void)
 	stageDraw();
 	DrawString(0, 0, "playerSelect", 0x000000);
 
-	/*for (int i = 0; i < cnt.playerCnt; i++)
-	{
-		DrawFormatString(0, 100 + (12 * i), 0x000000, "player = %d", playerPt[i].skin);
-	}
-	if (trgKey[P1_UP])
-	{
-		playerPt[1].skin += 1;
-	}
-	if (trgKey[P1_DOWN])
-	{
-		playerPt[1].skin -= 1;
-	}
-	if (playerPt[1].skin > 4)
-	{
-		playerPt[1].skin = 1;
-	}
-	if (playerPt[1].skin < 1)
-	{
-		playerPt[1].skin = 4;
-	}
-*/
 	if (GameCycleMax == 3)
 	{
 		DrawString(320, 500, "¨", 0x000000);
@@ -249,32 +228,35 @@ void GameSelect(void)
 void GameBattleSelect(void)
 {
 	GameDraw();
+	HitCheck();
 	PlayerUpdate();
 	EffectUpdate();
-	HitCheck();
-	for (int i = 0; i < cnt.playerCnt; i++)
-	{
+	
+	for (int i = 0; i < cnt.playerCnt; i++) {
 		CHARACTER tmp = GetPlayer(i);
-
-		if (tmp.selectFlag) {
-			if (trgKey[ENTER]) {
-				gameMode = GMODE_GAME;
-				PlayerInit();
-				stageInit();
-			}
-		}
-
+		GameCycleMax = tmp.cycleType;
 	}
 
-	if (trgKey[START])
+	int tmpCnt = GetSelectCnt();
+	if (tmpCnt == cnt.playerCnt) {
+		if (trgKey[START]) {
+			gameMode = GMODE_GAME;
+			PlayerInit();
+			stageInit();
+		}
+	}
+
+	
+
+	/*if (trgKey[START])
 	{
 		gameMode = GMODE_GAME;
 		PlayerInit();
 		stageInit();
-	}
+	}*/
 
-	DrawString(0, 0, "BattleSelect", 0xffffff);
-	DrawFormatString(0, 24, 0xffffff, "Batlle = %d", GameCycleMax);
+	DrawString(0, 0, "BattleSelect", 0x000000);
+	DrawFormatString(0, 24, 0x000000, "Batlle = %d", GameCycleMax);
 
 	
 }

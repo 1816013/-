@@ -9,13 +9,15 @@
 
 CHARACTER player[PLAYER_MAX];
 int pImage[PLAYER_MAX][PLAYER_IMAGE_MAX];
-
+int pIcon[PLAYER_MAX];
+int pIconOK;
 int jumpCnt[PLAYER_MAX];
 int Gflag;
 int jumpFrame[PLAYER_MAX];
 int playerMax;
-bool saveFlag;
+int selectCnt;
 int goalCnt;
+int cycleCnt[3];
 
 XY savePos[PLAYER_MAX];	
 
@@ -32,6 +34,11 @@ void PlayerSysInit(void)
 	LoadDivGraph("png/プレイヤー2.png", 4, 4, 1, 48, 48, pImage[1]);
 	LoadDivGraph("png/プレイヤー3.png", 4, 4, 1, 48, 48, pImage[2]);
 	LoadDivGraph("png/プレイヤー4.png", 4, 4, 1, 48, 48, pImage[3]);
+	pIcon[0] = LoadGraph("png/ネーム1.png");
+	pIcon[1] = LoadGraph("png/ネーム2.png");
+	pIcon[2] = LoadGraph("png/ネーム3.png");
+	pIcon[3] = LoadGraph("png/ネーム4.png");
+	pIconOK = LoadGraph("png/ok.png");
 	for (int i = 0; i < PLAYER_MAX; i++) {
 		savePos[i] = { 2 * CHIP_SIZE_X - PLAYER_SIZE_X / 2, 19 * CHIP_SIZE_Y - PLAYER_SIZE_Y / 2 };		// プレイヤーリス地初期化
 	}
@@ -50,8 +57,11 @@ void PlayerInit(void)
 		player[i].animCnt = 0;
 		jumpFrame[i] = 15;
 		jumpCnt[i] = 0;
+		player[i].flag = false;
 		player[i].goalFlag = false;
 		player[i].jyuni = 0;
+		player[i].selectFlag = false;
+		player[i].cycleType = 0;
 	}
 	playerMax = GetPlayerCnt();
 	for (int j = 0; j < playerMax; j++) {
@@ -138,10 +148,10 @@ void PlayerUpdate(void)
 			else {
 				tmpPos = MapPosToMoveIndex(movedOffset, player[i].jumpFlag, player[i].velocity);
 				if (player[i].velocity.x > 0) {			// 右
-					player[i].pos.x = tmpPos.x - player[i].hitPosE.x - 1;
+					player[i].pos.x = tmpPos.x - player[i].hitPosE.x - 2;
 				}
 				if (player[i].velocity.x < 0) {			// 左
-					player[i].pos.x = tmpPos.x + player[i].hitPosS.x + 1;
+					player[i].pos.x = tmpPos.x + player[i].hitPosS.x + 2;
 				}
 				movedPos = player[i].pos;
 				player[i].velocity.x = 0;
@@ -167,7 +177,7 @@ void PlayerUpdate(void)
 				player[i].pos = movedPos;
 			}
 			else {
-				player[i].headFlag = true;
+				player[i].headFlag = true; 
 				tmpPos = MapPosToMoveIndex(movedOffset, player[i].headFlag, player[i].velocity);
 				player[i].pos.y = tmpPos.y + player[i].hitPosS.y;
 				player[i].velocity.y -= 1;
@@ -269,6 +279,9 @@ void PlayerUpdate(void)
 				player[i].flag = false;
 			}
 
+			if (trgKey[BACK]) {
+				player[i].selectFlag = false;
+			}
 
 		}
 		else {	// ﾌﾟﾚｰﾔｰが死んだとき
@@ -282,6 +295,29 @@ void PlayerUpdate(void)
 		}
 		player[i].animCnt++;
 	}
+	selectCnt = 0;
+	for (int i = 0; i < playerMax; i++) {
+		if (player[i].selectFlag) {
+			selectCnt++;
+		}
+	}
+	int max = 0;
+	int num = 0;
+	for (int j = 0; j < 3; j++) {
+		if (cycleCnt[j] > max) {
+			max = cycleCnt[j];
+		}
+	}
+	int maxCnt = 0;
+	for (int i = 0; i < playerMax; i++) {
+		for (int j = 0; j < 3; j++) {
+			if (cycleCnt[j] == max) {
+				player[i].cycleType = j +1; 
+			}
+		//	player[i].cycleType = j + 1;
+		}
+	}
+	
 }
 
 void PlayerDraw(void)
@@ -292,23 +328,32 @@ void PlayerDraw(void)
 		if (player[i].flag) {
 			if (player[i].runFlag) {
 				if (player[i].moveDir == DIR_RIGHT) {
-					DrawGraph(player[i].pos.x - tmpMapPos.x - player[i].offsetSize.x, player[i].pos.y - tmpMapPos.y - player[i].offsetSize.y, pImage[i][player[i].animCnt / 15 % 4], true);
+					DrawGraph(player[i].pos.x - player[i].offsetSize.x, player[i].pos.y - player[i].offsetSize.y, pImage[i][player[i].animCnt / 15 % 4], true);
 				}
 				if (player[i].moveDir == DIR_LEFT) {
-					DrawTurnGraph(player[i].pos.x - tmpMapPos.x - player[i].offsetSize.x, player[i].pos.y - tmpMapPos.y - player[i].offsetSize.y, pImage[i][player[i].animCnt / 15 % 4], true);
+					DrawTurnGraph(player[i].pos.x  - player[i].offsetSize.x, player[i].pos.y - player[i].offsetSize.y, pImage[i][player[i].animCnt / 15 % 4], true);
 				}
 			}
 			else {
 				if (player[i].moveDir == DIR_RIGHT) {
-					DrawGraph(player[i].pos.x - tmpMapPos.x - player[i].offsetSize.x, player[i].pos.y - tmpMapPos.y - player[i].offsetSize.y, pImage[i][0], true);
+					DrawGraph(player[i].pos.x - player[i].offsetSize.x, player[i].pos.y- player[i].offsetSize.y, pImage[i][0], true);
 				}
 				if (player[i].moveDir == DIR_LEFT) {
-					DrawTurnGraph(player[i].pos.x - tmpMapPos.x - player[i].offsetSize.x, player[i].pos.y - tmpMapPos.y - player[i].offsetSize.y, pImage[i][0], true);
+					DrawTurnGraph(player[i].pos.x - player[i].offsetSize.x, player[i].pos.y- player[i].offsetSize.y, pImage[i][0], true);
 				}
+			}
+			DrawGraph(player[i].pos.x - player[i].offsetSize.x, player[i].pos.y - 60, pIcon[i], true);
+			if (player[i].selectFlag) {
+				DrawGraph(player[i].pos.x - player[i].offsetSize.x, player[i].pos.y - 84, pIconOK, false);
 			}
 		}
 		DrawFormatString(0, 48, 0x000000, "playerPos 1: %d , %d", player[0].pos.x, player[0].pos.y);
-		//DrawCircle(player.pos.x, player.pos.y, 5,  0xff0000, true);
+		DrawFormatString(0, 60, 0x000000, "selectCnt: %d", selectCnt);
+		for (int j = 0; j < 3; j++) {
+			DrawFormatString(0, 72 + 12 * j, 0x000000, "cycleCnt: %d", cycleCnt[j]);
+		}
+		DrawFormatString(0, 120 + 12 * i, 0x000000, "playerselectFlag %d: %d", i + 1, player[i].selectFlag);
+		//DrawCircle(player.pos.x, player.pos.y, 5,  0xff0000, true);selectCntplayer[i].selectFlag
 	}
 }
 
@@ -357,14 +402,28 @@ bool PlayerHitCheck(XY pos, XY size, int type)
 				}
 			}
 			//矩形と矩形(セレクト用)
-			if (type == 3) {
+			if (type == 3 || type == 4 || type == 5) {
 				if ((pos.x < player[i].pos.x + player[i].hitPosE.x)
 					&& (pos.x + size.x > player[i].pos.x - player[i].hitPosS.x)
 					&& (pos.y < player[i].pos.y + player[i].hitPosE.y)
 					&& (pos.y + size.y > player[i].pos.y - player[i].hitPosS.y)
 					) {
-					player[i].selectFlag = 1;
-					return true;
+					if (trgKey[ENTER]) {
+						if (!player[i].selectFlag) {
+							if (type == 3) {
+								cycleCnt[0]++;
+							}
+							if (type == 4) {
+								cycleCnt[1]++;
+							}
+							if (type == 5) {
+								cycleCnt[2]++;
+							}
+
+							player[i].selectFlag = true;
+							
+						}
+					}
 				}
 			}
 		}
@@ -373,6 +432,7 @@ bool PlayerHitCheck(XY pos, XY size, int type)
 }
 
 void SetOffset(OFFSET_TYPE type) {			
+
 	for (int i = 0; i < PLAYER_MAX; i++) {
 		switch (type) {
 		case OFFSET_LEFT_RIGHT:
@@ -380,7 +440,7 @@ void SetOffset(OFFSET_TYPE type) {
 				movedOffset.x = movedPos.x + player[i].hitPosE.x + 1;
 			}
 			if (player[i].velocity.x < 0) {							// 左
-				movedOffset.x = movedPos.x - player[i].hitPosS.x - 1;
+				movedOffset.x = movedPos.x - player[i].hitPosS.x -2 ;
 			}
 			//ﾌﾟﾚｲﾔｰの頭上の中心のｵﾌｾｯﾄ
 			movedOffset2 = movedOffset;
@@ -495,6 +555,8 @@ bool PlayerJumpKeyCheck(int i) {
 		break;
 	}
 	return false;
-
-
+}
+int GetSelectCnt()
+{
+	return selectCnt;
 }

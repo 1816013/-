@@ -33,3 +33,4 @@ bool PlayerKeyCheck(int i);
 bool PlayerJumpKeyCheck(int i);
 
 CHARACTER GetPlayer(int i);
+int GetSelectCnt();

@@ -54,8 +54,9 @@ void KeyCheck()
 
 	if (CheckHitKey(KEY_INPUT_RETURN)) newKey[ENTER] = true;
 	if (CheckHitKey(KEY_INPUT_P)) newKey[PAUSE] = true;
-
 	if (CheckHitKey(KEY_INPUT_SPACE)) newKey[START] = true;
+	if (CheckHitKey(KEY_INPUT_BACK)) newKey[BACK] = true;
+
 	// ----- trgKey upKey oldKey
 	for (int i = 0; i < KEY_MAX; i++) {
 		trgKey[i] = newKey[i] & ~oldKey[i];	// trgKey
