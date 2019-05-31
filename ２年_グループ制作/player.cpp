@@ -4,28 +4,34 @@
 #include "keycheck.h"
 #include "stage.h"
 #include "effect.h"
+#include "shot.h"
 
 
 
 CHARACTER player[PLAYER_MAX];
+// ｸﾞﾗﾌｨｯｸﾊﾝﾄﾞﾙ
 int pImage[PLAYER_MAX][PLAYER_IMAGE_MAX];
 int pIcon[PLAYER_MAX];
 int pIconOK;
+
+// 変数
 int jumpCnt[PLAYER_MAX];
-int Gflag;
 int jumpFrame[PLAYER_MAX];
-int playerMax;
 int selectCnt;
 int goalCnt;
-int cycleCnt[3];
+int giveupCnt;
+int cycleCnt[4];
+int cycleType;
+int playerMax;
+int intervalCnt;
 
 XY savePos[PLAYER_MAX];	
 
-XY movedPos;
-// offsetは今のﾌﾟﾚｲﾔｰの1ﾏｽあとの座標
-XY movedOffset;
-XY movedOffset2;
-XY movedOffset3;
+//XY movedPos;
+//// offsetは今のﾌﾟﾚｲﾔｰの1ﾏｽあとの座標
+//XY movedOffset;
+//XY movedOffset2;
+//XY movedOffset3;
 int offsetType;					
 
 void PlayerSysInit(void) 
@@ -51,17 +57,21 @@ void PlayerInit(void)
 		//player.pos = { 4 * CHIP_SIZE_X - PLAYER_SIZE_X / 2, 3 * CHIP_SIZE_Y };
 		player[i].size = { PLAYER_SIZE_X, PLAYER_SIZE_Y };
 		player[i].offsetSize = { player[i].size.x / 2, player[i].size.y / 2 };
-		player[i].hitPosS = { 13,  24 };									// ﾌﾟﾚｲﾔｰの左上
-		player[i].hitPosE = { 13,  24 };									// ﾌﾟﾚｲﾔｰの右下
+		player[i].hitPosS = { 17,  24 };									// ﾌﾟﾚｲﾔｰの左上
+		player[i].hitPosE = { 17,  24 };									// ﾌﾟﾚｲﾔｰの右下
 		player[i].velocity = { 0,0 };
 		player[i].animCnt = 0;
 		jumpFrame[i] = 15;
 		jumpCnt[i] = 0;
 		player[i].flag = false;
 		player[i].goalFlag = false;
-		player[i].jyuni = 0;
 		player[i].selectFlag = false;
-		player[i].cycleType = 0;
+		player[i].giveupFlag = false;
+		player[i].shotInterval = false;
+		player[i].jyuni = 3;
+		player[i].selectType = 0;
+		player[i].deathCnt = 0;
+
 	}
 	playerMax = GetPlayerCnt();
 	for (int j = 0; j < playerMax; j++) {
@@ -69,25 +79,25 @@ void PlayerInit(void)
 		player[j].flag = true;
 	}
 	goalCnt = 0;
+	giveupCnt = 0;
+	intervalCnt = 0;
 }
 
 void PlayerUpdate(void)
 {
-	playerMax = GetPlayerCnt();
 	for (int i = 0; i < playerMax; i++) {
 		//　1ﾙｰﾌﾟ毎に初期化する変数
 		XY tmpPos;
 		//XY playeroldPos = player.pos;
-		movedPos = player[i].pos;
+		XY movedPos = player[i].pos;
 
 		// offsetは今のﾌﾟﾚｲﾔｰの1ﾏｽあとの座標
-		movedOffset = movedPos;
-		movedOffset2 = movedPos;
-		movedOffset3 = movedPos;
+		XY movedOffset = movedPos;
+		XY movedOffset2 = movedPos;
+		XY movedOffset3 = movedPos;
 
 		player[i].runFlag = false;
 		player[i].headFlag = false;
-		Gflag = true;
 
 		// ﾌﾟﾚｲﾔｰの移動	(キー操作)
 		if (player[i].flag) {
@@ -101,7 +111,7 @@ void PlayerUpdate(void)
 				}
 
 				if (player[i].moveDir == DIR_LEFT) {								// 左			
-					player[i].velocity.x -= ACC_RUN * 1;				// 速度の更新
+					player[i].velocity.x -= ACC_RUN ;				// 速度の更新
 					player[i].runFlag = true;
 					if (player[i].velocity.x < -VELOCITY_X_MAX) {
 						player[i].velocity.x = -VELOCITY_X_MAX;
@@ -127,31 +137,31 @@ void PlayerUpdate(void)
 			// ﾌﾟﾚｲﾔｰの移動(左右)
 			movedPos.x += player[i].velocity.x * 1;	// 距離の更新
 
-			//if (player.velocity.x > 0) {							// 右
-			//	movedOffset.x = movedPos.x + player.hitPosE.x;
-			//}
-			//if (player.velocity.x < 0) {							// 左
-			//	movedOffset.x = movedPos.x - player.hitPosS.x;
-			//}
-			////ﾌﾟﾚｲﾔｰの頭上の中心のｵﾌｾｯﾄ
-			//movedOffset2 = movedOffset;
-			//movedOffset2.y = movedPos.y - player.hitPosS.y;
-			////ﾌﾟﾚｲﾔｰの足下の中心のｵﾌｾｯﾄ
-			//movedOffset3 = movedOffset;
-			//movedOffset3.y = movedPos.y + player.hitPosE.y - 1;			// ‐1は調整
+			if (player[i].velocity.x > 0) {							// 右
+				movedOffset.x = movedPos.x + player[i].hitPosE.x;
+			}
+			if (player[i].velocity.x < 0) {							// 左
+				movedOffset.x = movedPos.x - player[i].hitPosS.x;
+			}
+			//ﾌﾟﾚｲﾔｰの頭上の中心のｵﾌｾｯﾄ
+			movedOffset2 = movedOffset;
+			movedOffset2.y = movedPos.y - player[i].hitPosS.y;
+			//ﾌﾟﾚｲﾔｰの足下の中心のｵﾌｾｯﾄ
+			movedOffset3 = movedOffset;
+			movedOffset3.y = movedPos.y + player[i].hitPosE.y - 1;			// ‐1は調整
 
-			SetOffset(OFFSET_LEFT_RIGHT);
+			//SetOffset(OFFSET_LEFT_RIGHT);
 
 			if (IsPass(movedOffset) && IsPass(movedOffset2) && IsPass(movedOffset3)) {		// movedOffsetはﾌﾟﾚｲﾔｰの中心movedOffset2はﾌﾟﾚｲﾔｰの頭上の中心movedOffset3はﾌﾟﾚｲﾔｰの足下の中心
 				player[i].pos = movedPos;													// 
 			}
 			else {
-				tmpPos = MapPosToMoveIndex(movedOffset, player[i].jumpFlag, player[i].velocity);
+				tmpPos = MapPosToMoveIndex(movedOffset, player[i].headFlag, player[i].velocity);
 				if (player[i].velocity.x > 0) {			// 右
-					player[i].pos.x = tmpPos.x - player[i].hitPosE.x - 2;
+					player[i].pos.x = tmpPos.x - player[i].hitPosE.x;
 				}
 				if (player[i].velocity.x < 0) {			// 左
-					player[i].pos.x = tmpPos.x + player[i].hitPosS.x + 2;
+					player[i].pos.x = tmpPos.x + player[i].hitPosS.x;
 				}
 				movedPos = player[i].pos;
 				player[i].velocity.x = 0;
@@ -159,19 +169,20 @@ void PlayerUpdate(void)
 
 			// 重力
 			movedPos = player[i].pos;
+
 			movedPos.y -= player[i].velocity.y * SECOND_PER_FRAME;
 			player[i].velocity.y -= ACC_G * SECOND_PER_FRAME;
 
 			// ﾌﾞﾛｯｸのﾁｪｯｸ
 			// 頭上のﾌﾞﾛｯｸのﾁｪｯｸ
 
-			//movedOffset = movedPos;
-			//movedOffset.y = movedPos.y - player.hitPosS.y;		
-			//movedOffset2 = movedOffset;							// 左上
-			//movedOffset2.x = movedPos.x - player.hitPosS.x;
-			//movedOffset3 = movedOffset;							// 右上
-			//movedOffset3.x = movedPos.x + player.hitPosE.x - 1;
-			SetOffset(OFFSET_HEAD);
+			movedOffset = movedPos;
+			movedOffset.y = movedPos.y - player[i].hitPosS.y;		
+			movedOffset2 = movedOffset;							// 左上
+			movedOffset2.x = movedPos.x - player[i].hitPosS.x;
+			movedOffset3 = movedOffset;							// 右上
+			movedOffset3.x = movedPos.x + player[i].hitPosE.x - 1;
+		//	SetOffset(OFFSET_HEAD);
 
 			if (IsPass(movedOffset) && IsPass(movedOffset2) && IsPass(movedOffset3)) {
 				player[i].pos = movedPos;
@@ -180,7 +191,6 @@ void PlayerUpdate(void)
 				player[i].headFlag = true; 
 				tmpPos = MapPosToMoveIndex(movedOffset, player[i].headFlag, player[i].velocity);
 				player[i].pos.y = tmpPos.y + player[i].hitPosS.y;
-				player[i].velocity.y -= 1;
 				player[i].velocity.y *= -1;
 			}
 			movedPos = player[i].pos;
@@ -188,14 +198,16 @@ void PlayerUpdate(void)
 
 			// 足下のﾌﾞﾛｯｸのﾁｪｯｸ
 
-			//movedOffset = movedPos;
-			//movedOffset.y = movedPos.y + player.hitPosE.y;
-			//movedOffset.y = movedPos.y + player.hitPosE.y;
-			//movedOffset2 = movedOffset;							// 左上
-			//movedOffset2.x = movedPos.x - player.hitPosS.x;
-			//movedOffset3 = movedOffset;							// 右上
-			//movedOffset3.x = movedPos.x + player.hitPosE.x - 1
-			SetOffset(OFFSET_FOOT);
+			movedOffset = movedPos;
+			movedOffset.y = movedPos.y + player[i].hitPosE.y;
+			movedOffset.y = movedPos.y + player[i].hitPosE.y;
+			movedOffset2 = movedOffset;							// 左上
+			movedOffset2.x = movedPos.x - player[i].hitPosS.x;
+			movedOffset3 = movedOffset;							// 右上
+			movedOffset3.x = movedPos.x + player[i].hitPosE.x - 1;
+
+		//	SetOffset(OFFSET_FOOT);
+
 			if (IsPass(movedOffset) && IsPass(movedOffset2) && IsPass(movedOffset3)) {
 				player[i].pos = movedPos;
 			}
@@ -208,13 +220,14 @@ void PlayerUpdate(void)
 			movedPos = player[i].pos;
 
 			//　ｼﾞｬﾝﾌﾟ
-		/*	movedOffset2 = movedOffset;							// 左上
-			movedOffset2.x = movedPos.x - player.hitPosS.x;
-			movedOffset3 = movedOffset;							// 右上
-			movedOffset3.x = movedPos.x + player.hitPosE.x - 1;*/
-
 			// 1ﾏｽのところではジャンプしない
-			SetOffset(OFFSET_NOTJUMP);
+			movedOffset = movedPos;
+			movedOffset.y = movedPos.y - player[i].hitPosS.y;
+			movedOffset2 = movedOffset;							// 左上
+			movedOffset2.x = movedPos.x - player[i].hitPosS.x;
+			movedOffset3 = movedOffset;							// 右上
+			movedOffset3.x = movedPos.x + player[i].hitPosE.x - 1;
+			//SetOffset(OFFSET_NOTJUMP);
 			if (IsPass(movedOffset) && IsPass(movedOffset2) && IsPass(movedOffset3)) {
 				if (!player[i].jumpFlag) {
 					if (PlayerJumpKeyCheck(i)) {
@@ -251,7 +264,13 @@ void PlayerUpdate(void)
 
 			// ｼﾞｬﾝﾌﾟﾌﾞﾛｯｸ
 			// 1ﾏｽのところではジャンプしない
-			SetOffset(OFFSET_NOTJUMP);
+			movedOffset = movedPos;
+			movedOffset.y = movedPos.y - player[i].hitPosS.y;
+			movedOffset2 = movedOffset;							// 左上
+			movedOffset2.x = movedPos.x - player[i].hitPosS.x;
+			movedOffset3 = movedOffset;							// 右上
+			movedOffset3.x = movedPos.x + player[i].hitPosE.x - 1;
+			//SetOffset(OFFSET_NOTJUMP);
 			if (IsPass(movedOffset) && IsPass(movedOffset2) && IsPass(movedOffset3)) {
 				movedOffset.y = movedPos.y + player[i].hitPosE.y;		// 足元
 				if (!JumpIsPass(movedOffset)) {
@@ -265,13 +284,16 @@ void PlayerUpdate(void)
 				savePos[i] = player[i].pos;
 			}
 
+			// ゴール
 			if (!GoalIsPass(player[i].pos)) {
-				player[i].pos = { 0 , 0 };
-				player[i].flag = false;
-				player[i].goalFlag = true;
-				goalCnt++;
-				player[i].jyuni = goalCnt;
+				if(!player[i].goalFlag) {
+					player[i].flag = false;
+					player[i].goalFlag = true;
+					player[i].jyuni = goalCnt;
+					goalCnt++;
+				}
 			}
+			
 
 			// 画面外にﾌﾟﾚｲﾔｰが出たら
 			if (player[i].pos.y > SCREEN_SIZE_Y)
@@ -283,41 +305,66 @@ void PlayerUpdate(void)
 				player[i].selectFlag = false;
 			}
 
+			if (!player[i].shotInterval) {
+				if (bulletKeyCheck(i)) {
+					XY Shotpos = player[i].pos;
+					if (player[i].jumpFlag == true)
+					{
+						Shotpos.y -= 5;
+					}
+					if (player[i].moveDir == DIR_RIGHT)
+					{
+						BulletFire({ Shotpos.x + player[i].hitPosE.x,Shotpos.y - 3 },
+							player[i].moveDir);
+					}
+					else if (player[i].moveDir == DIR_LEFT)
+					{
+						BulletFire({ player[i].pos.x - player[i].hitPosS.x - 3, player[i].pos.y - 3 },
+							player[i].moveDir);
+					}
+					player[i].shotInterval = true;
+				}
+			}
+			if (player[i].shotInterval) {
+				intervalCnt++;
+				if (intervalCnt > 60) {
+					player[i].shotInterval = false;
+					intervalCnt = 0;
+				}
+			}
+
 		}
 		else {	// ﾌﾟﾚｰﾔｰが死んだとき
 			if (!player[i].goalFlag) {
 				player[i].pos = savePos[i];
 				player[i].velocity = { 0,0 };
-				if (trgKey[ENTER]) {
-					player[i].flag = true;
-				}
+				player[i].deathCnt += 2;
+				player[i].flag = true;
 			}
 		}
 		player[i].animCnt++;
 	}
 	selectCnt = 0;
+	for (int j = 0; j < 4; j++) {
+		cycleCnt[j] = 0;
+	}
 	for (int i = 0; i < playerMax; i++) {
 		if (player[i].selectFlag) {
 			selectCnt++;
-		}
-	}
-	int max = 0;
-	int num = 0;
-	for (int j = 0; j < 3; j++) {
-		if (cycleCnt[j] > max) {
-			max = cycleCnt[j];
-		}
-	}
-	int maxCnt = 0;
-	for (int i = 0; i < playerMax; i++) {
-		for (int j = 0; j < 3; j++) {
-			if (cycleCnt[j] == max) {
-				player[i].cycleType = j +1; 
+			if (player[i].selectType == 1) {
+				cycleCnt[0]++;
 			}
-		//	player[i].cycleType = j + 1;
+			if (player[i].selectType == 2) {
+				cycleCnt[1]++;
+			}
+			if (player[i].selectType == 3) {
+				cycleCnt[2]++;
+			}
+			if (player[i].selectType == 4) {
+				cycleCnt[3]++;
+			}
 		}
 	}
-	
 }
 
 void PlayerDraw(void)
@@ -349,10 +396,14 @@ void PlayerDraw(void)
 		}
 		DrawFormatString(0, 48, 0x000000, "playerPos 1: %d , %d", player[0].pos.x, player[0].pos.y);
 		DrawFormatString(0, 60, 0x000000, "selectCnt: %d", selectCnt);
-		for (int j = 0; j < 3; j++) {
+		for (int j = 0; j < 4; j++) {
 			DrawFormatString(0, 72 + 12 * j, 0x000000, "cycleCnt: %d", cycleCnt[j]);
+			
 		}
-		DrawFormatString(0, 120 + 12 * i, 0x000000, "playerselectFlag %d: %d", i + 1, player[i].selectFlag);
+		DrawFormatString(0, 132 + 12 * i, 0x000000, "playerselectFlag %d: %d", i + 1, player[i].selectFlag);
+		DrawFormatString(0, 180, 0x000000, "cycleType: %d", cycleType);
+		DrawFormatString(0, 192 + 12 * i, 0x000000, "playerjyuni %d: %d", i + 1, player[i].jyuni + 1);
+
 		//DrawCircle(player.pos.x, player.pos.y, 5,  0xff0000, true);selectCntplayer[i].selectFlag
 	}
 }
@@ -361,12 +412,12 @@ CHARACTER GetPlayer(int i) {
 	return player[i];
 }
 
-bool PlayerHitCheck(XY pos, XY size, int type)
+bool PlayerHitCheck(XY pos, XY size, HIT_TYPE type, MOVE_DIR dir)
 {
 	for (int i = 0; i < PLAYER_MAX; i++) {
 		if (player[i].flag) {
-			//矩形と矩形(ﾌﾟﾚｲﾔｰ死亡)
-			if (type == 0) {
+			//針
+			if (type == HIT_NEEDLE) {
 				if ((pos.x < player[i].pos.x + player[i].hitPosE.x)
 					&& (pos.x + size.x > player[i].pos.x - player[i].hitPosS.x)
 					&& (pos.y < player[i].pos.y + player[i].hitPosE.y)
@@ -377,8 +428,8 @@ bool PlayerHitCheck(XY pos, XY size, int type)
 					return true;
 				}
 			}
-			// 縦線と矩形
-			if (type == 1) {
+			// 6分の1針
+			if (type == HIT_S_NEEDLE) {
 				if ((pos.x + size.x / 2 < player[i].pos.x + player[i].hitPosE.x)
 					&& (pos.x + size.x / 2 > player[i].pos.x - player[i].hitPosS.x)
 					&& (pos.y < player[i].pos.y + player[i].hitPosE.y)
@@ -389,8 +440,8 @@ bool PlayerHitCheck(XY pos, XY size, int type)
 					return true;
 				}
 			}
-			// 横線と矩形
-			if (type == 2) {
+			// 矢
+			if (type == HIT_ARROW) {
 				if ((pos.x < player[i].pos.x + player[i].hitPosE.x)
 					&& (pos.x + size.x / 2 > player[i].pos.x - player[i].hitPosS.x)
 					&& (pos.y + size.y / 2 < player[i].pos.y + player[i].hitPosE.y)
@@ -402,7 +453,7 @@ bool PlayerHitCheck(XY pos, XY size, int type)
 				}
 			}
 			//矩形と矩形(セレクト用)
-			if (type == 3 || type == 4 || type == 5) {
+			if (type == HIT_SELECT_1 || type == HIT_SELECT_2 || type == HIT_SELECT_3 || type == HIT_SELECT_EX) {
 				if ((pos.x < player[i].pos.x + player[i].hitPosE.x)
 					&& (pos.x + size.x > player[i].pos.x - player[i].hitPosS.x)
 					&& (pos.y < player[i].pos.y + player[i].hitPosE.y)
@@ -410,20 +461,48 @@ bool PlayerHitCheck(XY pos, XY size, int type)
 					) {
 					if (trgKey[ENTER]) {
 						if (!player[i].selectFlag) {
-							if (type == 3) {
+							if (type == HIT_SELECT_1) {
 								cycleCnt[0]++;
+								player[i].selectType = 1;
 							}
-							if (type == 4) {
+							if (type == HIT_SELECT_2) {
 								cycleCnt[1]++;
+								player[i].selectType = 2;
 							}
-							if (type == 5) {
+							if (type == HIT_SELECT_3) {
 								cycleCnt[2]++;
+								player[i].selectType = 3;
 							}
-
+							if (type == HIT_SELECT_EX) {
+								cycleCnt[3]++;
+								player[i].selectType = 4;
+							}
 							player[i].selectFlag = true;
-							
 						}
 					}
+				}
+			}
+			if (type == HIT_SHOT) {
+				if (((player[i].pos.x - player[i].hitPosS.x) <= pos.x
+				&& (player[i].pos.x + player[i].hitPosE.x) >= pos.x
+				&& (player[i].pos.y + player[i].hitPosE.y) >= pos.y
+				&& (player[i].pos.y - player[i].hitPosS.y) <= pos.y))
+				{
+					if (dir == DIR_LEFT)
+					{
+						XY movePos = { player[i].pos.x - CHIP_SIZE_X-13 , player[i].pos.y};
+						if (IsPass(movePos)) {
+							player[i].pos.x = player[i].pos.x - CHIP_SIZE_X;
+						}
+					}
+					else if (dir == DIR_RIGHT)
+					{
+						XY movePos = { player[i].pos.x + CHIP_SIZE_X+13 , player[i].pos.y };
+						if (IsPass(movePos)) {
+							player[i].pos.x = player[i].pos.x + CHIP_SIZE_X;
+						}
+					}
+					return true;
 				}
 			}
 		}
@@ -431,55 +510,6 @@ bool PlayerHitCheck(XY pos, XY size, int type)
 	return false;
 }
 
-void SetOffset(OFFSET_TYPE type) {			
-
-	for (int i = 0; i < PLAYER_MAX; i++) {
-		switch (type) {
-		case OFFSET_LEFT_RIGHT:
-			if (player[i].velocity.x > 0) {							// 右
-				movedOffset.x = movedPos.x + player[i].hitPosE.x + 1;
-			}
-			if (player[i].velocity.x < 0) {							// 左
-				movedOffset.x = movedPos.x - player[i].hitPosS.x -2 ;
-			}
-			//ﾌﾟﾚｲﾔｰの頭上の中心のｵﾌｾｯﾄ
-			movedOffset2 = movedOffset;
-			movedOffset2.y = movedPos.y - player[i].hitPosS.y;
-			//ﾌﾟﾚｲﾔｰの足下の中心のｵﾌｾｯﾄ
-			movedOffset3 = movedOffset;
-			movedOffset3.y = movedPos.y + player[i].hitPosE.y - 1;			// ‐1は調整用
-			break;
-		case OFFSET_HEAD:
-			movedOffset = movedPos;
-			movedOffset.y = movedPos.y - player[i].hitPosS.y;
-			movedOffset2 = movedOffset;							// 左上
-			movedOffset2.x = movedPos.x - player[i].hitPosS.x;
-			movedOffset3 = movedOffset;							// 右上
-			movedOffset3.x = movedPos.x + player[i].hitPosE.x - 1;
-			break;
-		case OFFSET_FOOT:
-			movedOffset = movedPos;
-			movedOffset.y = movedPos.y + player[i].hitPosE.y;
-			movedOffset2 = movedOffset;							// 左上
-			movedOffset2.x = movedPos.x - player[i].hitPosS.x;
-			movedOffset3 = movedOffset;							// 右上
-			movedOffset3.x = movedPos.x + player[i].hitPosE.x - 1;
-			break;
-		case OFFSET_NOTJUMP:
-			movedOffset = movedPos;
-			movedOffset.y = movedPos.y - player[i].hitPosS.y - 1;
-			movedOffset2 = movedOffset;							// 左上
-			movedOffset2.x = movedPos.x - player[i].hitPosS.x - 1;
-			movedOffset3 = movedOffset;							// 右上
-			movedOffset3.x = movedPos.x + player[i].hitPosE.x - 1;
-			break;
-		default:
-			AST();
-			break;
-		}
-	}
-	
-}
 
 bool PlayerKeyCheck(int i){
 	switch (i) {
@@ -527,7 +557,11 @@ bool PlayerKeyCheck(int i){
 			return true;
 		}
 		break;
+	default:
+		AST();
+		break;
 	}	
+
 	return false;
 }
 
@@ -556,7 +590,75 @@ bool PlayerJumpKeyCheck(int i) {
 	}
 	return false;
 }
+
 int GetSelectCnt()
 {
 	return selectCnt;
+}
+
+int GetCycleType()
+{
+	int max = 0;
+	for (int j = 0; j < 4; j++) {
+		if (cycleCnt[j] > max) {
+			max = cycleCnt[j];
+		}
+	}
+	int cnt = 0;
+	for (int j = 0; j < 4; j++) {
+		if (cycleCnt[j] == max) {
+			cnt++;
+			if (cnt > 1) {
+				int num = (int)(rand() % 2);	// ﾗﾝﾀﾞﾑで0か1で数字を決める
+				if (num == 0) {
+					cycleType = j + 1;
+				}
+			}
+			else {
+				cycleType = j + 1;
+			}
+		}
+	}
+	return cycleType;
+}
+
+int GetGoalCnt() {	// ｸﾘｱもしくはｷﾞﾌﾞｱｯﾌﾟの人数
+	return goalCnt + giveupCnt;
+}
+bool bulletKeyCheck(int i) {
+	switch (i) {
+	case 0:
+		if (trgKey[P1_B]) {
+			return true;
+		}
+		break;
+	case 1:
+		if (trgKey[P2_B]) {
+			return true;
+		}
+		break;
+	case 2:
+		if (trgKey[P3_B]) {
+			return true;
+		}
+		break;
+	case 3:
+		if (trgKey[P4_B]) {
+			return true;
+		}
+		break;
+	}
+	return false;
+}
+
+void GiveUp(int i) {
+	// ｷﾞﾌﾞｱｯﾌﾟ
+	if (!player[i].goalFlag) {
+		player[i].flag = false;
+		player[i].goalFlag = true;
+		player[i].jyuni = playerMax - 1;
+		player[i].giveupFlag = true;
+		giveupCnt++;
+	}
+	
 }

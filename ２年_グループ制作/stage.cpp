@@ -1,5 +1,5 @@
 #include <DxLib.h>
-#include "main.h""
+#include "main.h"
 #include "stage.h"
 #include "keycheck.h"
 #include "player.h"
@@ -16,10 +16,12 @@ XY mapPos;
 // 画像ﾊﾝﾄﾞﾙ
 int arrow;			// 矢
 int bowgun[6];		// ﾎﾞｳｶﾞﾝ
+int round[4];
 
-int round[3];
+// 変数
 int pNum[PLAYER_MAX];
-
+int stageCnt;
+int tmpCycle;
 
 
 TRAP trap[TRAP_MAX];
@@ -145,7 +147,7 @@ int stage5[CHIP_MAX_Y][CHIP_MAX_X]{
 	1,1,1,1,1,1,1,1,0, 0,0,0,0,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,
 	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,
 	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,9,
-	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,1,1,1,1,1,1,
+	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,1,1,1,2,1,1,
 	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
 	1,18,12,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
 	1,1,1,1,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,2,1,1,0,0,0,0,1,
@@ -187,6 +189,29 @@ int stage6[CHIP_MAX_Y][CHIP_MAX_X] = {
 	1,1,1,1,2,1,1,1,1, 1,2,2,2,2,2,2,2,2, 1,1,1,1,1,1,1,1,1
 };
 
+int stage7[CHIP_MAX_Y][CHIP_MAX_X] = {
+	1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,
+	1,0,0,0,0,0,0,0,0, 0,0,0,0,1,0,0,0,0, 0,0,0,0,0,0,0,0,0,
+	1,18,0,0,0,0,0,0,0, 0,0,0,0,1,0,0,0,0, 0,0,0,0,0,0,0,0,0,
+	1,1,1,1,1,0,0,0,0, 0,0,0,0,2,0,0,0,0, 0,0,0,0,0,12,0,0,9,
+	1,0,0,0,0,0,0,0,0, 14,1,1,1,1,0,0,0,12, 0,0,0,1,1,1,1,1,1,
+	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,14,1, 15,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,12,0,0, 0,0,0,0,0,0,0,0,13, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,1,1,1,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0, 0,0,0,12,0,0,0,0,0, 0,0,0,0,12,0,0,0,1,
+	1,0,0,0,0,0,0,0,12, 0,1,1,1,0,0,0,0,0, 0,0,7,1,1,1,0,0,1,
+	1,0,0,0,0,0,0,0,1, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
+	1,1,1,1,15,0,0,0,1, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,1, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,1, 0,0,0,0,0,0,0,0,0, 0,12,0,0,0,0,1,1,1,
+	1,0,0,0,0,0,1,1,1, 0,0,0,0,0,0,0,0,0, 1,1,1,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0, 0,0,0,1,1,1,0,0,0, 0,0,0,0,0,0,0,0,1,
+	1,1,1,1,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,12,0,0,0,0,0,0,1,
+	1,1,1,1,1,2,2,2,2, 2,2,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1
+};
+
 
 int Iwanna[CHIP_MAX_Y][CHIP_MAX_X] = {
 	1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,
@@ -211,7 +236,7 @@ int Iwanna[CHIP_MAX_Y][CHIP_MAX_X] = {
 	1,1,1,1,1,1,1,1,1, 2,7,1,1,1,1,1,2,2, 1,1,1,1,1,1,1,1,1
 };
 
-int stage7[CHIP_MAX_Y][CHIP_MAX_X] = {
+int Iwanna2[CHIP_MAX_Y][CHIP_MAX_X] = {
 	1,1,1,0,1,1,0,1,1,        1,1,1,1,1,1,0,1,1,     1,1,1,1,1,1,1,1,1,
 	1,1,1,0,1,1,0,0,0,        1,0,0,0,0,0,0,0,0,     0,0,0,0,0,0,0,0,1,
 	1,13,13,0,13,13,0,0,0,   1,0,0,12,0,0,0,0,0,     0,12,0,0,0,0,0,0,1,
@@ -234,7 +259,7 @@ int stage7[CHIP_MAX_Y][CHIP_MAX_X] = {
 	1,1,2,2,1,1,1,1,1,      7,1,12,1,1,1,1,1,1,      1,1,1,1,1,1,1,1,1
 };
 
-int lobbyStage[20][27] = {
+int lobbyStage[CHIP_MAX_Y][CHIP_MAX_X] = {
 	1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,
 	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,
 	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0,
@@ -257,7 +282,7 @@ int lobbyStage[20][27] = {
 	1,1,1,1,1,1,1,1,1, 1,7,1,1,1,1,1,1,1, 1,1,0,0,0,0,1,1,1
 };
 
-int selectStage[20][27] = {
+int selectStage[CHIP_MAX_Y][CHIP_MAX_X] = {
 	1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1,
 	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
 	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
@@ -265,16 +290,16 @@ int selectStage[20][27] = {
 	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
 	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
 	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
-	1,0,0,0,0,0,0,0,0, 0,0,1,1,1,1,1,1,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,1,1, 1,1,1,1,1,1,1,1,1, 1,1,0,0,0,0,0,0,1,
 	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
 	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
 	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
-	1,0,0,1,1,1,1,1,1, 0,0,0,0,0,0,0,0,0, 1,1,1,1,1,1,0,0,1,
+	1,0,1,1,1,1,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,1,1,1,1,0,1,
 	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
 	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
 	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
-	1,0,0,0,0,0,0,0,0, 0,1,1,1,1,1,1,0,0, 0,0,0,0,0,0,0,0,1,
-	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
+	1,0,0,0,0,0,0,1,1, 1,1,1,1,1,1,1,1,1, 1,1,0,0,0,0,0,0,1,
 	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
 	1,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,0, 0,0,0,0,0,0,0,0,1,
 	1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1, 1,1,1,1,1,1,1,1,1
@@ -315,15 +340,22 @@ void stageSysInit(void)
 	round[0] = LoadGraph("png/1select.png", true);
 	round[1] = LoadGraph("png/2select.png", true);
 	round[2] = LoadGraph("png/3select.png", true);
+	round[3] = LoadGraph("png/extra2.png", true);
+
 	pNum[0] = LoadGraph("png/ネーム1.png");
 	pNum[1] = LoadGraph("png/ネーム2.png");
 	pNum[2] = LoadGraph("png/ネーム3.png");
 	pNum[3] = LoadGraph("png/ネーム4.png");
+	stageCnt = 0;
 }
 
 void stageInit(void)	
 {
+	
 	GAME_MODE tmpMode = GetGameMode();
+	if (stageCnt == 0) {
+		tmpCycle = GetCycleType();
+	}
 	// ﾗﾝﾀﾞﾑで出した値でｽﾃｰｼﾞを決める
 	if (tmpMode == GMODE_INIT) {
 		stage = TITLE_STAGE;
@@ -331,8 +363,18 @@ void stageInit(void)
 	if(tmpMode == GMODE_BATTLESELECT){
 		stage = LOBBY_STAGE;
 	}
-	if(tmpMode != GMODE_INIT && tmpMode != GMODE_BATTLESELECT){
+	if(tmpMode != GMODE_INIT && tmpMode != GMODE_BATTLESELECT && tmpCycle != 4){
 		stage = (STAGE_NUM)(rand() % 6);
+		stageCnt++;
+	}
+	if (tmpMode != GMODE_INIT && tmpMode != GMODE_BATTLESELECT && tmpCycle == 4) {
+		if (stageCnt == 0) {
+			stage = EX_STAGE1;
+		}
+		else {
+			stage = EX_STAGE2;
+		}
+		stageCnt++;
 	}
 
 	for (int i = 0; i < SCREEN_SIZE_X / CHIP_SIZE_X; i++)
@@ -358,11 +400,14 @@ void stageInit(void)
 			case STAGE6:
 				nowStage[j][i] = stage6[j][i];
 				break;
+			case STAGE7:
+				nowStage[j][i] = stage7[j][i];
+				break;
 			case EX_STAGE1:
 				nowStage[j][i] = Iwanna[j][i];
 				break;
 			case EX_STAGE2:
-				nowStage[j][i] = stage7[j][i];
+				nowStage[j][i] = Iwanna2[j][i];
 				break;
 			case LOBBY_STAGE:
 				nowStage[j][i] = selectStage[j][i];
@@ -412,7 +457,7 @@ void trapInit(int i) {
 	trap[i].cnt = 0;
 	trap[i].cntMax = 200;
 	trap[i].moveSpeed = NOMAL_SPEED;
-	trap[i].type = 0;															// 当たり判定を矩形と矩形で初期化
+	trap[i].type = HIT_NEEDLE;															// 当たり判定を矩形と矩形で初期化
 	trap[i].tEvent = BLOCK_FALL;												// イベントは落下で初期化
 
 
@@ -478,38 +523,26 @@ void trapInit(int i) {
 		case 2:
 		case 3:
 			trap[i].pos = { 20 * CHIP_SIZE_X + i * CHIP_SIZE_X, 12 * CHIP_SIZE_Y };
-			trap[i].type = 4;																	// 当たり判定がないため　4
-			trap[i].flag = true;																// ﾌﾟﾚｲﾔｰが近づくまでtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		case 4:
 			trap[i].pos = { 9 * CHIP_SIZE_X, 18 * CHIP_SIZE_Y };
-			trap[i].type = 4;																	// 当たり判定がないため　4
-			trap[i].flag = true;																// ﾌﾟﾚｲﾔｰが近づくまでtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		case 5:
 			trap[i].pos = { 20 * CHIP_SIZE_X, CHIP_SIZE_Y };
-			trap[i].type = 4;																	// 当たり判定がないため　4
-			trap[i].flag = true;																// ﾌﾟﾚｲﾔｰが近づくまでtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		case 6:
 			trap[i].pos = { 2 * CHIP_SIZE_X, 7 * CHIP_SIZE_Y };
-			trap[i].type = 4;																	// 当たり判定がないため　4
-			trap[i].flag = true;																// ﾌﾟﾚｲﾔｰが近づくまでtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		case 7:
 			trap[i].pos = { 8 * CHIP_SIZE_X, 5 * CHIP_SIZE_Y };
-			trap[i].type = 4;																	// 当たり判定がないため　4
-			trap[i].flag = true;																// ﾌﾟﾚｲﾔｰが近づくまでtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 		case 8:
 			trap[i].pos = { 15 * CHIP_SIZE_X, 7 * CHIP_SIZE_Y };
-			trap[i].type = 4;																	// 当たり判定がないため　4
-			trap[i].flag = true;																// ﾌﾟﾚｲﾔｰが近づくまでtrue
 			trap[i].tEvent = BLOCK_POP;
 			break;
 			// 矢
@@ -517,7 +550,6 @@ void trapInit(int i) {
 		case 10:
 		case 11:
 			trap[i].pos = { 25 * CHIP_SIZE_X, 8 * CHIP_SIZE_Y + (i - 8) * CHIP_SIZE_Y };
-			trap[i].type = 2;
 			trap[i].tEvent = BLOCK_MOVE;
 			trap[i].cntMax = 0;
 			break;
@@ -642,7 +674,40 @@ void trapInit(int i) {
 		}
 	}
 
-	// EXｽﾃｰｼﾞ2
+	// ｽﾃｰｼﾞ7
+	if (stage == STAGE7) {
+		switch (i) {
+		// 飛び出す針
+		case 0:
+			trap[i].pos = { 6 * CHIP_SIZE_X, 6 * CHIP_SIZE_Y };
+			trap[i].tEvent = BLOCK_POP;
+			break;
+		case 1:
+			trap[i].pos = { 12 * CHIP_SIZE_X, 8 * CHIP_SIZE_Y };
+			trap[i].tEvent = BLOCK_POP;
+			break;
+		case 2:
+			trap[i].pos = { 22 * CHIP_SIZE_X, 8 * CHIP_SIZE_Y };
+			trap[i].tEvent = BLOCK_POP;
+			break;
+		case 3:
+			trap[i].pos = { 19 * CHIP_SIZE_X, 13 * CHIP_SIZE_Y };
+			trap[i].tEvent = BLOCK_POP;
+			break;
+		case 4:
+			trap[i].pos = { 19 * CHIP_SIZE_X, 18 * CHIP_SIZE_Y };
+			trap[i].tEvent = BLOCK_POP;
+			break;
+		case 5:
+			trap[i].pos = { 23 * CHIP_SIZE_X, 3 * CHIP_SIZE_Y };
+			trap[i].tEvent = BLOCK_POP;
+			break;
+		default:
+			break;
+		}
+	}
+
+	// EXｽﾃｰｼﾞ2	※ EXｽﾃｰｼﾞ1は動くｷﾞﾐｯｸがないため何もしない
 	if (stage == EX_STAGE2)
 	{
 		switch (i) {
@@ -681,19 +746,24 @@ void trapInit(int i) {
 	if (stage == LOBBY_STAGE) {
 		switch (i) {
 		case 0:
-			trap[i].pos = { 10 * CHIP_SIZE_X, 9 * CHIP_SIZE_Y };
+			trap[i].pos = { 7 * CHIP_SIZE_X, 10 * CHIP_SIZE_Y };
 			trap[i].tEvent = BLOCK_SELECT;
-			trap[i].type = 3;
+			trap[i].type = HIT_SELECT_1;
 			break;
 		case 1:
-			trap[i].pos = { 3 * CHIP_SIZE_X, 5 * CHIP_SIZE_Y };
+			trap[i].pos = { 14 * CHIP_SIZE_X, 10 * CHIP_SIZE_Y };
 			trap[i].tEvent = BLOCK_SELECT;
-			trap[i].type = 4;
+			trap[i].type = HIT_SELECT_2;
 			break;
 		case 2:
-			trap[i].pos = { 18 * CHIP_SIZE_X, 5 * CHIP_SIZE_Y };
+			trap[i].pos = { 7 * CHIP_SIZE_X, 2 * CHIP_SIZE_Y };
 			trap[i].tEvent = BLOCK_SELECT;
-			trap[i].type = 5;
+			trap[i].type = HIT_SELECT_3;
+			break;
+		case 3:
+			trap[i].pos = { 14 * CHIP_SIZE_X, 2 * CHIP_SIZE_Y };
+			trap[i].tEvent = BLOCK_SELECT;
+			trap[i].type = HIT_SELECT_EX;
 			break;
 		}
 	}
@@ -703,15 +773,15 @@ void trapInit(int i) {
 	case BLOCK_FALL:
 		break;
 	case BLOCK_POP:
-		trap[i].type = 6;																	// 当たり判定がないため　6
+		trap[i].type = NO_HIT;																	// 当たり判定がないため　7
 		trap[i].flag = true;																// ﾌﾟﾚｲﾔｰが近づくまでtrue
 		trap[i].cntMax = 100;
 		break;
 	case BLOCK_MOVE:
-		trap[i].type = 2;
+		trap[i].type = HIT_ARROW;
 		break;
 	case BLOCK_STOP:
-		trap[i].type = 1;																	// 当たり判定を小さくするため　1
+		trap[i].type = HIT_S_NEEDLE;																	// 当たり判定を小さくするため　1
 		trap[i].flag = true;																// 動きがないため常にtrue
 		break;
 	case BLOCK_SELECT:
@@ -831,6 +901,19 @@ void stageMain(void)
 				}
 			}
 
+			if (stage == STAGE7) {
+				// 針飛び出し
+				if (trap[i].tEvent == BLOCK_POP) {
+					if (tmp.pos.x < trap[i].pos.x + CHIP_SIZE_X + CHIP_SIZE_X * 2
+						&& tmp.pos.x > trap[i].pos.x - CHIP_SIZE_X
+						&& tmp.pos.y < trap[i].pos.y + CHIP_SIZE_Y
+						&& tmp.pos.y > trap[i].pos.y - CHIP_SIZE_Y) {
+						trap[i].flag = false;
+						trap[i].cnt = 0;
+					}
+				}
+			}
+
 			if (stage == EX_STAGE2) {
 				// 岩落としﾄﾗｯﾌﾟ
 				if (trap[i].tEvent == BLOCK_FALL) {
@@ -918,8 +1001,6 @@ void stageDraw(void)
 			// ｽﾃｰｼﾞ2
 			if (stage == STAGE2)
 			{
-				// ｺｲﾝ
-			//	DrawGraph(4 * CHIP_SIZE_X, 16 * CHIP_SIZE_Y, coin, false);
 			// 飛び出す針
 				for (int k = 0; k < 9; k++)
 				{
@@ -956,9 +1037,6 @@ void stageDraw(void)
 						DrawGraph(trap[k].pos.x, trap[k].pos.y, block[0], true);
 					}
 				}
-
-				// ｺｲﾝ
-			//	DrawGraph(13 * CHIP_SIZE_X, 17 * CHIP_SIZE_Y, coin, false);
 			}
 			// ｽﾃｰｼﾞ4
 			if (stage == STAGE4)
@@ -971,29 +1049,12 @@ void stageDraw(void)
 					}
 				}
 				
-				// 半透明床を隠す普通の床
-				for (int y = 8; y < 16; y++)
-				{
-					DrawGraph(y * CHIP_SIZE_X, SCREEN_SIZE_Y - CHIP_SIZE_Y, block[1], true);
-				}
+				//// 半透明床を隠す普通の床
 				for (int g = 22; g < 26; g++)
 				{
 					DrawGraph(g * CHIP_SIZE_X, 9 * CHIP_SIZE_Y, block[3], true);
 					DrawGraph(g * CHIP_SIZE_X, 9 * CHIP_SIZE_Y, block[1], true);
 				}
-				
-				DrawGraph(11 * CHIP_SIZE_X, 17 * CHIP_SIZE_Y, block[1], true);
-				DrawGraph(11 * CHIP_SIZE_X, 11 * CHIP_SIZE_Y, block[1], true);
-
-				for (int h = 2; h < 4; h++)
-				{
-					DrawGraph(h * CHIP_SIZE_X, 5 * CHIP_SIZE_Y, block[1], true);
-				}
-
-				DrawGraph(21 * CHIP_SIZE_X, 4 * CHIP_SIZE_Y, block[1], true);
-				DrawGraph(25 * CHIP_SIZE_X, 3 * CHIP_SIZE_Y, block[1], true);
-				//DrawGraph(25 * CHIP_SIZE_X, 7 * CHIP_SIZE_Y, coin, false);
-				
 			}
 			// ｽﾃｰｼﾞ5
 			if (stage == STAGE5)
@@ -1010,10 +1071,6 @@ void stageDraw(void)
 				{
  					DrawGraph(trap[k].pos.x, trap[k].pos.y, block[1], true);			// //trap[] = { 0 ~ 3}
 				}
-				
-				// ｺｲﾝ
-			//	DrawGraph(12 * CHIP_SIZE_X, 10 * CHIP_SIZE_Y, coin, false);
-			//	DrawGraph(CHIP_SIZE_X, 5 * CHIP_SIZE_Y, coin, false);
 			}
 			// ｽﾃｰｼﾞ6
 			if (stage == STAGE6) {
@@ -1025,8 +1082,14 @@ void stageDraw(void)
 				}
 				DrawGraph(trap[6].pos.x, trap[6].pos.y, block[3], true);
 				DrawGraph(23 * CHIP_SIZE_X, 3 * CHIP_SIZE_Y, block[1], true);					// ﾄﾗｯﾌﾟの下側を隠すﾌﾞﾛｯｸ
-				// ｺｲﾝ
-			//	DrawGraph( CHIP_SIZE_X, 4 * CHIP_SIZE_Y, coin, false);
+			}
+
+			if (stage == STAGE7) {
+				for (int k = 0; k < 6; k++) {
+					if (trap[k].flag) {
+						DrawGraph(trap[k].pos.x, trap[k].pos.y, block[0], true);
+					}
+				}
 			}
 
 			if (stage == EX_STAGE2) {
@@ -1034,7 +1097,6 @@ void stageDraw(void)
 				DrawGraph(trap[0].pos.x, trap[0].pos.y, block[4], true);
 				DrawGraph(trap[1].pos.x, trap[1].pos.y, block[4], true);
 				for (int k = 2; k < 7; k++){
-					
 					DrawGraph(trap[k].pos.x, trap[k].pos.y, block[1], true);					//trap[] = { 1 ~ 5}23 * CHIP_SIZE_X, 4 * CHIP_SIZE_Y
 				}
 				// ﾎﾞｳｶﾞﾝと矢
@@ -1058,24 +1120,27 @@ void stageDraw(void)
 
 			if (stage == LOBBY_STAGE) {
 			
-				for (int k = 0; k < 3; k++) {
+				for (int k = 0; k < 4; k++) {
 					DrawGraph(trap[k].pos.x, trap[k].pos.y, round[k], false);
 				}
-			
 				for (int l = 0; l < PLAYER_MAX; l++) {
 					CHARACTER tmp = GetPlayer(l);
 					if (tmp.selectFlag) {
-						if (tmp.cycleType == 1) {
-							DrawGraph(10 * CHIP_SIZE_X + 48 * l, 8 * CHIP_SIZE_Y, pNum[l], false);
+						if (tmp.selectType == 1) {
+							DrawGraph(7 * CHIP_SIZE_X + 48 * l, 9 * CHIP_SIZE_Y, pNum[l], false);
 						}
-						if (tmp.cycleType == 2) {
-							DrawGraph(3 * CHIP_SIZE_X + 48 * l, 4 * CHIP_SIZE_Y, pNum[l], false);
+						if (tmp.selectType == 2) {
+							DrawGraph(14 * CHIP_SIZE_X + 48 * l, 9 * CHIP_SIZE_Y, pNum[l], false);
 						}
-						if (tmp.cycleType == 3) {
-							DrawGraph(18 * CHIP_SIZE_X + 48 * l, 4 * CHIP_SIZE_Y, pNum[l], false);
+						if (tmp.selectType == 3) {
+							DrawGraph(7 * CHIP_SIZE_X + 48 * l,  CHIP_SIZE_Y, pNum[l], false);
+						}
+						if (tmp.selectType == 4) {
+							DrawGraph(14 * CHIP_SIZE_X + 48 * l,  CHIP_SIZE_Y, pNum[l], false);
 						}
 					}
 				}
+				
 				
 			}
 		}		
@@ -1278,5 +1343,4 @@ void TrapMove(T_EVENT_MODE event, int i, MOVE_DIR dir) {
 		break;
 
 	}
-	
 }

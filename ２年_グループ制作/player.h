@@ -14,12 +14,7 @@
 #define PLAYER_MAX 4
 #define PLAYER_IMAGE_MAX 4
 
-enum OFFSET_TYPE {
-	OFFSET_LEFT_RIGHT,			// 0: movedOffsetはﾌﾟﾚｲﾔｰの移動方向の端の中心movedOffset2はﾌﾟﾚｲﾔｰの頭上の中心movedOffset3はﾌﾟﾚｲﾔｰの足下の中心				
-	OFFSET_HEAD,				// 1: movedOffsetはﾌﾟﾚｲﾔｰの頭上movedOffset2はﾌﾟﾚｲﾔｰの頭上の左端movedOffset3はﾌﾟﾚｲﾔｰの足下の右端
-	OFFSET_FOOT,				// 2: movedOffsetはﾌﾟﾚｲﾔｰの足下movedOffset2はﾌﾟﾚｲﾔｰの足下の左端movedOffset3はﾌﾟﾚｲﾔｰの足下の右端
-	OFFSET_NOTJUMP
-};
+
 
 // ﾌﾟﾛﾄﾀｲﾌﾟ宣言
 // 1p
@@ -27,10 +22,14 @@ void PlayerSysInit(void);
 void PlayerInit(void);
 void PlayerUpdate(void);
 void PlayerDraw(void);
-bool PlayerHitCheck(XY pos, XY size, int shape);
-void SetOffset(OFFSET_TYPE);
+bool PlayerHitCheck(XY pos, XY size, HIT_TYPE type, MOVE_DIR);
+//void SetOffset(OFFSET_TYPE type, XY pos, XY offset, XY offset2, XY offset3);
 bool PlayerKeyCheck(int i);
 bool PlayerJumpKeyCheck(int i);
+bool bulletKeyCheck(int i);
 
 CHARACTER GetPlayer(int i);
 int GetSelectCnt();
+int GetCycleType();
+int GetGoalCnt();
+void GiveUp(int i);

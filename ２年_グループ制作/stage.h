@@ -7,6 +7,7 @@
 #define CHIP_MAX_Y 20
 
 #define TRAP_MAX 15
+
 enum TRAP_SPEED {
 	NOMAL_SPEED = 15,
 	HIGH_SPEED = 50
@@ -19,6 +20,7 @@ enum STAGE_NUM {
 	STAGE4,
 	STAGE5,
 	STAGE6,
+	STAGE7,
 	EX_STAGE1,
 	EX_STAGE2,
 	LOBBY_STAGE,
@@ -38,9 +40,10 @@ enum T_EVENT_MODE {
 	BLOCK_SELECT
 };
 
+
 typedef struct {
 	bool flag;
-	int type;				// 当たり判定用 0: 矩形と矩形 1:矩形と線 2: ﾌﾞﾛｯｸ(死なない)
+	HIT_TYPE type;				// 当たり判定用 0: 矩形と矩形 1:矩形と線 2: ﾌﾞﾛｯｸ(死なない)
 	XY pos;					// 位置
 	XY size;				// ｻｲｽﾞ
 	TRAP_SPEED moveSpeed;

@@ -24,7 +24,6 @@
 enum GAME_MODE {
 	GMODE_INIT,
 	GMODE_TITLE,
-	GMODE_SELECT,
 	GMODE_BATTLESELECT,
 	GMODE_GAME,
 	GMODE_RESULT,
@@ -39,6 +38,18 @@ enum MOVE_DIR {
 	DIR_LEFT,
 	DIR_MAX
 };
+enum HIT_TYPE {
+	HIT_NEEDLE,
+	HIT_S_NEEDLE,
+	HIT_ARROW,
+	HIT_SELECT_1,
+	HIT_SELECT_2,
+	HIT_SELECT_3,
+	HIT_SELECT_EX,
+	HIT_SHOT,
+	NO_HIT
+};
+
 
 
 
@@ -65,13 +76,15 @@ typedef struct {
 	bool headFlag;
 	bool goalFlag;
 	bool selectFlag;
-	int cycleType;
+	bool giveupFlag;
+	int selectType;		//
+	int deathCnt;
+	bool shotInterval;
 	int animCnt;		// ±∆“∞ºÆ›óp
 	XY_F velocity;		// à⁄ìÆë¨ìx
-	int point;
-	int sortPt;
-	int jyuni;
-	int skin;
+	int point;			// Œﬂ≤›ƒäiî[óp
+	int sortPt;			// ø∞ƒóp
+	int jyuni;			// èáà äiî[
 }CHARACTER;
 
 typedef struct {
@@ -91,7 +104,7 @@ typedef struct {
 bool SysInit(void);
 void GameInit(void);
 void GameTitle(void);
-void GameSelect(void);
+//void GameSelect(void);
 void GameBattleSelect(void);
 void GameMain(void);
 void GameDraw(void);
@@ -101,3 +114,5 @@ void HitCheck();
 int GetPlayerCnt(void);
 void RankSort();
 GAME_MODE GetGameMode();
+bool FadeInScreen(int);
+bool FadeOutScreen(int);

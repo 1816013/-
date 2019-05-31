@@ -32,6 +32,7 @@ void KeyCheck()
 	if (CheckHitKey(KEY_INPUT_DOWN)) newKey[P1_DOWN] = true;
 	if (CheckHitKey(KEY_INPUT_LEFT)) newKey[P1_LEFT] = true;
 	if (CheckHitKey(KEY_INPUT_RSHIFT)) newKey[P1_A] = true;
+	if (CheckHitKey(KEY_INPUT_Z)) newKey[P1_B] = true;
 
 
 	if (CheckHitKey(KEY_INPUT_W)) newKey[P2_UP] = true;
@@ -39,18 +40,21 @@ void KeyCheck()
 	if (CheckHitKey(KEY_INPUT_S)) newKey[P2_DOWN] = true;
 	if (CheckHitKey(KEY_INPUT_A)) newKey[P2_LEFT] = true;
 	if (CheckHitKey(KEY_INPUT_LSHIFT)) newKey[P2_A] = true;
+	if (CheckHitKey(KEY_INPUT_X)) newKey[P2_B] = true;
 
 	if (CheckHitKey(KEY_INPUT_R)) newKey[P3_UP] = true;
 	if (CheckHitKey(KEY_INPUT_H)) newKey[P3_RIGHT] = true;
 	if (CheckHitKey(KEY_INPUT_G)) newKey[P3_DOWN] = true;
 	if (CheckHitKey(KEY_INPUT_F)) newKey[P3_LEFT] = true;
 	if (CheckHitKey(KEY_INPUT_T)) newKey[P3_A] = true;
+	if (CheckHitKey(KEY_INPUT_C)) newKey[P3_B] = true;
 
 	if (CheckHitKey(KEY_INPUT_U)) newKey[P4_UP] = true;
 	if (CheckHitKey(KEY_INPUT_L)) newKey[P4_RIGHT] = true;
 	if (CheckHitKey(KEY_INPUT_K)) newKey[P4_DOWN] = true;
 	if (CheckHitKey(KEY_INPUT_J)) newKey[P4_LEFT] = true;
 	if (CheckHitKey(KEY_INPUT_I)) newKey[P4_A] = true;
+	if (CheckHitKey(KEY_INPUT_V)) newKey[P4_B] = true;
 
 	if (CheckHitKey(KEY_INPUT_RETURN)) newKey[ENTER] = true;
 	if (CheckHitKey(KEY_INPUT_P)) newKey[PAUSE] = true;
